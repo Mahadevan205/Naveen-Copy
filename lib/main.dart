@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:btb/fifthpage/Edit.dart';
 import 'package:btb/fourthpage/orderspage%20order.dart';
 import 'package:btb/screen/login.dart';
@@ -8,6 +9,7 @@ import 'package:btb/sprint%202%20order/fifthpage.dart';
 import 'package:btb/sprint%202%20order/firstpage.dart';
 import 'package:btb/sprint%202%20order/fourthpage.dart';
 import 'package:btb/sprint%202%20order/secondpage.dart';
+import 'package:btb/sprint%202%20order/seventhpage%20.dart';
 import 'package:btb/sprint%202%20order/sixthpage.dart';
 import 'package:btb/sprint%202%20order/thirdpage.dart';
 import 'package:btb/thirdpage/dashboard.dart';
@@ -55,6 +57,7 @@ abstract class PageName {
 
 class MyApp extends StatelessWidget {
   final _router = GoRouter(
+    initialLocation: window.sessionStorage.containsKey('token') ? '/dashboard' : '/',
     routes: [
       GoRoute(
         path: '/',
@@ -67,6 +70,10 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: '/Orders/dashboard',
         builder: (context, state) => const Dashboard(),
+      ),
+      GoRoute(
+        path: '/Order_List',
+        builder: (context, state) => const Orderspage(),
       ),
       GoRoute(
         path: '/dashboard/addproduct',
@@ -89,29 +96,50 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-          path: '/sixthPage/ontap',
-          builder: (context, state) {
-            final extra = state.extra as Map<String, dynamic>?;
-            if (extra == null) {
-              // Handle the case when extra is null
-              context.read<OrderProvider>().loadData(); // Add this line
-              return SixthPage(
-                product: context.read<OrderProvider>().product,
-                item: context.read<OrderProvider>().item,
-                body: context.read<OrderProvider>().body,
-                itemsList: context.read<OrderProvider>().itemsList,
-              );
-            } else {
-              context.read<OrderProvider>().loadData(); // Add this line
-              return SixthPage(
-                product: extra['product'] as detail?,
-                item: List<Map<String, dynamic>>.from(extra['item']),
-                body: Map<String, dynamic>.from(extra['body']),
-                itemsList: List<Map<String, dynamic>>.from(extra['itemsList']),
-              );
-            }
+        path: '/OrdersList',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          if (extra == null) {
+            return SixthPage(
+              product: null,
+              item: [],
+              body: {},
+              itemsList: [],
+            );
+          } else {
+            return SixthPage(
+              product: extra['product'] as detail?,
+              item: List<Map<String, dynamic>>.from(extra['item']),
+              body: Map<String, dynamic>.from(extra['body']),
+              itemsList: List<Map<String, dynamic>>.from(extra['itemsList']),
+            );
           }
+        },
       ),
+      // GoRoute(
+      //     path: '/sixthPage/ontap',
+      //     builder: (context, state) {
+      //       final extra = state.extra as Map<String, dynamic>?;
+      //       if (extra == null) {
+      //         // Handle the case when extra is null
+      //         context.read<OrderProvider>().loadData(); // Add this line
+      //         return SixthPage(
+      //           product: context.read<OrderProvider>().product,
+      //           item: context.read<OrderProvider>().item,
+      //           body: context.read<OrderProvider>().body,
+      //           itemsList: context.read<OrderProvider>().itemsList,
+      //         );
+      //       } else {
+      //         context.read<OrderProvider>().loadData(); // Add this line
+      //         return SixthPage(
+      //           product: extra['product'] as detail?,
+      //           item: List<Map<String, dynamic>>.from(extra['item']),
+      //           body: Map<String, dynamic>.from(extra['body']),
+      //           itemsList: List<Map<String, dynamic>>.from(extra['itemsList']),
+      //         );
+      //       }
+      //     }
+      // ),
       GoRoute(
         path: '/orders/productpage/:product',
         builder: (context, state) {
@@ -120,8 +148,30 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
+        path: '/PlaceOrder',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: FifthPage(
+            selectedProducts: (state.extra as Map<String, dynamic>)['selectedProducts'] as List<Product>,
+            data: (state.extra as Map<String, dynamic>)['data'] as Map<String, dynamic>,
+            select: '',
+          ),
+        ),
+      ),
+      GoRoute(
         path: '/dasbaord/productpage/addproduct',
         builder: (context, state) => const SecondPage(),
+      ),
+      GoRoute(
+        path: '/Add_Product',
+        builder: (context, state) => const SecondPage(),
+      ),
+      GoRoute(
+        path: '/Product_List',
+        builder: (context, state) {
+          final product = state.extra as ord.Product?;
+          return ProductPage(product: product);
+        },
       ),
       GoRoute(
         path: '/Edit_Product',
@@ -162,22 +212,53 @@ class MyApp extends StatelessWidget {
             );
           }),
       GoRoute(
+        path: '/Order_List/Documents',
+        builder: (context, state) {
+          final extra = state.extra;
+          Map<String, dynamic>? selectedProductsMap;
+
+          if (extra != null) {
+            selectedProductsMap = (extra as Map<String, dynamic>)['selectedProducts'] as Map<String, dynamic>?;
+          }
+
+          return SeventhPage(selectedProducts: selectedProductsMap ?? {});
+        },
+      ),
+      GoRoute(
+        name: 'editProductRoute',
         path: '/dashboard/productpage/ontap/Edit',
         builder: (context, state) {
-          final params = state.extra as Map<String, dynamic>;
-          return EditOrder(
-            prodId: params['prodId'] ?? '',
-            textInput: params['textInput'] ?? '',
-            priceInput: params['priceInput'] ?? '',
-            discountInput: params['discountInput'] ?? '',
-            inputText: params['inputText'] ?? '',
-            subText: params['subText'] ?? '',
-            unitText: params['unitText'] ?? '',
-            taxText: params['taxText'] ?? '',
-            imagePath: params['imagePath'] ?? '',
-            imageId: params['imageId'] ?? '',
-            productData: params['productData'] ?? {},
-          );
+          final params = state.extra as Map<String, dynamic>?; // Make it nullable
+          if (params == null) {
+            // If params is null, return a default EditOrder or handle it as per your requirement
+            return EditOrder(
+              prodId: '',
+              textInput: '',
+              priceInput: '',
+              discountInput: '',
+              inputText: '',
+              subText: '',
+              unitText: '',
+              taxText: '',
+              imagePath: null,
+              imageId: '',
+              productData: {},
+            );
+          } else {
+            return EditOrder(
+              prodId: params['prodId'] ?? '',
+              textInput: params['textInput'] ?? '',
+              priceInput: params['priceInput'] ?? '',
+              discountInput: params['discountInput'] ?? '',
+              inputText: params['inputText'] ?? '',
+              subText: params['subText'] ?? '',
+              unitText: params['unitText'] ?? '',
+              taxText: params['taxText'] ?? '',
+              imagePath: params['imagePath'] ?? '',
+              imageId: params['imageId'] ?? '',
+              productData: params['productData'] ?? {},
+            );
+          }
         },
       ),
       GoRoute(
@@ -205,25 +286,37 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const Orderspage(),
       ),
       GoRoute(
-        path: '/sixthpage-from-fifthpage',
+        path: '/Placed_Order_List',
         builder: (context, state) {
-          detail? details;
-          if (state.extra is detail) {
-            details = state.extra as detail;
-          }
-
-          final items = state.uri.queryParameters['items'] as List<Map<String, dynamic>>?;
-          final body = state.uri.queryParameters['body'] as Map<String, dynamic>?;
-          final itemsList = state.uri.queryParameters['itemsList'] as List<Map<String, dynamic>>?;
-
+          final extra = state.extra as Map<String, dynamic>;
           return SixthPage(
-            product: details,
-            item: items,
-            body: body,
-            itemsList: itemsList,
+            product: extra['product'] as detail?,
+            item: extra['item'] as List<Map<String, dynamic>>?,
+            body: extra['body'] as Map<String, dynamic>,
+            itemsList: extra['itemsList'] as List<Map<String, dynamic>>,
           );
         },
       ),
+      // GoRoute(
+      //   path: '/sixthpage-from-fifthpage',
+      //   builder: (context, state) {
+      //     detail? details;
+      //     if (state.extra is detail) {
+      //       details = state.extra as detail;
+      //     }
+      //
+      //     final items = state.uri.queryParameters['items'] as List<Map<String, dynamic>>?;
+      //     final body = state.uri.queryParameters['body'] as Map<String, dynamic>?;
+      //     final itemsList = state.uri.queryParameters['itemsList'] as List<Map<String, dynamic>>?;
+      //
+      //     return SixthPage(
+      //       product: details,
+      //       item: items,
+      //       body: body,
+      //       itemsList: itemsList,
+      //     );
+      //   },
+      // ),
       GoRoute(
         path: '/dasbaord/Secondpage/arrowback',
         builder: (context, state) => const Orderspage(),
@@ -305,7 +398,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: '/dasbaord/Orderspage/addproduct/addparts',
+        path: '/Order_List/Product_List',
         builder: (context, state) {
           final data = state.extra as Map<String, dynamic>?;
           return OrderPage3(
@@ -337,7 +430,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: '/selectedProduct',
+        path: '/Edit_Order',
         pageBuilder: (context, state) {
           final data = state.extra as Map<String, dynamic>?;
           return MaterialPage(
@@ -359,7 +452,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: '/dasbaord/Orderspage/addproduct',
+        path: '/Create_Order',
         builder: (context, state) =>  OrdersSecond(),
       ),
       GoRoute(
@@ -367,7 +460,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) =>  OrdersSecond(),
       ),
       GoRoute(
-        path: '/dasbaord/Orderspage/addproduct/addparts/addbutton:data',
+        path: '/Order_List/Product_List/Add_Products',
         pageBuilder: (context, state) {
           final extraDataProvider = context.read<ExtraDataProvider>();
           final extraData = extraDataProvider.extraData;

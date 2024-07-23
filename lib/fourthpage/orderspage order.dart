@@ -83,7 +83,7 @@ class _ProductPageState extends State<ProductPage> {
             setState(() {
               if (currentPage == 1) {
                 //productList = products;
-                productList = products.take(20).toList();
+                productList = products;
               } else {
                 productList.addAll(products);
               }
@@ -172,6 +172,7 @@ class _ProductPageState extends State<ProductPage> {
                       icon: const Icon(Icons.account_circle),
                       onSelected: (value) {
                         if (value == 'logout') {
+                          context.go('/');
                           Navigator.push(
                             context,
                             PageRouteBuilder(
@@ -430,7 +431,7 @@ class _ProductPageState extends State<ProductPage> {
                   padding: const EdgeInsets.only(left: 300, top: 120,right: 100),
                   child: Container(
                     width: maxWidth,
-                    height: 1100,
+                 //   height: 1100,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(1),
@@ -446,7 +447,7 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     child: SingleChildScrollView(
                       child: SizedBox(
-                        height: 1300,
+                      //  height: 1300,
                         width: maxWidth,
                         // padding: EdgeInsets.only(),
                         // margin: EdgeInsets.only(left: 400, right: 100),
@@ -962,7 +963,7 @@ class _ProductPageState extends State<ProductPage> {
                                 setState(() {
                                   _selectedProduct = product;
                                 });
-                                context.go('/dasbaord/productpage/ontap');
+                                context.go('/dasbaord/productpage/ontap', extra: product);
 
                                 // Navigate to the new page and pass the selected product as an argument
                                 Navigator.push(

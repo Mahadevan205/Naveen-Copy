@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -149,20 +149,20 @@ class Order {
 }
 
 
-class Orders1Second extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: Size(1920, 984),
-      builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: (SelectedProductPage(selectedProducts: [],data: {},)),
-        );
-      },
-    );
-  }
-}
+// class Orders1Second extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScreenUtilInit(
+//       designSize: Size(1920, 984),
+//       builder: (context, child) {
+//         return MaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           home: (SelectedProductPage(selectedProducts: [],data: {},)),
+//         );
+//       },
+//     );
+//   }
+// }
 
 
 class SelectedProductPage extends StatefulWidget {
@@ -418,9 +418,13 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
       // );
 
       // Redirect to the next page
+      context.go('/Order_List/Documents',extra: {
+        'selectedProducts': updatedOrder,
+      });
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SeventhPage(selectedProducts: updatedOrder)), // Replace with your next page
+        MaterialPageRoute(builder: (context) => SeventhPage(
+            selectedProducts: updatedOrder)), // Replace with your next page
       );
     } else {
       // If the server did not return a 200 OK response,
@@ -455,7 +459,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
       "comments": _commentsController.text,
 
-      "total": double.parse(widget.data['total']),
+      "total": double.parse(widget.data['total'].toString()),
 
       "items": widget.data['items'],
 
@@ -548,6 +552,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                       icon: const Icon(Icons.account_circle),
                       onSelected: (value) {
                         if (value == 'logout') {
+                          context.go('/');
                           Navigator.push(
                             context,
                             PageRouteBuilder(
@@ -588,283 +593,278 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
               builder: (context, constraints){
                 double maxHeight = constraints.maxHeight;
                 double maxWidth = constraints.maxWidth;
-                return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Stack(
-                    children: [
-                      Align(
-                        // Added Align widget for the left side menu
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          height: 984,
-                          width: 200,
-                          color: const Color(0xFFF7F6FA),
-                          padding: const EdgeInsets.only(left: 20, top: 30),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextButton.icon(
-                                onPressed: () {
-                                  // context
-                                  //     .go('${PageName.main}/${PageName.subpage1Main}');
-                                  context.go('/Orderspage/placingorder/dasbaord');
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder:
-                                          (context, animation, secondaryAnimation) =>
-                                      const Dashboard(
+                return Stack(
+                  children: [
+                    Align(
+                      // Added Align widget for the left side menu
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        height: 984,
+                        width: 200,
+                        color: const Color(0xFFF7F6FA),
+                        padding: const EdgeInsets.only(left: 20, top: 30),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextButton.icon(
+                              onPressed: () {
+                                // context
+                                //     .go('${PageName.main}/${PageName.subpage1Main}');
+                                context.go('/Orderspage/placingorder/dasbaord');
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) =>
+                                    const Dashboard(
 
-                                      ),
-                                      transitionDuration:
-                                      const Duration(milliseconds: 200),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
                                     ),
-                                  );
-
-                                  // Navigator.pushReplacementNamed(
-                                  //     context, PageName.dashboardRoute);
-                                  // context
-                                  //     .go('${PageName.main} / ${PageName.subpage1Main}');
-                                },
-                                icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
-                                label: Text(
-                                  'Home',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {
-                                  context.go(
-                                      '/Orderspage/placingorder/productpage:product');
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder:
-                                          (context, animation, secondaryAnimation) =>
-                                      const ProductPage(
-                                        product: null,
-                                      ),
-                                      transitionDuration:
-                                      const Duration(milliseconds: 200),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                                icon: Icon(Icons.image_outlined,
-                                    color: Colors.indigo[900]),
-                                label: Text(
-                                  'Products',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {
-                                  context.go('/BeforplacingOrder/Orderspage');
-                                  // Navigator.push(
-                                  //   context,
-                                  //   PageRouteBuilder(
-                                  //     pageBuilder: (context, animation,
-                                  //         secondaryAnimation) =>
-                                  //     const Orderspage(),
-                                  //     transitionDuration: const Duration(
-                                  //         milliseconds: 200),
-                                  //     transitionsBuilder:
-                                  //         (context, animation, secondaryAnimation,
-                                  //         child) {
-                                  //       return FadeTransition(
-                                  //         opacity: animation,
-                                  //         child: child,
-                                  //       );
-                                  //     },
-                                  //   ),
-                                  // );
-                                  setState(() {
-                                    isOrdersSelected = false;
-                                    // Handle button press19
-                                  });
-                                },
-                                icon: Icon(Icons.warehouse,
-                                    color: isOrdersSelected
-                                        ? Colors.blueAccent
-                                        : Colors.blueAccent),
-                                label: const Text(
-                                  'Orders',
-                                  style: TextStyle(
-                                    color: Colors.blueAccent,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.fire_truck_outlined,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Delivery',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.document_scanner_rounded,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Invoice',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.payment_outlined,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Payment',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.backspace_sharp,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Return',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.insert_chart, color: Colors.blue[900]),
-                                label: Text(
-                                  'Reports',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 200),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            color: Colors.white,
-                            height: 60,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  icon:
-                                  const Icon(Icons.arrow_back), // Back button icon
-                                  onPressed: () {
-                                    context.go('/Documents/Orderspage');
-                                    Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder:
-                                            (context, animation, secondaryAnimation) =>
-                                        const Orderspage(),
-                                        transitionDuration:
-                                        const Duration(milliseconds: 200),
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 30),
-                                  child: Text(
-                                    'Create Order',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Spacer(),
-                                Padding(
-                                  padding: EdgeInsets.only(right: 100),
-                                  child: OutlinedButton(
-                                    onPressed: ()  {
-                                      _onSaveChanges();
+                                    transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
                                     },
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor:
-                                      Colors.blueAccent, // Button background color
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(5), // Rounded corners
-                                      ),
-                                      side: BorderSide.none, // No outline
-                                    ),
-                                    child: const Text(
-                                      'Save Changes',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                                   ),
-                                ),
+                                );
 
-                              ],
+                                // Navigator.pushReplacementNamed(
+                                //     context, PageName.dashboardRoute);
+                                // context
+                                //     .go('${PageName.main} / ${PageName.subpage1Main}');
+                              },
+                              icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
+                              label: Text(
+                                'Home',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {
+                                context.go(
+                                    '/Orderspage/placingorder/productpage:product');
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) =>
+                                    const ProductPage(
+                                      product: null,
+                                    ),
+                                    transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.image_outlined,
+                                  color: Colors.indigo[900]),
+                              label: Text(
+                                'Products',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {
+                                context.go('/BeforplacingOrder/Orderspage');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder: (context, animation,
+                                //         secondaryAnimation) =>
+                                //     const Orderspage(),
+                                //     transitionDuration: const Duration(
+                                //         milliseconds: 200),
+                                //     transitionsBuilder:
+                                //         (context, animation, secondaryAnimation,
+                                //         child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
+                                setState(() {
+                                  isOrdersSelected = false;
+                                  // Handle button press19
+                                });
+                              },
+                              icon: Icon(Icons.warehouse,
+                                  color: isOrdersSelected
+                                      ? Colors.blueAccent
+                                      : Colors.blueAccent),
+                              label: const Text(
+                                'Orders',
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.fire_truck_outlined,
+                                  color: Colors.blue[900]),
+                              label: Text(
+                                'Delivery',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.document_scanner_rounded,
+                                  color: Colors.blue[900]),
+                              label: Text(
+                                'Invoice',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.payment_outlined,
+                                  color: Colors.blue[900]),
+                              label: Text(
+                                'Payment',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.backspace_sharp,
+                                  color: Colors.blue[900]),
+                              label: Text(
+                                'Return',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.insert_chart, color: Colors.blue[900]),
+                              label: Text(
+                                'Reports',
+                                style: TextStyle(color: Colors.indigo[900]),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 43, left: 200),
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 10), // Space above/below the border
-                          height: 2,
-                          // width: 1000,
-                          width: constraints.maxWidth,// Border height
-                          color: Colors.grey[300], // Border color
-                        ),
-                      ),
-                      //date
-                      Container(
+                    ),
+                    Positioned(
+                      left: 200,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              color: Colors.white,
+                              height: 60,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon:
+                                    const Icon(Icons.arrow_back), // Back button icon
+                                    onPressed: () {
+                                      context.go('/Documents/Orderspage');
+                                      Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder:
+                                              (context, animation, secondaryAnimation) =>
+                                          const Orderspage(),
+                                          transitionDuration:
+                                          const Duration(milliseconds: 200),
+                                          transitionsBuilder: (context, animation,
+                                              secondaryAnimation, child) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 30),
+                                    child: Text(
+                                      'Create Order',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 100),
+                                    child: OutlinedButton(
+                                      onPressed: ()  {
+                                        _onSaveChanges();
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor:
+                                        Colors.blueAccent, // Button background color
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(5), // Rounded corners
+                                        ),
+                                        side: BorderSide.none, // No outline
+                                      ),
+                                      child: const Text(
+                                        'Save Changes',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ),
                             Padding(
-                              padding:  EdgeInsets.only(left: maxWidth* 0.81,top: 80,right: 120),
+                              padding: const EdgeInsets.only(top: 0, left: 0),
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 5), // Space above/below the border
+                                height: 2,
+                                // width: 1000,
+                                width: constraints.maxWidth,// Border height
+                                color: Colors.grey[300], // Border color
+                              ),
+                            ),
+                            //date
+                            Padding(
+                              padding:  EdgeInsets.only(left: maxWidth* 0.62,top: 50,right: 120),
                               child: Text(('Order Date')),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding:  EdgeInsets.only(left: maxWidth * 0.81, top: 10,),
+                                  padding:  EdgeInsets.only(left: maxWidth * 0.710, top: 20,),
                                   child: DecoratedBox(
                                     decoration: BoxDecoration(
                                       border: Border.all(
@@ -930,7 +930,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 310,top: 50,right: 100),
+                              padding: const EdgeInsets.only(left: 150,top: 100,right: 100),
                               child: Container(
                                 height:  380,
                                 width: maxWidth,
@@ -966,7 +966,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.only(right:300),
+                                          padding: EdgeInsets.only(right:460),
                                           child: Text(
                                             'Comments',
                                             style: TextStyle(
@@ -1056,7 +1056,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(width: 20.0),
+                                        const SizedBox(width: 100.0),
                                         Expanded(
                                           flex: 3,
                                           child: Column(
@@ -1159,850 +1159,876 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
                             Padding(
                               padding: const EdgeInsets.only
-                                (top:50, left:310, right: 100),
-                              child: Flexible(
-                                flex: 1,
-                                child: SizedBox(
-                                  width: maxWidth*0.785,
-                                  child: Container(
-                                    width: maxWidth,
-                                    padding: EdgeInsets.all(0.0),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey,width:2),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 30, top: 10),
-                                          child: Text(
-                                            'Add Products',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey[600],
+                                (top:100, left:150, right: 100,bottom: 25),
+                              child: SizedBox(
+                                width: maxWidth*0.785,
+                                child: Container(
+                                  width: maxWidth,
+                                  padding: EdgeInsets.all(0.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey,width:2),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 30, top: 10),
+                                        child: Text(
+                                          'Add Products',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(height: 0.8),
+                                      Container(
+                                        width: maxWidth,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey,),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 5,
+                                            bottom: 5,
+                                          ),
+                                          child: SizedBox(
+                                            height: 34,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex:1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "SN",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Product Name',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Category",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Sub Category",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Price",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "QTY",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Total Amount",
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 80,right: 5),
+                                                  child: Center(
+                                                    child: Text("  ",
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 90,right: 5),
+                                                  child: Center(
+                                                    child: Text("  ",
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
-
-                                        SizedBox(height: 0.8),
-                                        Container(
-                                          width: maxWidth,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.grey,),
-                                          ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 5,
-                                              bottom: 5,
-                                            ),
-                                            child: SizedBox(
-                                              height: 34,
-                                              child: Row(
+                                      ),
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: widget.data['items']!= null? widget.data['items'].length : items!= null? items.length : 0,
+                                        itemBuilder: (context, index) {
+                                          Map<String, dynamic> item = widget.data['items']!= null? widget.data['items'][index] : items[index];
+                                          return Table(
+                                            border: TableBorder.all(color: Colors.grey),
+                                            children: [
+                                              TableRow(
                                                 children: [
-                                                  Expanded(
-                                                    flex:1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "SN",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only( left: 10,
+                                                          right: 10,
+                                                          top: 15,
+                                                          bottom: 5),
+                                                      child: Center(child: Text('${index + 1}')),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(4.0),
                                                         ),
+                                                        child: Center(child: Text(item['productName'],textAlign: TextAlign.center,)),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Product Name',
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(4.0),
                                                         ),
+                                                        child: Center(child: Text(item['category'],textAlign: TextAlign.center,)),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Category",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(4.0),
                                                         ),
+                                                        child: Center(child: Text(item['subCategory'])),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Sub Category",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(4.0),
                                                         ),
+                                                        child: Center(child: Text(item['price'].toString())),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Price",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(4.0),
                                                         ),
+                                                        child: Center(child: Text(item['qty'].toString())),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "QTY",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 50,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(4.0),
                                                         ),
+                                                        child: Center(child: Text(calculateTotalAmount(item).toString())),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Total Amount",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 10, right: 10, top: 17, bottom: 5),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          _deleteProduct(index);
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.remove_circle_outline,
+                                                          size: 18,
+                                                          color: Colors.blue,
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(left: 80,right: 5),
-                                                    child: Center(
-                                                      child: Text("  ",
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(left: 90,right: 5),
-                                                    child: Center(
-                                                      child: Text("  ",
                                                       ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: widget.data['items']!= null? widget.data['items'].length : items!= null? items.length : 0,
-                                          itemBuilder: (context, index) {
-                                            Map<String, dynamic> item = widget.data['items']!= null? widget.data['items'][index] : items[index];
-                                            return Table(
-                                              border: TableBorder.all(color: Colors.grey),
-                                              children: [
-                                                TableRow(
-                                                  children: [
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only( left: 10,
-                                                            right: 10,
-                                                            top: 15,
-                                                            bottom: 5),
-                                                        child: Center(child: Text('${index + 1}')),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                        child: Container(
-                                                          height: 35,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.grey[300],
-                                                            borderRadius: BorderRadius.circular(4.0),
-                                                          ),
-                                                          child: Center(child: Text(item['productName'],textAlign: TextAlign.center,)),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                        child: Container(
-                                                          height: 35,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.grey[300],
-                                                            borderRadius: BorderRadius.circular(4.0),
-                                                          ),
-                                                          child: Center(child: Text(item['category'],textAlign: TextAlign.center,)),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                        child: Container(
-                                                          height: 35,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.grey[300],
-                                                            borderRadius: BorderRadius.circular(4.0),
-                                                          ),
-                                                          child: Center(child: Text(item['subCategory'])),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                        child: Container(
-                                                          height: 35,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.grey[300],
-                                                            borderRadius: BorderRadius.circular(4.0),
-                                                          ),
-                                                          child: Center(child: Text(item['price'].toString())),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                        child: Container(
-                                                          height: 35,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.grey[300],
-                                                            borderRadius: BorderRadius.circular(4.0),
-                                                          ),
-                                                          child: Center(child: Text(item['qty'].toString())),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                        child: Container(
-                                                          height: 35,
-                                                          width: 50,
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.grey[300],
-                                                            borderRadius: BorderRadius.circular(4.0),
-                                                          ),
-                                                          child: Center(child: Text(calculateTotalAmount(item).toString())),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TableCell(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10, right: 10, top: 17, bottom: 5),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            _deleteProduct(index);
-                                                          },
-                                                          child: const Icon(
-                                                            Icons.remove_circle_outline,
-                                                            size: 18,
-                                                            color: Colors.blue,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                            ],
+                                          );
+
+                                        },
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 30),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (context) => ProductPage123(selectedProducts: widget.data['items']),
+                                            //   ),
+                                            // );
+                                            // print('---selecteditem');
+                                            // print(selectedItems);
+                                            // selectedItems.forEach((item) {
+                                            //   print('productName: ${item['productName']}');
+                                            //   print('orderMasterItemId: ${item['orderMasterItemId']}');
+                                            //   print('category: ${item['category']}');
+                                            //   print('subCategory: ${item['subCategory']}');
+                                            //   print('price: ${item['price']}');
+                                            //   print('qty: ${item['qty']}');
+                                            //   print('totalAmount: ${item['totalAmount']}');
+                                            //   print('---'); // separator between items
+                                            // });
+                                            // Map<String, dynamic> data = {
+                                            //   'deliveryLocation': data2['deliveryLocation'],
+                                            //   'orderDate': CreatedDateController.text,
+                                            //   'orderId': orderIdController.text,
+                                            //   'contactPerson': contactPersonController.text,
+                                            //   'deliveryAddress': deliveryAddressController.text,
+                                            //   'contactNumber': contactNumberController.text,
+                                            //   'comments': commentsController.text,
+                                            //   'total': totalController.text,
+                                            //   'items': selectedItems.map((item) => {
+                                            //     'productName': item['productName'],
+                                            //     'orderMasterItemId': item['orderMasterItemId'],
+                                            //     'category': item['category'],
+                                            //     'subCategory': item['subCategory'],
+                                            //     'price': item['price'],
+                                            //     'qty': item['qty'],
+                                            //     'totalAmount': item['totalAmount'],
+                                            //   }).toList(),
+                                            // };
+                                            //temporary unnecessary usage
+                                            print('----data2 selectedprodct');
+                                            print(widget.data);
+                                            //  widget.data['contactPerson']= widget.data['contactPerson'] == ''? ContactPersonController.text : widget.data['contactPerson'];
+                                            widget.data['items'];
+                                            print('items');
+                                            print(widget.data['items']);
+                                            //  productList = widget.data['items'];
+                                            //   print(productList);
+                                            widget.data['contactPerson'] = _contactPersonController.text;
+                                            widget.data['deliveryAddress'] = _deliveryaddressController.text;
+                                            widget.data['contactNumber'] = _contactNumberController.text;
+                                            widget.data['comments'] = _commentsController.text;
+                                            //  widget.data['total'] = widget.data['total'].toString();
+
+
+
+
+
+
+                                            List<Product> productList = (widget.data['items'] as List)
+                                                .map((item) => Product.fromJson(item))
+                                                .toList();
+
+
+
+                                            //data2 = data;
+
+
+                                            print('updated productlist');
+                                            print(productList);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => NextPage(
+                                                  product: Product(prodId: '',price: 0,productName: '',proId: '',category: '',selectedVariation: '',selectedUOM: '',subCategory: '',totalamount: 0,total: 0,tax: '',quantity: 0,discount: '',imageId: '',unit: '', totalAmount: 0.0,qty: 0), // You need to pass a Product object here
+                                                  products: [], // You need to pass a list of Product objects here
+                                                  data: widget.data,
+                                                  selectedProducts: productList,
+
+                                                  // widget.data['items'].map<Order>((item) => Order(
+                                                  //   productName: item['productName'],
+                                                  //   category: item['category'],
+                                                  //   subCategory: item['subCategory'],
+                                                  //   price: item['price'],
+                                                  //   qty: item['qty'],
+                                                  //   tax: '',
+                                                  //   discount: '',
+                                                  //   selectedUOM: '',
+                                                  //   selectedVariation: '',
+                                                  //   quantity: 0,
+                                                  //   unit: '',
+                                                  //   prodId: '',
+                                                  //   proId: '',
+                                                  //   total: 0,
+                                                  //   totalamount: 0,
+                                                  //   imageId: '',
+                                                  //   totalAmount: item['totalAmount'],
+                                                  // )).toList(),
+                                                  inputText: 'hello',
+
+                                                  // You need to pass a string here
+                                                  subText: 'some_text', notselect: '', // You need to pass a string here
+                                                  //selectedproducts: [],
+                                                  // SelectedProducts: widget.data['items'].map<Order>((item) => Order(
+                                                  //    productName: item['productName'],
+                                                  //    category: item['category'],
+                                                  //    subCategory: item['subCategory'],
+                                                  //    price: item['price'],
+                                                  //    qty: item['qty'],
+                                                  //    tax: '',
+                                                  //    discount: '',
+                                                  //    selectedUOM: '',
+                                                  //    selectedVariation: '',
+                                                  //    quantity: 0,
+                                                  //    unit: '',
+                                                  //    prodId: '',
+                                                  //    proId: '',
+                                                  //    total: 0,
+                                                  //    totalamount: 0,
+                                                  //    imageId: '',
+                                                  //    totalAmount: item['totalAmount'],
+                                                  //  )).toList(),
+                                                  //  selectedproducts: [],
+                                                  //  selectedProducts: [],
                                                 ),
-                                              ],
+                                              ),
                                             );
-
                                           },
+                                          // icon: Icon(Icons.add,color: Colors.white,),
+                                          child: Text('+Add Products',style: TextStyle(color: Colors.white),),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5.0),
+                                            ),
+                                          ),
                                         ),
-                                        SizedBox(height: 8.0),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(
-                                              //     builder: (context) => ProductPage123(selectedProducts: widget.data['items']),
-                                              //   ),
-                                              // );
-                                              // print('---selecteditem');
-                                              // print(selectedItems);
-                                              // selectedItems.forEach((item) {
-                                              //   print('productName: ${item['productName']}');
-                                              //   print('orderMasterItemId: ${item['orderMasterItemId']}');
-                                              //   print('category: ${item['category']}');
-                                              //   print('subCategory: ${item['subCategory']}');
-                                              //   print('price: ${item['price']}');
-                                              //   print('qty: ${item['qty']}');
-                                              //   print('totalAmount: ${item['totalAmount']}');
-                                              //   print('---'); // separator between items
-                                              // });
-                                              Map<String, dynamic> data = {
-                                                'deliveryLocation': data2['deliveryLocation'],
-                                                'orderDate': CreatedDateController.text,
-                                                'orderId': orderIdController.text,
-                                                'contactPerson': contactPersonController.text,
-                                                'deliveryAddress': deliveryAddressController.text,
-                                                'contactNumber': contactNumberController.text,
-                                                'comments': commentsController.text,
-                                                'total': totalController.text,
-                                                'items': selectedItems.map((item) => {
-                                                  'productName': item['productName'],
-                                                  'orderMasterItemId': item['orderMasterItemId'],
-                                                  'category': item['category'],
-                                                  'subCategory': item['subCategory'],
-                                                  'price': item['price'],
-                                                  'qty': item['qty'],
-                                                  'totalAmount': item['totalAmount'],
-                                                }).toList(),
-                                              };
-                                              //temporary unnecessary usage
-                                              print('----data2 selectedprodct');
-                                              print(widget.data);
-                                              widget.data['items'];
-                                              print('items');
-                                              print(widget.data['items']);
-                                              //  productList = widget.data['items'];
-                                              //   print(productList);
-
-                                              List<Product> productList = (widget.data['items'] as List)
-                                                  .map((item) => Product.fromJson(item))
-                                                  .toList();
-                                              print('updated productlist');
-                                              print(productList);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => NextPage(
-                                                    product: Product(prodId: '',price: 0,productName: '',proId: '',category: '',selectedVariation: '',selectedUOM: '',subCategory: '',totalamount: 0,total: 0,tax: '',quantity: 0,discount: '',imageId: '',unit: '', totalAmount: 0.0,qty: 0), // You need to pass a Product object here
-                                                    products: [], // You need to pass a list of Product objects here
-                                                    data: widget.data,
-                                                    selectedProducts: productList,
-
-                                                    // widget.data['items'].map<Order>((item) => Order(
-                                                    //   productName: item['productName'],
-                                                    //   category: item['category'],
-                                                    //   subCategory: item['subCategory'],
-                                                    //   price: item['price'],
-                                                    //   qty: item['qty'],
-                                                    //   tax: '',
-                                                    //   discount: '',
-                                                    //   selectedUOM: '',
-                                                    //   selectedVariation: '',
-                                                    //   quantity: 0,
-                                                    //   unit: '',
-                                                    //   prodId: '',
-                                                    //   proId: '',
-                                                    //   total: 0,
-                                                    //   totalamount: 0,
-                                                    //   imageId: '',
-                                                    //   totalAmount: item['totalAmount'],
-                                                    // )).toList(),
-                                                    inputText: 'hello',
-
-                                                    // You need to pass a string here
-                                                    subText: 'some_text', notselect: '', // You need to pass a string here
-                                                    //selectedproducts: [],
-                                                    // SelectedProducts: widget.data['items'].map<Order>((item) => Order(
-                                                    //    productName: item['productName'],
-                                                    //    category: item['category'],
-                                                    //    subCategory: item['subCategory'],
-                                                    //    price: item['price'],
-                                                    //    qty: item['qty'],
-                                                    //    tax: '',
-                                                    //    discount: '',
-                                                    //    selectedUOM: '',
-                                                    //    selectedVariation: '',
-                                                    //    quantity: 0,
-                                                    //    unit: '',
-                                                    //    prodId: '',
-                                                    //    proId: '',
-                                                    //    total: 0,
-                                                    //    totalamount: 0,
-                                                    //    imageId: '',
-                                                    //    totalAmount: item['totalAmount'],
-                                                    //  )).toList(),
-                                                    //  selectedproducts: [],
-                                                    //  selectedProducts: [],
+                                      ),
+                                      Divider(color: Colors.grey,),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 25 ,top: 5,bottom: 5),
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Container(
+                                            height: 40,
+                                            padding: EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.blue),
+                                              borderRadius: BorderRadius.circular(3),
+                                              color: Colors.white,
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(bottom: 2),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  RichText(text:
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text:  'Total',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.blue
+                                                          // fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const TextSpan(
+                                                        text: '  ₹',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text:
+                                                        widget.data['total'].toString(),
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                            // icon: Icon(Icons.add,color: Colors.white,),
-                                            child: Text('+Add Products',style: TextStyle(color: Colors.white),),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
+                                                  )
+                                                ],
                                               ),
                                             ),
                                           ),
                                         ),
-                                        Divider(color: Colors.grey,),
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 100 ,top: 10,bottom: 7),
-                                          child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Container(
+                                      ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.only(top: 8,left: 750,bottom: 10),
+                                      //   child: Row(
+                                      //     children: [
+                                      //       SizedBox(width: 10), // add some space between the line and the text
+                                      //       SizedBox(
+                                      //         width: 220,
+                                      //         child: Container(
+                                      //           decoration: BoxDecoration(
+                                      //             border: Border.all(color: Colors.blue),
+                                      //           ),
+                                      //           child: Padding(
+                                      //             padding: const EdgeInsets.only(
+                                      //               top: 10,
+                                      //               bottom: 10,
+                                      //               left: 5,
+                                      //               right: 5,
+                                      //             ),
+                                      //             child: RichText(
+                                      //               text: TextSpan(
+                                      //                 children: [
+                                      //                   const TextSpan(
+                                      //                     text: '         ', // Add a space character
+                                      //                     style: TextStyle(
+                                      //                       fontSize: 10, // Set the font size to control the width of the gap
+                                      //                     ),
+                                      //                   ),
+                                      //                   const TextSpan(
+                                      //                     text: 'Total',
+                                      //                     style: TextStyle(
+                                      //                       fontWeight: FontWeight.bold,
+                                      //                       color: Colors.blue,
+                                      //                     ),
+                                      //                   ),
+                                      //                   const TextSpan(
+                                      //                     text: '             ', // Add a space character
+                                      //                     style: TextStyle(
+                                      //                       fontSize: 10, // Set the font size to control the width of the gap
+                                      //                     ),
+                                      //                   ),
+                                      //                   const TextSpan(
+                                      //                     text: '₹',
+                                      //                     style: TextStyle(
+                                      //                       color: Colors.black,
+                                      //                     ),
+                                      //                   ),
+                                      //                   TextSpan(
+                                      //                     text: widget.data['total'].toString(),
+                                      //                     // text: widget.data['total'].toStringAsFixed(2),
+                                      //                     style: const TextStyle(
+                                      //                       color: Colors.black,
+                                      //                     ),
+                                      //                   ),
+                                      //                 ],
+                                      //               ),
+                                      //             ),
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // )
 
-                                              padding: EdgeInsets.only(left: 30,right: 30,top: 20,bottom: 10),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: Colors.blue),
-                                                borderRadius: BorderRadius.circular(8.0),
-                                                color:  Colors.white,
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 5),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      'Total',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 16.0),
-                                                    Text(
-                                                      widget.data['total'].toString(),
-                                                      style: const TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        // Padding(
-                                        //   padding: const EdgeInsets.only(top: 8,left: 750,bottom: 10),
-                                        //   child: Row(
-                                        //     children: [
-                                        //       SizedBox(width: 10), // add some space between the line and the text
-                                        //       SizedBox(
-                                        //         width: 220,
-                                        //         child: Container(
-                                        //           decoration: BoxDecoration(
-                                        //             border: Border.all(color: Colors.blue),
-                                        //           ),
-                                        //           child: Padding(
-                                        //             padding: const EdgeInsets.only(
-                                        //               top: 10,
-                                        //               bottom: 10,
-                                        //               left: 5,
-                                        //               right: 5,
-                                        //             ),
-                                        //             child: RichText(
-                                        //               text: TextSpan(
-                                        //                 children: [
-                                        //                   const TextSpan(
-                                        //                     text: '         ', // Add a space character
-                                        //                     style: TextStyle(
-                                        //                       fontSize: 10, // Set the font size to control the width of the gap
-                                        //                     ),
-                                        //                   ),
-                                        //                   const TextSpan(
-                                        //                     text: 'Total',
-                                        //                     style: TextStyle(
-                                        //                       fontWeight: FontWeight.bold,
-                                        //                       color: Colors.blue,
-                                        //                     ),
-                                        //                   ),
-                                        //                   const TextSpan(
-                                        //                     text: '             ', // Add a space character
-                                        //                     style: TextStyle(
-                                        //                       fontSize: 10, // Set the font size to control the width of the gap
-                                        //                     ),
-                                        //                   ),
-                                        //                   const TextSpan(
-                                        //                     text: '₹',
-                                        //                     style: TextStyle(
-                                        //                       color: Colors.black,
-                                        //                     ),
-                                        //                   ),
-                                        //                   TextSpan(
-                                        //                     text: widget.data['total'].toString(),
-                                        //                     // text: widget.data['total'].toStringAsFixed(2),
-                                        //                     style: const TextStyle(
-                                        //                       color: Colors.black,
-                                        //                     ),
-                                        //                   ),
-                                        //                 ],
-                                        //               ),
-                                        //             ),
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //     ],
-                                        //   ),
-                                        // )
-
-                                      ],
-                                    ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
+                            // Row(
+                            //
+                            //   mainAxisAlignment: MainAxisAlignment.start,
+                            //
+                            //   children: [
+                            //
+                            //     Padding(
+                            //
+                            //       padding: const EdgeInsets.only(left: 350, top: 750,right: 20),
+                            //
+                            //       child: SizedBox(
+                            //
+                            //         width: 1200,
+                            //
+                            //         child: Card(
+                            //
+                            //           color: Colors.white,
+                            //
+                            //           child: Container(
+                            //
+                            //             decoration: BoxDecoration(
+                            //
+                            //               boxShadow: [
+                            //
+                            //                 BoxShadow(
+                            //
+                            //                   color: Colors.grey.withOpacity(0.5),
+                            //
+                            //                   spreadRadius: 2,
+                            //
+                            //                   blurRadius: 5,
+                            //
+                            //                   offset: const Offset(0, 3),
+                            //
+                            //                 ),
+                            //
+                            //               ],
+                            //
+                            //               color: Colors.white, // Container background color
+                            //
+                            //               borderRadius: BorderRadius.circular(2),
+                            //
+                            //             ),
+                            //
+                            //             child: Column(
+                            //
+                            //               mainAxisAlignment: MainAxisAlignment.start,
+                            //
+                            //               crossAxisAlignment: CrossAxisAlignment.start,
+                            //
+                            //               children: [
+                            //
+                            //                 const Padding(
+                            //
+                            //                   padding: EdgeInsets.only(left: 30, top: 10),
+                            //
+                            //                   child: Text(
+                            //
+                            //                     'Add Parts',
+                            //
+                            //                     style: TextStyle(
+                            //
+                            //                         fontSize: 20,
+                            //
+                            //                         fontWeight: FontWeight.bold,
+                            //
+                            //                         color: Colors.grey),
+                            //
+                            //                   ),
+                            //
+                            //                 ),
+                            //
+                            //                 SizedBox(height: 10,),
+                            //
+                            //                 DataTable(
+                            //
+                            //                     columns: [
+                            //
+                            //                       DataColumn(label: Text('SN')),
+                            //
+                            //                       DataColumn(label: Text('Product Name')),
+                            //
+                            //                       DataColumn(label: Text('Category')),
+                            //
+                            //                       DataColumn(label: Text('Subcategory')),
+                            //
+                            //                       DataColumn(label: Text('Price')),
+                            //
+                            //                       DataColumn(label: Text('Quantity')),
+                            //
+                            //                       DataColumn(label: Text('Total Amount')),
+                            //
+                            //                       DataColumn(label: Text('       ')),
+                            //
+                            //                     ],
+                            //
+                            //
+                            //
+                            //                     rows:
+                            //                     widget.data['items']!= null
+                            //                         ?
+                            //                     List.generate(
+                            //                       widget.data['items'].length,
+                            //                           (index) {
+                            //                         Map<String, dynamic> item = widget.data['items'][index];
+                            //                         return DataRow(
+                            //                           cells: [
+                            //                             DataCell(Text('Item ${index + 1}')),
+                            //                             DataCell(Text(item['productName'])),
+                            //                             DataCell(Text(item['category'])),
+                            //                             DataCell(Text(item['subCategory'])),
+                            //                             DataCell(Text(item['price'].toString())),
+                            //                             DataCell(Text(item['qty'].toString())),
+                            //                             DataCell(Text(item['totalAmount'].toString())),
+                            //                             DataCell(InkWell(
+                            //                               onTap: (){
+                            //                                 _deleteProduct(index);
+                            //                               },
+                            //                               child: const Icon(
+                            //                                 Icons.remove_circle_outline,
+                            //                                 size: 18,
+                            //                                 color: Colors.blue,
+                            //                               ),
+                            //                             )),
+                            //                           ],
+                            //                         );
+                            //                       },
+                            //                     )
+                            //                         : items != null
+                            //                         ? List.generate(
+                            //                       widget.data['items'].length,
+                            //                           (index) {
+                            //                         Map<String, dynamic> item = widget.data['items'][index];
+                            //                         return DataRow(
+                            //                           cells: [
+                            //                             DataCell(Text('Item ${index + 1}')),
+                            //                             DataCell(Text(item['productName'])),
+                            //                             DataCell(Text(item['category'])),
+                            //                             DataCell(Text(item['subCategory'])),
+                            //                             DataCell(Text(item['price'].toString())),
+                            //                             DataCell(Text(item['qty'].toString())),
+                            //                             DataCell(Text(item['totalAmount'].toString())),
+                            //                             DataCell(InkWell(
+                            //                               onTap: (){
+                            //                                 _deleteProduct(index);
+                            //                               },
+                            //                               child: const Icon(
+                            //                                 Icons.remove_circle_outline,
+                            //                                 size: 18,
+                            //                                 color: Colors.blue,
+                            //                               ),
+                            //                             )),
+                            //                           ],
+                            //                         );
+                            //                       },
+                            //                     )
+                            //
+                            //                         :List.generate(
+                            //                       items.length,
+                            //                           (index) {
+                            //                         Map<String, dynamic> item = items[index];
+                            //                         return DataRow(
+                            //                           cells: [
+                            //                             DataCell(Text('Item ${index + 1}')),
+                            //                             DataCell(Text(item['productName'])),
+                            //                             DataCell(Text(item['category'])),
+                            //                             DataCell(Text(item['subCategory'])),
+                            //                             DataCell(Text(item['price'].toString())),
+                            //                             DataCell(Text(item['qty'].toString())),
+                            //                             DataCell(Text(item['totalAmount'].toString())),
+                            //                             DataCell(InkWell(
+                            //                               onTap: () {
+                            //                                 _deleteProduct(index);
+                            //                               },
+                            //                               child: const Icon(
+                            //                                 Icons.remove_circle_outline,
+                            //                                 size: 18,
+                            //                                 color: Colors.blue,
+                            //                               ),
+                            //                             )),
+                            //                           ],
+                            //                         );
+                            //                       },
+                            //                     )
+                            //
+                            //                 ),
+                            //
+                            //
+                            //
+                            //
+                            //                 Padding(
+                            //
+                            //                   padding: const EdgeInsets.only(top: 10,),
+                            //
+                            //                   child: Container(
+                            //
+                            //                     // Space above/below the border
+                            //
+                            //                       height: 2, // Border height
+                            //
+                            //                       color: Colors.grey// Border color
+                            //
+                            //                   ),
+                            //
+                            //                 ),
+                            //
+                            //                 Padding(
+                            //
+                            //                   padding: const EdgeInsets.only(top: 8,left: 850,bottom: 10),
+                            //
+                            //                   child: Row(
+                            //
+                            //                     children: [
+                            //
+                            //                       SizedBox(width: 10), // add some space between the line and the text
+                            //
+                            //                       SizedBox(
+                            //
+                            //                         width: 220,
+                            //
+                            //                         child: Container(
+                            //
+                            //                           decoration: BoxDecoration(
+                            //
+                            //                             border: Border.all(color: Colors.blue),
+                            //
+                            //                           ),
+                            //
+                            //                           child: Padding(
+                            //
+                            //                             padding: const EdgeInsets.only(
+                            //
+                            //                               top: 10,
+                            //
+                            //                               bottom: 10,
+                            //
+                            //                               left: 5,
+                            //
+                            //                               right: 5,
+                            //
+                            //                             ),
+                            //
+                            //                             child: RichText(
+                            //
+                            //                               text: TextSpan(
+                            //
+                            //                                 children: [
+                            //
+                            //                                   const TextSpan(
+                            //
+                            //                                     text: '         ', // Add a space character
+                            //
+                            //                                     style: TextStyle(
+                            //
+                            //                                       fontSize: 10, // Set the font size to control the width of the gap
+                            //
+                            //                                     ),
+                            //
+                            //                                   ),
+                            //
+                            //                                   const TextSpan(
+                            //
+                            //                                     text: 'Total',
+                            //
+                            //                                     style: TextStyle(
+                            //
+                            //                                       fontWeight: FontWeight.bold,
+                            //
+                            //                                       color: Colors.blue,
+                            //
+                            //                                     ),
+                            //
+                            //                                   ),
+                            //
+                            //                                   const TextSpan(
+                            //
+                            //                                     text: '             ', // Add a space character
+                            //
+                            //                                     style: TextStyle(
+                            //
+                            //                                       fontSize: 10, // Set the font size to control the width of the gap
+                            //
+                            //                                     ),
+                            //
+                            //                                   ),
+                            //
+                            //                                   const TextSpan(
+                            //
+                            //                                     text: '₹',
+                            //
+                            //                                     style: TextStyle(
+                            //
+                            //                                       color: Colors.black,
+                            //
+                            //                                     ),
+                            //
+                            //                                   ),
+                            //
+                            //                                   TextSpan(
+                            //
+                            //                                     text: widget.data['total'],
+                            //
+                            //                                     style: const TextStyle(
+                            //
+                            //                                       color: Colors.black,
+                            //
+                            //                                     ),
+                            //
+                            //                                   )],
+                            //
+                            //                               ),
+                            //
+                            //                             ),
+                            //
+                            //                           ),
+                            //
+                            //                         ),
+                            //
+                            //                       ),
+                            //
+                            //                     ],
+                            //
+                            //                   ),
+                            //
+                            //                 )
+                            //
+                            //               ],
+                            //
+                            //             ),
+                            //
+                            //           ),
+                            //
+                            //         ),
+                            //
+                            //       ),
+                            //
+                            //     ),
+                            //
+                            //   ],
+                            //
+                            // ),
                           ],
                         ),
                       ),
+                    )
 
-
-                      // Row(
-                      //
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //
-                      //   children: [
-                      //
-                      //     Padding(
-                      //
-                      //       padding: const EdgeInsets.only(left: 350, top: 750,right: 20),
-                      //
-                      //       child: SizedBox(
-                      //
-                      //         width: 1200,
-                      //
-                      //         child: Card(
-                      //
-                      //           color: Colors.white,
-                      //
-                      //           child: Container(
-                      //
-                      //             decoration: BoxDecoration(
-                      //
-                      //               boxShadow: [
-                      //
-                      //                 BoxShadow(
-                      //
-                      //                   color: Colors.grey.withOpacity(0.5),
-                      //
-                      //                   spreadRadius: 2,
-                      //
-                      //                   blurRadius: 5,
-                      //
-                      //                   offset: const Offset(0, 3),
-                      //
-                      //                 ),
-                      //
-                      //               ],
-                      //
-                      //               color: Colors.white, // Container background color
-                      //
-                      //               borderRadius: BorderRadius.circular(2),
-                      //
-                      //             ),
-                      //
-                      //             child: Column(
-                      //
-                      //               mainAxisAlignment: MainAxisAlignment.start,
-                      //
-                      //               crossAxisAlignment: CrossAxisAlignment.start,
-                      //
-                      //               children: [
-                      //
-                      //                 const Padding(
-                      //
-                      //                   padding: EdgeInsets.only(left: 30, top: 10),
-                      //
-                      //                   child: Text(
-                      //
-                      //                     'Add Parts',
-                      //
-                      //                     style: TextStyle(
-                      //
-                      //                         fontSize: 20,
-                      //
-                      //                         fontWeight: FontWeight.bold,
-                      //
-                      //                         color: Colors.grey),
-                      //
-                      //                   ),
-                      //
-                      //                 ),
-                      //
-                      //                 SizedBox(height: 10,),
-                      //
-                      //                 DataTable(
-                      //
-                      //                     columns: [
-                      //
-                      //                       DataColumn(label: Text('SN')),
-                      //
-                      //                       DataColumn(label: Text('Product Name')),
-                      //
-                      //                       DataColumn(label: Text('Category')),
-                      //
-                      //                       DataColumn(label: Text('Subcategory')),
-                      //
-                      //                       DataColumn(label: Text('Price')),
-                      //
-                      //                       DataColumn(label: Text('Quantity')),
-                      //
-                      //                       DataColumn(label: Text('Total Amount')),
-                      //
-                      //                       DataColumn(label: Text('       ')),
-                      //
-                      //                     ],
-                      //
-                      //
-                      //
-                      //                     rows:
-                      //                     widget.data['items']!= null
-                      //                         ?
-                      //                     List.generate(
-                      //                       widget.data['items'].length,
-                      //                           (index) {
-                      //                         Map<String, dynamic> item = widget.data['items'][index];
-                      //                         return DataRow(
-                      //                           cells: [
-                      //                             DataCell(Text('Item ${index + 1}')),
-                      //                             DataCell(Text(item['productName'])),
-                      //                             DataCell(Text(item['category'])),
-                      //                             DataCell(Text(item['subCategory'])),
-                      //                             DataCell(Text(item['price'].toString())),
-                      //                             DataCell(Text(item['qty'].toString())),
-                      //                             DataCell(Text(item['totalAmount'].toString())),
-                      //                             DataCell(InkWell(
-                      //                               onTap: (){
-                      //                                 _deleteProduct(index);
-                      //                               },
-                      //                               child: const Icon(
-                      //                                 Icons.remove_circle_outline,
-                      //                                 size: 18,
-                      //                                 color: Colors.blue,
-                      //                               ),
-                      //                             )),
-                      //                           ],
-                      //                         );
-                      //                       },
-                      //                     )
-                      //                         : items != null
-                      //                         ? List.generate(
-                      //                       widget.data['items'].length,
-                      //                           (index) {
-                      //                         Map<String, dynamic> item = widget.data['items'][index];
-                      //                         return DataRow(
-                      //                           cells: [
-                      //                             DataCell(Text('Item ${index + 1}')),
-                      //                             DataCell(Text(item['productName'])),
-                      //                             DataCell(Text(item['category'])),
-                      //                             DataCell(Text(item['subCategory'])),
-                      //                             DataCell(Text(item['price'].toString())),
-                      //                             DataCell(Text(item['qty'].toString())),
-                      //                             DataCell(Text(item['totalAmount'].toString())),
-                      //                             DataCell(InkWell(
-                      //                               onTap: (){
-                      //                                 _deleteProduct(index);
-                      //                               },
-                      //                               child: const Icon(
-                      //                                 Icons.remove_circle_outline,
-                      //                                 size: 18,
-                      //                                 color: Colors.blue,
-                      //                               ),
-                      //                             )),
-                      //                           ],
-                      //                         );
-                      //                       },
-                      //                     )
-                      //
-                      //                         :List.generate(
-                      //                       items.length,
-                      //                           (index) {
-                      //                         Map<String, dynamic> item = items[index];
-                      //                         return DataRow(
-                      //                           cells: [
-                      //                             DataCell(Text('Item ${index + 1}')),
-                      //                             DataCell(Text(item['productName'])),
-                      //                             DataCell(Text(item['category'])),
-                      //                             DataCell(Text(item['subCategory'])),
-                      //                             DataCell(Text(item['price'].toString())),
-                      //                             DataCell(Text(item['qty'].toString())),
-                      //                             DataCell(Text(item['totalAmount'].toString())),
-                      //                             DataCell(InkWell(
-                      //                               onTap: () {
-                      //                                 _deleteProduct(index);
-                      //                               },
-                      //                               child: const Icon(
-                      //                                 Icons.remove_circle_outline,
-                      //                                 size: 18,
-                      //                                 color: Colors.blue,
-                      //                               ),
-                      //                             )),
-                      //                           ],
-                      //                         );
-                      //                       },
-                      //                     )
-                      //
-                      //                 ),
-                      //
-                      //
-                      //
-                      //
-                      //                 Padding(
-                      //
-                      //                   padding: const EdgeInsets.only(top: 10,),
-                      //
-                      //                   child: Container(
-                      //
-                      //                     // Space above/below the border
-                      //
-                      //                       height: 2, // Border height
-                      //
-                      //                       color: Colors.grey// Border color
-                      //
-                      //                   ),
-                      //
-                      //                 ),
-                      //
-                      //                 Padding(
-                      //
-                      //                   padding: const EdgeInsets.only(top: 8,left: 850,bottom: 10),
-                      //
-                      //                   child: Row(
-                      //
-                      //                     children: [
-                      //
-                      //                       SizedBox(width: 10), // add some space between the line and the text
-                      //
-                      //                       SizedBox(
-                      //
-                      //                         width: 220,
-                      //
-                      //                         child: Container(
-                      //
-                      //                           decoration: BoxDecoration(
-                      //
-                      //                             border: Border.all(color: Colors.blue),
-                      //
-                      //                           ),
-                      //
-                      //                           child: Padding(
-                      //
-                      //                             padding: const EdgeInsets.only(
-                      //
-                      //                               top: 10,
-                      //
-                      //                               bottom: 10,
-                      //
-                      //                               left: 5,
-                      //
-                      //                               right: 5,
-                      //
-                      //                             ),
-                      //
-                      //                             child: RichText(
-                      //
-                      //                               text: TextSpan(
-                      //
-                      //                                 children: [
-                      //
-                      //                                   const TextSpan(
-                      //
-                      //                                     text: '         ', // Add a space character
-                      //
-                      //                                     style: TextStyle(
-                      //
-                      //                                       fontSize: 10, // Set the font size to control the width of the gap
-                      //
-                      //                                     ),
-                      //
-                      //                                   ),
-                      //
-                      //                                   const TextSpan(
-                      //
-                      //                                     text: 'Total',
-                      //
-                      //                                     style: TextStyle(
-                      //
-                      //                                       fontWeight: FontWeight.bold,
-                      //
-                      //                                       color: Colors.blue,
-                      //
-                      //                                     ),
-                      //
-                      //                                   ),
-                      //
-                      //                                   const TextSpan(
-                      //
-                      //                                     text: '             ', // Add a space character
-                      //
-                      //                                     style: TextStyle(
-                      //
-                      //                                       fontSize: 10, // Set the font size to control the width of the gap
-                      //
-                      //                                     ),
-                      //
-                      //                                   ),
-                      //
-                      //                                   const TextSpan(
-                      //
-                      //                                     text: '₹',
-                      //
-                      //                                     style: TextStyle(
-                      //
-                      //                                       color: Colors.black,
-                      //
-                      //                                     ),
-                      //
-                      //                                   ),
-                      //
-                      //                                   TextSpan(
-                      //
-                      //                                     text: widget.data['total'],
-                      //
-                      //                                     style: const TextStyle(
-                      //
-                      //                                       color: Colors.black,
-                      //
-                      //                                     ),
-                      //
-                      //                                   )],
-                      //
-                      //                               ),
-                      //
-                      //                             ),
-                      //
-                      //                           ),
-                      //
-                      //                         ),
-                      //
-                      //                       ),
-                      //
-                      //                     ],
-                      //
-                      //                   ),
-                      //
-                      //                 )
-                      //
-                      //               ],
-                      //
-                      //             ),
-                      //
-                      //           ),
-                      //
-                      //         ),
-                      //
-                      //       ),
-                      //
-                      //     ),
-                      //
-                      //   ],
-                      //
-                      // ),
-                    ],
-                  ),
+                  ],
                 );
               }
           )

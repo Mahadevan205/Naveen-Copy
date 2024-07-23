@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:btb/sprint%202%20order/secondpage.dart';
 import 'package:btb/thirdpage/productclass.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../fourthpage/orderspage order.dart';
+import '../screen/login.dart';
 import '../thirdpage/dashboard.dart';
 import 'firstpage.dart';
 import 'fourthpage.dart';
@@ -83,7 +85,7 @@ class OrderPage3State extends State<OrderPage3> {
           if (mounted) {
             setState(() {
               if (currentPage == 1) {
-                productList = products.take(5).toList();
+                productList = products.take(10).toList();
               } else {
                 productList.addAll(products);
               }
@@ -166,12 +168,47 @@ class OrderPage3State extends State<OrderPage3> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: IconButton(
-                  icon: const Icon(Icons.account_circle),
-                  onPressed: () {
-                    // Handle user icon press
-                  },
+                padding: const EdgeInsets.only(top: 7),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 35),
+                    child: PopupMenuButton<String>(
+                      icon: const Icon(Icons.account_circle),
+                      onSelected: (value) {
+                        if (value == 'logout') {
+                          context.go('/');
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                              const LoginScr(
+                              ),
+                              transitionDuration:
+                              const Duration(milliseconds: 200),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem<String>(
+                            value: 'logout',
+                            child: Text('Logout'),
+                          ),
+                        ];
+                      },
+                      offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -230,78 +267,81 @@ class OrderPage3State extends State<OrderPage3> {
                     Padding(
                       padding: const EdgeInsets.only(left: 150,right: 120),
                       child:  Padding(
-                        padding: const EdgeInsets.only(top: 150,bottom: 50,left: 150),
-                        child: Container(
-                          height: 500,
-                          width: maxWidth,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: maxWidth,
-                                padding: const EdgeInsets.all(16.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade900,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(8.0),
-                                    topRight: Radius.circular(8.0),
-                                  ),
+                        padding: const EdgeInsets.only(top: 120,bottom: 50,left: 150),
+                        child: SingleChildScrollView(
+                          child: Container(
+                            height: 635,
+                            width: maxWidth,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
                                 ),
-                                child:const Padding(
-                                  padding: EdgeInsets.only(left: 30),
-                                  child: Text(
-                                    'Search Products',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: maxWidth,
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade900,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(8.0),
+                                      topRight: Radius.circular(8.0),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 800,left: 30,top: 20,bottom: 20),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(4.0),
-                                  ),
-                                  child:  SizedBox(
-                                    height: 40,
-                                    width: maxWidth * 0.2,
-                                    child:  TextField(
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.search),
-                                        hintText: 'Search for products',
-                                        contentPadding:  EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 8),
-                                        border: InputBorder.none,
+                                  child:const Padding(
+                                    padding: EdgeInsets.only(left: 30),
+                                    child: Text(
+                                      'Search Products',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                                  child:
-                                  buildDataTable(),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 800,left: 30,top: 20,bottom: 20),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                    child:  SizedBox(
+                                      height: 40,
+                                      width: maxWidth * 0.2,
+                                      child:  TextField(
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.search),
+                                          hintText: 'Search for products',
+                                          contentPadding:  EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 8),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                                    child:
+                                    buildDataTable(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -356,12 +396,9 @@ class OrderPage3State extends State<OrderPage3> {
                 height: 20,
                 child: Row(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 50,
-                        right: 60,
-                      ),
-                      child: Center(
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 45,right: 50),
                         child: Text(
                           'Product Name',
                           style: TextStyle(
@@ -370,12 +407,9 @@ class OrderPage3State extends State<OrderPage3> {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 45,
-                        right: 55,
-                      ),
-                      child: Center(
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left:75,right: 45),
                         child: Text(
                           "Category",
                           style: TextStyle(
@@ -384,12 +418,9 @@ class OrderPage3State extends State<OrderPage3> {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 47,
-                        right: 55,
-                      ),
-                      child: Center(
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 55,right: 60),
                         child: Text(
                           "Sub Category",
                           style: TextStyle(
@@ -398,12 +429,9 @@ class OrderPage3State extends State<OrderPage3> {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 60,
-                        right: 40,
-                      ),
-                      child: Center(
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 85,right: 25),
                         child: Text(
                           "Price",
                           style: TextStyle(
@@ -412,26 +440,19 @@ class OrderPage3State extends State<OrderPage3> {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 120,
-                        right: 45,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "QTY",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                    const Expanded(
+                      child: Padding(
+                      padding: EdgeInsets.only(left: 95,right: 0),
+                      child: Text(
+                        "QTY",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 70,
-                        right: 30,
-                      ),
-                      child: Center(
+                    ),),
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 75,right: 25),
                         child: Text(
                           "Total Amount",
                           style: TextStyle(
@@ -440,8 +461,11 @@ class OrderPage3State extends State<OrderPage3> {
                         ),
                       ),
                     ),
-                    Center(
-                      child: Text("  ",
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10,right: 10),
+                        child: Text("  ",
+                        ),
                       ),
                     ),
                   ],
@@ -472,7 +496,7 @@ class OrderPage3State extends State<OrderPage3> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Center(
@@ -493,7 +517,7 @@ class OrderPage3State extends State<OrderPage3> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Center(
@@ -516,7 +540,7 @@ class OrderPage3State extends State<OrderPage3> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Center(
@@ -539,7 +563,7 @@ class OrderPage3State extends State<OrderPage3> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Center(
@@ -562,7 +586,7 @@ class OrderPage3State extends State<OrderPage3> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Center(
@@ -599,7 +623,7 @@ class OrderPage3State extends State<OrderPage3> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: Colors.grey.shade200,
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Center(
@@ -692,7 +716,7 @@ class OrderPage3State extends State<OrderPage3> {
                                         subText: '', products: const [], notselect: '',
                                       ),
                                   settings: RouteSettings(
-                                    name: '/dasbaord/Orderspage/addproduct/addparts/addbutton:data',
+                                    name: '/Order_List/Product_List/Add_Products',
                                     arguments: {
                                       'product': Product,
                                       'data': data1,

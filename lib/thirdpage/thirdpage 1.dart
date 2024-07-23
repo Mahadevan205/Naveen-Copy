@@ -411,15 +411,45 @@ class _ProductForm1State extends State<ProductForm1> {
             const SizedBox(width: 10,),
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: Align(
+              child:
+              Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 35),
-                  child: IconButton(
+                  child: PopupMenuButton<String>(
                     icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // Handle user icon press
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        context.go('/');
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                            const LoginScr(
+                            ),
+                            transitionDuration:
+                            const Duration(milliseconds: 200),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'logout',
+                          child: Text('Logout'),
+                        ),
+                      ];
+                    },
+                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -559,7 +589,7 @@ class _ProductForm1State extends State<ProductForm1> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(
-                      top: 70,
+                      top: 60,
                       left: 200,
                     ),
                     width: maxWidth *0.15,
@@ -576,7 +606,7 @@ class _ProductForm1State extends State<ProductForm1> {
                           width: 60,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                left: 15, right: 15, bottom: 15),
+                                left: 15, right: 15, bottom: 5),
                             child: TextFormField(
                               decoration: const InputDecoration(
                                 hintText: 'Search product',
@@ -602,7 +632,7 @@ class _ProductForm1State extends State<ProductForm1> {
                           height: 5,
                         ),
                         Container(
-                          height: maxHeight * 0.7,
+                          height: maxHeight * 0.85,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -882,6 +912,17 @@ class _ProductForm1State extends State<ProductForm1> {
                           vertical: 10), // Space above/below the border
                       height: 3, // Border height
                       color: Colors.grey[100], // Border color
+                    ),
+                  ),
+                  Padding(
+                    padding:  EdgeInsets.only(top: 0, left: maxWidth * 0.25),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 10), // Space above/below the border
+                      height: constraints.maxHeight,
+                      // width: 1500,
+                      width: 2,// Border height
+                      color: Colors.grey[300], // Border color
                     ),
                   ),
                 ],

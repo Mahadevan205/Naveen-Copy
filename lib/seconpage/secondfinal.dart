@@ -373,6 +373,7 @@ class _SecondPageState extends State<SecondPage> {
                     icon: const Icon(Icons.account_circle),
                     onSelected: (value) {
                       if (value == 'logout') {
+                        context.go('/');
                         Navigator.push(
                           context,
                           PageRouteBuilder(

@@ -807,9 +807,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../fourthpage/orderspage order.dart';
 import '../sprint 2 order/thirdpage.dart';
 import '../thirdpage/dashboard.dart';
@@ -844,17 +844,37 @@ class CreateOrderPage extends StatefulWidget {
 
 class _CreateOrderPageState extends State<CreateOrderPage> {
 
+  final List<String> list = ['  Name 1', '  Name 2', '  Name3'];
+  String? _selectedDeliveryLocation;
+  late TextEditingController _dateController;
+  // String? _selectedDeliveryLocation;
+  final deliveryLocationController = TextEditingController();
+  final ContactPersonController = TextEditingController();
+  final deliveryaddressController = TextEditingController();
+  final ContactNumberController = TextEditingController();
+  final CommentsController = TextEditingController();
+  DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _dateController = TextEditingController();
+
+    _selectedDate = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+    _dateController.text = formattedDate;
+    print('date init');
+    print(_dateController.text);
+   // _selectedDate = _dateController.text as DateTime?;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    final List<String> list = ['  Name 1', '  Name 2', '  Name3'];
-    String? _selectedDeliveryLocation;
-    // String? _selectedDeliveryLocation;
-    final deliveryLocationController = TextEditingController();
-    final ContactPersonController = TextEditingController();
-    final deliveryaddressController = TextEditingController();
-    final ContactNumberController = TextEditingController();
-    final CommentsController = TextEditingController();
-    DateTime? _selectedDate;
+
+
 
 
 
@@ -865,6 +885,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
         double screenWidth = MediaQuery.of(context).size.width;
         double screenHeight = MediaQuery.of(context).size.height;
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar:
           AppBar(
             backgroundColor: const Color(0xFFFFFFFF),
@@ -897,6 +918,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                       icon: const Icon(Icons.account_circle),
                       onSelected: (value) {
                         if (value == 'logout') {
+                          context.go('/');
                           Navigator.push(
                             context,
                             PageRouteBuilder(
@@ -936,12 +958,12 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
             builder: (context, constraints){
               double maxHeight = constraints.maxHeight;
               double maxWidth = constraints.maxWidth;
-              return Row(
-                //crossAxisAlignment: CrossAxisAlignment.start,
+              return Stack(
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
                     child: Container(
+                      height: 984,
                       width: 200,
                       color: const Color(0xFFF7F6FA),
                       padding: const EdgeInsets.only(left: 20, top: 20),
@@ -959,7 +981,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) =>
                                   const Dashboard(
-
+              
                                   ),
                                   transitionDuration:
                                   const Duration(milliseconds: 200),
@@ -972,7 +994,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   },
                                 ),
                               );
-
+              
                               // Navigator.pushReplacementNamed(
                               //     context, PageName.dashboardRoute);
                               // context
@@ -1273,447 +1295,540 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                   //     ),
                   //   ),
                   // ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                color: Colors.white,
-                                height: 60,
-                                child: Row(
-                                  children: [
-                                    IconButton(
-                                      icon:
-                                      const Icon(Icons.arrow_back), // Back button icon
-                                      onPressed: () {
-                                        context.go(
-                                            '/dasbaord/Orderspage/placeorder/arrowback');
-                                        //  Navigator.push(
-                                        //      context,
-                                        //     MaterialPageRoute(
-                                        //       builder: (context) => NextPage(product: , data: data2, inputText: '', subText: '')),
-                                        // );
-                                      },
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 30),
-                                      child: Text(
-                                        'Create Order',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 0),
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 2), // Space above/below the border
-                              height: 2,
-                              // width: 1000,
-                              width: 1900,// Border height
-                              color: Colors.grey[300], // Border color
-                            ),
-                          ),
-                          Container(
-                            width: screenWidth,
-                            child: Column(
+                  Positioned(
+                    left: 200,
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: 
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            color: Colors.white,
+                            height: 60,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding:  EdgeInsets.only(left: maxWidth* 0.45,top: 50,right: 120),
-                                  child: Text((' Order Date')),
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: IconButton(
+                                    icon:
+                                    const Icon(Icons.arrow_back), // Back button icon
+                                    onPressed: () {
+                                      context.go(
+                                          '/Order_List');
+                                      //  Navigator.push(
+                                      //      context,
+                                      //     MaterialPageRoute(
+                                      //       builder: (context) => NextPage(product: , data: data2, inputText: '', subText: '')),
+                                      // );
+                                    },
+                                  ),
                                 ),
-                                Padding(
-                                  padding:  EdgeInsets.only(left: maxWidth * 0.65
-                                    , top:10,),
-                                  child: DecoratedBox(
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 30,top: 12),
+                                  child: Text(
+                                    'Create Order',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 0,top: 0),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 1), // Space above/below the border
+                            height: 2,
+                            // width: 1000,
+                            width: 1900,// Border height
+                            color: Colors.grey[300], // Border color
+                          ),
+                        ),
+                        Container(
+                          width: screenWidth,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:  EdgeInsets.only(left: maxWidth* 0.64,top: 50,right: 120),
+                                child: const Text((' Order Date')),
+                              ),
+                              Padding(
+                                padding:  EdgeInsets.only(left: maxWidth * 0.65
+                                  , top:10,),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color(0xFFEBF3FF), width: 1),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF418CFC)
+                                            .withOpacity(0.16), // 0.2 * 0.8 = 0.16
+                                        spreadRadius: 0,
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Container(
+                                    height: 39,
+                                    width: maxWidth *0.13,
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: const Color(0xFFEBF3FF), width: 1),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(0xFF418CFC)
-                                              .withOpacity(0.16), // 0.2 * 0.8 = 0.16
-                                          spreadRadius: 0,
-                                          blurRadius: 6,
-                                          offset: const Offset(0, 3),
+                                      color: Colors.white
+                                          .withOpacity(1), // Opacity is 1, fully opaque
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: _dateController,
+                                            // Replace with your TextEditingController
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              suffixIcon: Padding(
+                                                padding: const EdgeInsets.only(right: 20),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 2, left: 10),
+                                                  child: IconButton(
+                                                    icon: const Padding(
+                                                      padding: EdgeInsets.only(bottom: 16),
+                                                      child: Icon(Icons.calendar_month),
+                                                    ),
+                                                    iconSize: 20,
+                                                    onPressed: () {
+                                                      // _showDatePicker(context);
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              hintText: '        Select Date',
+                                              fillColor: Colors.white,
+                                              contentPadding: const EdgeInsets.symmetric(
+                                                  horizontal: 8, vertical: 8),
+                                              border: InputBorder.none,
+                                              filled: true,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    child: Container(
-                                      height: 39,
-                                      width: maxWidth *0.13,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white
-                                            .withOpacity(1), // Opacity is 1, fully opaque
-                                        borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                              ),
+                              // SizedBox(height: 20.h),
+                              Padding(
+                                padding:  EdgeInsets.only(left: 50,top: 50, right: 100),
+                                child: Container(
+                                  height:  380,
+                                  width: 2100.w,
+                                  padding: EdgeInsets.all(2.w),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey,width: 2),
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child:  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:  EdgeInsets.only(left: 30.w,top: 10.h),
+                                        child: Text(
+                                          'Delivery Location',
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                      child: Column(
+                                      const Divider(color: Colors.grey),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Expanded(
-                                            child: TextFormField(
-                                              // controller: _dateController,
-                                              // Replace with your TextEditingController
-                                              readOnly: true,
-                                              decoration: InputDecoration(
-                                                suffixIcon: Padding(
-                                                  padding: const EdgeInsets.only(right: 20),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        top: 2, left: 10),
-                                                    child: IconButton(
-                                                      icon: const Padding(
-                                                        padding: EdgeInsets.only(bottom: 16),
-                                                        child: Icon(Icons.calendar_month),
-                                                      ),
-                                                      iconSize: 20,
-                                                      onPressed: () {
-                                                        // _showDatePicker(context);
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                hintText: '        Select Date',
-                                                fillColor: Colors.white,
-                                                contentPadding: const EdgeInsets.symmetric(
-                                                    horizontal: 8, vertical: 8),
-                                                border: InputBorder.none,
-                                                filled: true,
+                                          Padding(
+                                            padding:  EdgeInsets.only(left: 30.w,bottom: 5.h),
+                                            child: Text(
+                                              'Address',
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                right:400.w),
+                                            child: Text(
+                                              'Comments',
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                // SizedBox(height: 20.h),
-                                Padding(
-                                  padding:  EdgeInsets.only(left: 50,top: 50, right: 100),
-                                  child: Container(
-                                    height:  380,
-                                    width: 2100.w,
-                                    padding: EdgeInsets.all(2.w),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey,width: 2),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child:  Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:  EdgeInsets.only(left: 30.w,top: 10.h),
-                                          child: Text(
-                                            'Delivery Location',
-                                            style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        const Divider(color: Colors.grey),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Padding(
-                                              padding:  EdgeInsets.only(left: 30.w,bottom: 5.h),
-                                              child: Text(
-                                                'Address',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold,
+                                      const Divider(
+                                        color: Colors.grey,
+                                        thickness: 1.0,
+                                        height: 1.0,
+                                      ),
+                                      SizedBox(height: 5.h),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:  EdgeInsets.only(left: 30.w),
+                                                  child: Text('Select Delivery Location'),
                                                 ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  right:400.w),
-                                              child: Text(
-                                                'Comments',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const Divider(
-                                          color: Colors.grey,
-                                          thickness: 1.0,
-                                          height: 1.0,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              flex: 3,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding:  EdgeInsets.only(left: 30.w),
-                                                    child: Text('Select Delivery Location'),
-                                                  ),
-                                                  SizedBox(height: 10.h,),
-                                                  Padding(
-                                                    padding:  EdgeInsets.only(left: 30.w),
-                                                    child: SizedBox(
-                                                      width: 400.w,
-                                                      height: 40.h,
-                                                      child: DropdownButtonFormField<String>(
-                                                        value: _selectedDeliveryLocation,
-                                                        decoration: InputDecoration(
-                                                          filled: true,
-                                                          fillColor: Colors.grey[200],
-                                                          border: OutlineInputBorder(
-                                                            borderRadius: BorderRadius.circular(5.0),
-                                                            borderSide: BorderSide.none,
-                                                          ),
-                                                          hintText: 'Select Location',
-                                                          contentPadding:const EdgeInsets.symmetric(
-                                                              horizontal: 8, vertical: 8),
-                                                        ),
-                                                        onChanged: (String? value) {
-                                                          setState(() {
-                                                            _selectedDeliveryLocation = value!;
-                                                          });
-                                                        },
-                                                        items: list.map<DropdownMenuItem<String>>((String value) {
-                                                          return DropdownMenuItem<String>(
-                                                            value: value,
-                                                            child: Text(value),
-                                                          );
-                                                        }).toList(),
-                                                        isExpanded: true,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 20.h),
-                                                  Padding(
-                                                    padding:  EdgeInsets.only(left: 30.w),
-                                                    child: Text('Delivery Address'),
-                                                  ),
-                                                  SizedBox(height: 10.h,),
-                                                  Padding(
-                                                    padding:  EdgeInsets.only(left: 30.w),
-                                                    child: SizedBox(
-                                                      width: 400.w,
-                                                      child: TextField(
-                                                        controller: deliveryaddressController,
-                                                        decoration: InputDecoration(
-                                                          filled: true,
-                                                          fillColor: Colors.grey[200],
-                                                          border: OutlineInputBorder(
-                                                            borderRadius: BorderRadius.circular(5.0),
-                                                            borderSide: BorderSide.none,
-                                                          ),
-                                                          hintText: 'Enter Your Address',
-                                                        ),
-                                                        maxLines: 3,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(width: 30.w),
-                                            Expanded(
-                                              flex: 3,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  const Text('Contact Person'),
-                                                  SizedBox(height: 10,),
-                                                  SizedBox(
+                                                SizedBox(height: 10.h,),
+                                                Padding(
+                                                  padding:  EdgeInsets.only(left: 30.w),
+                                                  child: SizedBox(
                                                     width: 400.w,
                                                     height: 40.h,
-                                                    child: TextField(
-                                                      controller: ContactPersonController,
+                                                    child: DropdownButtonFormField<String>(
+                                                      value: _selectedDeliveryLocation,
                                                       decoration: InputDecoration(
                                                         filled: true,
-                                                        fillColor: Colors.grey[200],
+                                                        fillColor: Colors.grey.shade200,
                                                         border: OutlineInputBorder(
                                                           borderRadius: BorderRadius.circular(5.0),
                                                           borderSide: BorderSide.none,
                                                         ),
-                                                        hintText: 'Contact Person Name',
-                                                        contentPadding: const EdgeInsets.symmetric(
+                                                        hintText: 'Select Location',
+                                                        contentPadding:const EdgeInsets.symmetric(
                                                             horizontal: 8, vertical: 8),
                                                       ),
+                                                      onChanged: (String? value) {
+                                                        setState(() {
+                                                          _selectedDeliveryLocation = value!;
+                                                        });
+                                                      },
+                                                      items: list.map<DropdownMenuItem<String>>((String value) {
+                                                        return DropdownMenuItem<String>(
+                                                          value: value,
+                                                          child: Text(value),
+                                                        );
+                                                      }).toList(),
+                                                      isExpanded: true,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 20.h),
-                                                  const Text('Contact Number'),
-                                                  SizedBox(height: 10.h,),
-                                                  SizedBox(
+                                                ),
+                                                SizedBox(height: 20.h),
+                                                Padding(
+                                                  padding:  EdgeInsets.only(left: 30.w),
+                                                  child: Text('Delivery Address'),
+                                                ),
+                                                SizedBox(height: 10.h,),
+                                                Padding(
+                                                  padding:  EdgeInsets.only(left: 30.w),
+                                                  child: SizedBox(
                                                     width: 400.w,
-                                                    height: 40.h,
                                                     child: TextField(
-                                                      controller: ContactNumberController,
-                                                      keyboardType:
-                                                      TextInputType.number,
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly,
-                                                        LengthLimitingTextInputFormatter(
-                                                            10),
-                                                        // limits to 10 digits
-                                                      ],
+                                                      controller: deliveryaddressController,
                                                       decoration: InputDecoration(
                                                         filled: true,
-                                                        fillColor: Colors.grey[200],
+                                                        fillColor:Colors.grey.shade200,
                                                         border: OutlineInputBorder(
                                                           borderRadius: BorderRadius.circular(5.0),
                                                           borderSide: BorderSide.none,
                                                         ),
-                                                        hintText: 'Contact Person Number',
-                                                        contentPadding: const EdgeInsets.symmetric(
-                                                            horizontal: 8, vertical: 8),
+                                                        hintText: 'Enter Your Address',
                                                       ),
+                                                      maxLines: 3,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                            Container(
-                                              height: 270,
-                                              width: 1.w,
-                                              color: Colors.grey, // Vertical line at the start
-                                              margin: EdgeInsets.zero, // Adjust margin if needed
-                                            ),
-                                            SizedBox(width: 20.w),
-                                            Expanded(
-                                              flex: 3,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  const Text('    '),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(right: 10),
-                                                    child: SizedBox(
-                                                      height: 150.h,
-                                                      child: TextField(
-                                                        controller:
-                                                        CommentsController,
-                                                        decoration: InputDecoration(
-                                                            filled: true,
-                                                            fillColor: Colors.grey[200],
-                                                            border: OutlineInputBorder(
-                                                              borderRadius: BorderRadius.circular(5.0),
-                                                              borderSide: BorderSide.none,
-                                                            ),
-                                                            hintText: 'Enter Your Comments'
-                    
-                    
-                                                        ),
-                                                        maxLines: 5,
+                                          ),
+                                          SizedBox(width: 30.w),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const Text('Contact Person'),
+                                                SizedBox(height: 10,),
+                                                SizedBox(
+                                                  width: 400.w,
+                                                  height: 40.h,
+                                                  child: TextField(
+                                                    controller: ContactPersonController,
+                                                    decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor: Colors.grey.shade200,
+                                                      border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(5.0),
+                                                        borderSide: BorderSide.none,
                                                       ),
+                                                      hintText: 'Contact Person Name',
+                                                      contentPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 8, vertical: 8),
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                                SizedBox(height: 20.h),
+                                                const Text('Contact Number'),
+                                                SizedBox(height: 10.h,),
+                                                SizedBox(
+                                                  width: 400.w,
+                                                  height: 40.h,
+                                                  child: TextField(
+                                                    controller: ContactNumberController,
+                                                    keyboardType:
+                                                    TextInputType.number,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                          10),
+                                                      // limits to 10 digits
+                                                    ],
+                                                    decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor: Colors.grey.shade200,
+                                                      border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(5.0),
+                                                        borderSide: BorderSide.none,
+                                                      ),
+                                                      hintText: 'Contact Person Number',
+                                                      contentPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 8, vertical: 8),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                          Container(
+                                            height: 270,
+                                            width: 1.w,
+                                            color: Colors.grey, // Vertical line at the start
+                                            margin: EdgeInsets.zero, // Adjust margin if needed
+                                          ),
+                                          SizedBox(width: 20.w),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const Text('    '),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 10),
+                                                  child: SizedBox(
+                                                    height: 250.h,
+                                                    child: TextField(
+                                                      controller:
+                                                      CommentsController,
+                                                      decoration: InputDecoration(
+                                                          filled: true,
+                                                          fillColor: Colors.grey.shade200,
+                                                          border: OutlineInputBorder(
+                                                            borderRadius: BorderRadius.circular(5.0),
+                                                            borderSide: BorderSide.none,
+                                                          ),
+                                                          hintText: 'Enter Your Comments'
+                                  
+                                  
+                                                      ),
+                                                      maxLines: 5,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 60,left: 50,right: 100 ),
-                                  child: Container(
-                                    //width: screenWidth * 0.8,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey, width: 2),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 10, left: 30),
-                                          child: Text(
-                                            'Add Product',
-                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-                                          ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 60,left: 50,right: 100 ),
+                                child: Container(
+                                  //width: screenWidth * 0.8,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey, width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 10, left: 30),
+                                        child: Text(
+                                          'Add Product',
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                                         ),
-                                        SizedBox(height: 10),
-                                        SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: DataTable(
-                                            border: TableBorder.all(color: Colors.grey),
-                                            columnSpacing: screenWidth * 0.066,
-                                            headingRowHeight: 40,
-                                            columns: const [
-                                              DataColumn(label: Text('Product Name')),
-                                              DataColumn(label: Text('Category')),
-                                              DataColumn(label: Text('Sub Category')),
-                                              DataColumn(label: Text('Price')),
-                                              DataColumn(label: Text('Qty')),
-                                              DataColumn(label: Text('Amount')),
-                                              DataColumn(label: Text('TAX')),
-                                              DataColumn(label: Text('Discount')),
-                                              DataColumn(label: Text('Total Amount')),
-                                            ],
-                                            rows: [],
-                                          ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: DataTable(
+                                          border: TableBorder.all(color: Colors.grey),
+                                          columnSpacing: screenWidth * 0.066,
+                                          headingRowHeight: 40,
+                                          columns: const [
+                                            DataColumn(label: Text('Product Name')),
+                                            DataColumn(label: Text('Category')),
+                                            DataColumn(label: Text('Sub Category')),
+                                            DataColumn(label: Text('Price')),
+                                            DataColumn(label: Text('Qty')),
+                                            DataColumn(label: Text('Amount')),
+                                            DataColumn(label: Text('TAX')),
+                                            DataColumn(label: Text('Discount')),
+                                            DataColumn(label: Text('Total Amount')),
+                                          ],
+                                          rows: [],
                                         ),
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 30, top: 25),
-                                              child: SizedBox(
-                                                width: screenWidth * 0.2,
-                                                child: OutlinedButton(
-                                                  onPressed: () {
+                                      ),
+                                      //maha copy
+                                      // Row(
+                                      //   children: [
+                                      //     Padding(
+                                      //       padding: const EdgeInsets.only(left: 30, top: 25),
+                                      //       child: SizedBox(
+                                      //         width: screenWidth * 0.13,
+                                      //         child: OutlinedButton(
+                                      //           onPressed: () {
+                                      //             print('date format');
+                                      //             print(_selectedDate);
+                                      //
+                                      //             Map<String, dynamic> data = {
+                                      //               'deliveryLocation': _selectedDeliveryLocation,
+                                      //               'ContactName': ContactPersonController.text,
+                                      //               'Address': deliveryaddressController.text,
+                                      //               'ContactNumber': ContactNumberController.text,
+                                      //               'Comments': CommentsController.text,
+                                      //               'date': _dateController.text.toString(),
+                                      //             };
+                                      //             context.go('/Order_List/Product_List',extra: data);
+                                      //             Navigator.push(
+                                      //               context,
+                                      //               PageRouteBuilder(
+                                      //                 pageBuilder: (context, animation, secondaryAnimation) =>
+                                      //                     OrderPage3(data: data),
+                                      //                 transitionDuration: const Duration(milliseconds: 200),
+                                      //                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      //                   return FadeTransition(
+                                      //                     opacity: animation,
+                                      //                     child: child,
+                                      //                   );
+                                      //                 },
+                                      //               ),
+                                      //             );
+                                      //           },
+                                      //           style: OutlinedButton.styleFrom(
+                                      //             backgroundColor: Colors.blue,
+                                      //             shape: RoundedRectangleBorder(
+                                      //               borderRadius: BorderRadius.circular(4),
+                                      //             ),
+                                      //             side: BorderSide.none,
+                                      //           ),
+                                      //           child: Padding(
+                                      //             padding:  EdgeInsets.only(right: 60),
+                                      //             child: const Text(
+                                      //               '+ Add Products',
+                                      //               style: TextStyle(color: Colors.white),
+                                      //             ),
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // ),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 30, top: 25),
+                                            child: SizedBox(
+                                              width: screenWidth * 0.12,
+                                              child: OutlinedButton(
+                                               // onPressed: handleButtonPress,
+                                                //my copy
+                                                onPressed: ()
 
-                                                      Map<String, dynamic> data = {
-                                                        'deliveryLocation': _selectedDeliveryLocation,
-                                                        'ContactName': ContactPersonController.text,
-                                                        'Address': deliveryaddressController.text,
-                                                        'ContactNumber': ContactNumberController.text,
-                                                        'Comments': CommentsController.text,
-                                                        'date': _selectedDate.toString(),
-                                                      };
-                                                      Navigator.push(
-                                                        context,
-                                                        PageRouteBuilder(
-                                                          pageBuilder: (context, animation, secondaryAnimation) => OrderPage3(data: data),
-                                                          transitionDuration: const Duration(milliseconds: 200),
-                                                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                                            return FadeTransition(
-                                                              opacity: animation,
-                                                              child: child,
-                                                            );
-                                                          },
-                                                        ),
-                                                      );
-                                                  },
-                                                  style: OutlinedButton.styleFrom(
-                                                    backgroundColor: Colors.blue,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(4),
-                                                    ),
-                                                    side: BorderSide.none,
+                                                {
+                                                  String validateFields() {
+                                                    if ( _selectedDeliveryLocation == null || _selectedDeliveryLocation!.isEmpty) {
+                                                      return 'Please fill in the delivery location.';
+                                                    }
+                                                    if (ContactPersonController.text.isEmpty) {
+                                                      return 'Please fill in the contact person name.';
+                                                    }
+                                                    if (deliveryaddressController.text.isEmpty) {
+                                                      return 'Please fill in the delivery address.';
+                                                    }
+                                                    if (ContactNumberController.text.isEmpty) {
+                                                      return 'Please fill in the contact number.';
+                                                    }
+                                                    if (CommentsController.text.isEmpty) {
+                                                      return 'Please fill in the comments.';
+                                                    }
+
+                                                    return '';
+                                                  }
+                                                  String validationMessage = validateFields();
+                                                  if (validationMessage == '') {
+                                                    Map<String, dynamic> data = {
+                                                      'deliveryLocation': _selectedDeliveryLocation,
+                                                      'ContactName': ContactPersonController.text,
+                                                      'Address': deliveryaddressController.text,
+                                                      'ContactNumber': ContactNumberController.text,
+                                                      'Comments': CommentsController.text,
+                                                      'date': _dateController.text,
+                                                    };
+                                                    context.go('/Order_List/Product_List',extra: data);
+                                                    Navigator.push(
+                                                      context,
+                                                      PageRouteBuilder(
+                                                        pageBuilder: (context, animation, secondaryAnimation) =>
+                                                            OrderPage3(data: data),
+                                                        transitionDuration: const Duration(milliseconds: 200),
+                                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                          return FadeTransition(
+                                                            opacity: animation,
+                                                            child: child,
+                                                          );
+                                                        },
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(validationMessage),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+
+                                                style: OutlinedButton.styleFrom(
+                                                  backgroundColor: Colors.blue,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(4),
                                                   ),
+                                                  side: BorderSide.none,
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(right: 30),
                                                   child: const Text(
                                                     '+ Add Products',
                                                     style: TextStyle(color: Colors.white),
@@ -1721,29 +1836,31 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 10),
-                                          child: Container(
-                                            height: 1,
-                                            color: Colors.grey,
                                           ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Container(
+                                          height: 1,
+                                          color: Colors.grey,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: 900.h),
-                              ],
-                            ),
-                    
+                              ),
+                              SizedBox(height: 900.h),
+                            ],
                           ),
-                        ],
-                      ),
+                                  
+                        )
+                      ],
                     ),
-                  )
-
+                  ))
+                  
+              
+              
                 ],
               );
             },

@@ -379,35 +379,37 @@ class _NextPageState extends State<NextPage> {
         ),
         body: LayoutBuilder(
             builder: (context, constraints){
-              return Row(
-                children:<Widget> [
+              return Stack(
+                children: [
                   buildSideMenu(),
-                  Expanded(child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Column(
-                      children: [
-                        buildSearchAndTable(),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          top: 1,
-                          height: kToolbarHeight,
-                          child: Row(
+                  Positioned(
+                    left: 200,
+                    right: 0,
+                  top: 0,
+                    bottom: 0,
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              IconButton(
-                                icon: const Icon(Icons.arrow_back), // Back button icon
-                                onPressed: () {
-                                  context.go('/dasbaord//OrderPage/:product/arrowBack');
-                                  // product error occur so handle carefully for entering orderspage3
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const OrderPage3(data: {}, )),
-                                  );
-                                },
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: IconButton(
+                                  icon: const Icon(Icons.arrow_back), // Back button icon
+                                  onPressed: () {
+                                    context.go('/dasbaord//OrderPage/:product/arrowBack');
+                                    // product error occur so handle carefully for entering orderspage3
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const OrderPage3(data: {}, )),
+                                    );
+                                  },
+                                ),
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(left: 30),
+                                padding: EdgeInsets.only(left: 30,top: 10),
                                 child: Text(
                                   'Go back',
                                   style: TextStyle(
@@ -436,6 +438,12 @@ class _NextPageState extends State<NextPage> {
                                             // );
                                             print('----weellls');
                                             print(selectedProducts);
+                                            context.go('/PlaceOrder',extra: {
+                                              'selectedProducts': products,
+                                              'data': data2,
+                                              'select': '',
+
+                                            });
                                             Navigator.push(
                                               context,
                                               PageRouteBuilder(
@@ -507,22 +515,26 @@ class _NextPageState extends State<NextPage> {
                               ),
                             ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 0, left: 0),
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 10), // Space above/below the border
-                            height: 2,
-                            // width: 1500,
-                            width: constraints.maxWidth,// Border height
-                            color: Colors.grey[300], // Border color
+                          Padding(
+                            padding: const EdgeInsets.only(top:
+                            0, left: 0),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 10), // Space above/below the border
+                              height: 2,
+                              // width: 1500,
+                              width: constraints.maxWidth,// Border height
+                              color: Colors.grey[300], // Border color
+                            ),
                           ),
-                        ),
-                        buildresultTable(),
-                      ],
+                          buildSearchAndTable(),
+                          buildresultTable(),
+
+                        ],
+                      ),
                     ),
-                  ))
+                  )
+
 
                 ],
               );
@@ -538,6 +550,14 @@ class _NextPageState extends State<NextPage> {
         scrollDirection: Axis.horizontal,
         child: Container(
           height: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.blue)
+            // color: Colors.blue.shade900,
+            // borderRadius: const BorderRadius.only(
+             // topLeft: Radius.circular(8.0),
+            //  topRight: Radius.circular(8.0),
+          //  ),
+          ),
           padding: const EdgeInsets.only(top: 80),
           width: MediaQuery.of(context).size.width * 0.8,
           child: Column(
@@ -585,6 +605,7 @@ class _NextPageState extends State<NextPage> {
   }
 
   Widget buildresultTable() {
+    double maxWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.only(top: 100),
       child: Column(
@@ -598,27 +619,26 @@ class _NextPageState extends State<NextPage> {
                 buildSearchField1(),
                 const SizedBox(height: 1),
                 //new one
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    width: 1105,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,),
+                Container(
+                  width: maxWidth,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                      bottom: 5,
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.only(
-                        top: 5,
-                        bottom: 5,
-                      ),
-                      child: SizedBox(
-                        height: 34,
-                        child: Row(
-                          children: [
-                            Padding(
+                    child: SizedBox(
+                      height: 34,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
                                 left: 48,
-                                right: 55,
+                                right: 60,
                               ),
                               child: Center(
                                 child: Text(
@@ -629,10 +649,12 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Padding(
+                          ),
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
-                                left: 40,
-                                right: 39,
+                                left: 25,
+                                right: 25,
                               ),
                               child: Center(
                                 child: Text(
@@ -643,10 +665,12 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Padding(
+                          ),
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
                                 left: 25,
-                                right: 50,
+                                right: 25,
                               ),
                               child: Center(
                                 child: Text(
@@ -657,10 +681,12 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Padding(
+                          ),
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
-                                left: 8,
-                                right: 50,
+                                left: 25,
+                                right: 25,
                               ),
                               child: Center(
                                 child: Text(
@@ -671,10 +697,12 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Padding(
+                          ),
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
                                 left: 25,
-                                right: 40,
+                                right: 25,
                               ),
                               child: Center(
                                 child: Text(
@@ -685,10 +713,12 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Padding(
+                          ),
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
-                                left: 59,
-                                right: 45,
+                                left: 25,
+                                right: 25,
                               ),
                               child: Center(
                                 child: Text(
@@ -699,10 +729,12 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Padding(
+                          ),
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.only(
-                                left: 52,
-                                right: 30,
+                                left: 25,
+                                right: 25,
                               ),
                               child: Center(
                                 child: Text(
@@ -713,12 +745,17 @@ class _NextPageState extends State<NextPage> {
                                 ),
                               ),
                             ),
-                            Center(
-                              child: Text("  ",
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          Expanded(
+                             child: Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Center(
+                                child: Text("  ",
+                                ),
+                                                           ),
+                             ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -754,7 +791,7 @@ class _NextPageState extends State<NextPage> {
                                   height: 35,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Center(
@@ -773,7 +810,7 @@ class _NextPageState extends State<NextPage> {
                                   height: 35,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Center(
@@ -791,7 +828,7 @@ class _NextPageState extends State<NextPage> {
                                 child: Container(
                                   height: 35,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Center(
@@ -809,7 +846,7 @@ class _NextPageState extends State<NextPage> {
                                 child: Container(
                                   height: 35,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Center(
@@ -827,7 +864,7 @@ class _NextPageState extends State<NextPage> {
                                 child: Container(
                                   height: 35,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Center(
@@ -845,7 +882,7 @@ class _NextPageState extends State<NextPage> {
                                 child: Container(
                                   height: 35,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Center(
@@ -929,11 +966,12 @@ class _NextPageState extends State<NextPage> {
           ),
           Padding(
             padding: EdgeInsets.only(top: 30,
-                right: 110),
+                right: maxWidth *0.16),
             child: Align(
               alignment: Alignment.topRight,
               child: SizedBox(
                 width: 220,
+                height: 50,
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.blue),
@@ -941,7 +979,7 @@ class _NextPageState extends State<NextPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(
                       top: 20,
-                      bottom: 20,
+                      bottom: 10,
                       left: 10,
                       right: 5,
                     ),
@@ -989,8 +1027,15 @@ class _NextPageState extends State<NextPage> {
           ),
           SizedBox(height: 80,),
           Container(
-            color: Colors.white,
+         //   width: maxWidth,
+           // color: Colors.grey,
+            decoration: BoxDecoration(
+              border: Border.all(color:Colors.grey.shade200)
+            ),
             margin: const EdgeInsets.only(left: 50, right: 100),
+           //  decoration: BoxDecoration(
+           // // border: Border.all()
+           //  ),
             // shape: RoundedRectangleBorder(
             //   // borderRadius: BorderRadius.circular(5),
             //   side: BorderSide(
@@ -1003,9 +1048,7 @@ class _NextPageState extends State<NextPage> {
               children: [
                 buildSearchField(),
                 const SizedBox(height: 5),
-                SingleChildScrollView(
-                    scrollDirection:
-                    Axis.horizontal,child: buildDataTable()),
+                buildDataTable(),
               ],
             ),
           ),
@@ -1177,6 +1220,7 @@ class _NextPageState extends State<NextPage> {
               width: double.infinity,
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
+             //   border: Border.all(color: Colors.green),
                 color: Colors.blue.shade900,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8.0),
@@ -1223,6 +1267,7 @@ class _NextPageState extends State<NextPage> {
     );
   }
   Widget buildDataTable() {
+    double maxWidth = MediaQuery.of(context).size.width;
     filteredProducts = productList
         .where((Product) => Product.productName
         .toLowerCase()
@@ -1430,7 +1475,7 @@ class _NextPageState extends State<NextPage> {
       SizedBox(
         height: 650, // set the desired height
         width:
-        1096, // set the desired width// change contianer width in this place
+        maxWidth, // set the desired width// change contianer width in this place
         child: Column(
           children: [
             Container(
@@ -1446,15 +1491,12 @@ class _NextPageState extends State<NextPage> {
                   bottom: 10,
                 ),
                 child: SizedBox(
-                  height: 34,
+                  height: 35,
                   child: Row(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 18,
-                          right: 60,
-                        ),
-                        child: Center(
+                      const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 45,right: 50),
                           child: Text(
                             'Product Name',
                             style: TextStyle(
@@ -1463,12 +1505,9 @@ class _NextPageState extends State<NextPage> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 23,
-                          right: 58,
-                        ),
-                        child: Center(
+                      const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left:75,right: 45),
                           child: Text(
                             "Category",
                             style: TextStyle(
@@ -1477,12 +1516,9 @@ class _NextPageState extends State<NextPage> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 35,
-                          right: 55,
-                        ),
-                        child: Center(
+                      const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 55,right: 60),
                           child: Text(
                             "Sub Category",
                             style: TextStyle(
@@ -1491,12 +1527,9 @@ class _NextPageState extends State<NextPage> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 35,
-                          right: 40,
-                        ),
-                        child: Center(
+                      const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 85,right: 25),
                           child: Text(
                             "Price",
                             style: TextStyle(
@@ -1505,26 +1538,19 @@ class _NextPageState extends State<NextPage> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 80,
-                          right: 45,
-                        ),
-                        child: Center(
+                      const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 95,right: 0),
                           child: Text(
                             "QTY",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 45,
-                          right: 30,
-                        ),
-                        child: Center(
+                        ),),
+                      const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 75,right: 25),
                           child: Text(
                             "Total Amount",
                             style: TextStyle(
@@ -1533,8 +1559,11 @@ class _NextPageState extends State<NextPage> {
                           ),
                         ),
                       ),
-                      Center(
-                        child: Text("  ",
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10,right: 10),
+                          child: Text("  ",
+                          ),
                         ),
                       ),
                     ],
@@ -1565,7 +1594,7 @@ class _NextPageState extends State<NextPage> {
                             child: Container(
                               height: 35,
                               decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(4.0)
                               ),
                               child: Center(
@@ -1586,7 +1615,7 @@ class _NextPageState extends State<NextPage> {
                             child: Container(
                               height: 35,
                               decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(4.0)
                               ),
                               child: Center(
@@ -1609,7 +1638,7 @@ class _NextPageState extends State<NextPage> {
                             child: Container(
                               height: 35,
                               decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(4.0)
                               ),
                               child: Center(
@@ -1633,7 +1662,7 @@ class _NextPageState extends State<NextPage> {
                               height: 35,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4.0),
-                                color: Colors.grey[300],
+                                color: Colors.grey.shade200,
                               ),
                               child: Center(
                                 child: Text(
@@ -1655,7 +1684,7 @@ class _NextPageState extends State<NextPage> {
                             child: Container(
                               height: 35,
                               decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(4.0)
                               ),
                               child: Center(
@@ -1692,7 +1721,7 @@ class _NextPageState extends State<NextPage> {
                             child: Container(
                               height: 35,
                               decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(4.0)
                               ),
                               child: Center(
@@ -1745,6 +1774,7 @@ class _NextPageState extends State<NextPage> {
                 );
               },
             ),
+            SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -2239,6 +2269,7 @@ class _NextPageState extends State<NextPage> {
         alignment: Alignment.topLeft,
         child: Container(
           width: 200,
+          height: 984,
           color: const Color(0xFFF7F6FA),
           padding: const EdgeInsets.only(left: 20, top: 20),
           child: Column(

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart'as http;
 
 import '../fourthpage/orderspage order.dart';
+import '../screen/login.dart';
 import '../thirdpage/dashboard.dart';
 import 'add productmaster sample.dart';
 import 'firstpage.dart';
@@ -162,12 +163,47 @@ class _EighthPageState extends State<EighthPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 35),
-            child: IconButton(
-              icon: const Icon(Icons.account_circle),
-              onPressed: () {
-                // Handle user icon press
-              },
+            padding: const EdgeInsets.only(top: 10),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 35),
+                child: PopupMenuButton<String>(
+                  icon: const Icon(Icons.account_circle),
+                  onSelected: (value) {
+                    if (value == 'logout') {
+                      context.go('/');
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                          const LoginScr(
+                          ),
+                          transitionDuration:
+                          const Duration(milliseconds: 200),
+                          transitionsBuilder: (context, animation,
+                              secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem<String>(
+                        value: 'logout',
+                        child: Text('Logout'),
+                      ),
+                    ];
+                  },
+                  offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                ),
+              ),
             ),
           ),
         ],
@@ -188,7 +224,7 @@ class _EighthPageState extends State<EighthPage> {
                         // Added Align widget for the left side menu
                         alignment: Alignment.topLeft,
                         child: Container(
-                          height: 984,
+                          height: 910,
                           width: 200,
                           color: const Color(0xFFF7F6FA),
                           padding: const EdgeInsets.only(left: 20, top: 30),

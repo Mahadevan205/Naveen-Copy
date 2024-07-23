@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import '../sprint 2 order/firstpage.dart';
 import '../thirdpage/productdata.dart';
 void main(){
   runApp(const EditOrder(textInput: '', priceInput: '', productData: {}, prodId: '', discountInput: '', inputText: '', subText: '', unitText: '', taxText: '', imagePath: null, imageId: ''));
@@ -282,53 +283,60 @@ class _EditOrderState extends State<EditOrder> {
           elevation: 4.0,
           shadowColor: const Color(0xFFFFFFFF), // Set shadow color to black
           actions: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                icon: const Icon(Icons.notifications),
-                onPressed: () {
-                  // Handle notification icon press
-                },
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () {
+                    // Handle notification icon press
+                  },
+                ),
               ),
             ),
             const SizedBox(width: 10,),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 35),
-                child: PopupMenuButton<String>(
-                  icon: const Icon(Icons.account_circle),
-                  onSelected: (value) {
-                    if (value == 'logout') {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                          const LoginScr(
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 35),
+                  child: PopupMenuButton<String>(
+                    icon: const Icon(Icons.account_circle),
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        context.go('/');
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                            const LoginScr(
+                            ),
+                            transitionDuration:
+                            const Duration(milliseconds: 200),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
                           ),
-                          transitionDuration:
-                          const Duration(milliseconds: 200),
-                          transitionsBuilder: (context, animation,
-                              secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
+                        );
+                      }
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'logout',
+                          child: Text('Logout'),
                         ),
-                      );
-                    }
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem<String>(
-                        value: 'logout',
-                        child: Text('Logout'),
-                      ),
-                    ];
-                  },
-                  offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                      ];
+                    },
+                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                  ),
                 ),
               ),
             ),
@@ -625,15 +633,28 @@ class _EditOrderState extends State<EditOrder> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => Dashboard()),
-                              // );
-                              // setState(() {
-                              //   isOrdersSelected = false;
-                              //   // Handle button press19
-                              // });
+                              context.go('/:products/Orderspage');
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) =>
+                                  const Orderspage(),
+                                  transitionDuration:
+                                  const Duration(milliseconds: 200),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                              setState(() {
+                                isOrdersSelected = false;
+                                // Handle button press19
+                              });
                             },
                             icon:
                             Icon(Icons.warehouse, color: Colors.blue[900]),
