@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../screen/login.dart';
 import '../thirdpage/dashboard.dart';
 
 
@@ -136,16 +137,45 @@ class _OrderspageState extends State<Orderspage> {
             ),
             const SizedBox(width: 10,),
             Padding(
-              padding: const EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 7),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 35),
-                  child: IconButton(
+                  child: PopupMenuButton<String>(
                     icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // Handle user icon press
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        context.go('/');
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                            const LoginScr(
+                            ),
+                            transitionDuration:
+                            const Duration(milliseconds: 200),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'logout',
+                          child: Text('Logout'),
+                        ),
+                      ];
+                    },
+                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -816,6 +846,8 @@ class _OrderspageState extends State<Orderspage> {
                                   child: GestureDetector(
                                     onTap: () {
                                       //origingal
+                                      //corrected code for router
+
                                       context.go('/OrdersList', extra: {
                                         'product': detail,
                                         'item': [], // pass an empty list of maps
@@ -828,6 +860,50 @@ class _OrderspageState extends State<Orderspage> {
                                       //   _selectedProduct = order as Order?;
                                       // });
                                       // Navigate to the new page and pass the selected product as an argument
+                                      // correct code for nativation
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SixthPage(
+                                              product: detail,
+                                              item:  [],
+                                              body: {},
+                                              itemsList: [],
+                                            )), // pass the selected product here
+                                      );
+                                      //for shortcut seventhpage
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) => SeventhPage(selectedProducts: {}, product: detail,
+                                      //
+                                      //       )), // pass the selected product here
+                                      // );
+                                    },
+                                    child: Container(
+                                      // padding: EdgeInsets.only(left: 40),
+                                        child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                                  ),
+                                )),
+                            DataCell(
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  onEnter: (event) {
+                                    setState(() {
+                                      detail.isSelected = true;
+                                    });
+                                  },
+                                  onExit: (event) {
+                                    detail.isSelected = false;
+                                  },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.go('/OrdersList', extra: {
+                                        'product': detail,
+                                        'item': [], // pass an empty list of maps
+                                        'body': {},
+                                        'itemsList': [], // pass an empty list of maps
+                                      });
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -839,16 +915,141 @@ class _OrderspageState extends State<Orderspage> {
                                             )), // pass the selected product here
                                       );
                                     },
-                                    child: Container(
-                                      // padding: EdgeInsets.only(left: 40),
-                                        child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                                    child: Container(child: Text(detail.orderId!)),
                                   ),
                                 )),
-                            DataCell(Container( child: Text(detail.orderId!))),
-                            DataCell(Container( child: Text(detail.orderDate))),
-                            DataCell(Container(child: Text(detail.referenceNumber))),
-                            DataCell(Container(child: Text(detail.total.toString()))),
-                            DataCell(Container(child: Text(detail.deliveryStatus))),
+                            DataCell(
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  onEnter: (event) {
+                                    setState(() {
+                                      detail.isSelected = true;
+                                    });
+                                  },
+                                  onExit: (event) {
+                                    detail.isSelected = false;
+                                  },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.go('/OrdersList', extra: {
+                                        'product': detail,
+                                        'item': [], // pass an empty list of maps
+                                        'body': {},
+                                        'itemsList': [], // pass an empty list of maps
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SixthPage(
+                                              product: detail,
+                                              item:  [],
+                                              body: {},
+                                              itemsList: [],
+                                            )), // pass the selected product here
+                                      );
+                                    },
+                                    child: Container(child: Text(detail.orderDate)),
+                                  ),
+                                )),
+                            DataCell(
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  onEnter: (event) {
+                                    setState(() {
+                                      detail.isSelected = true;
+                                    });
+                                  },
+                                  onExit: (event) {
+                                    detail.isSelected = false;
+                                  },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.go('/OrdersList', extra: {
+                                        'product': detail,
+                                        'item': [], // pass an empty list of maps
+                                        'body': {},
+                                        'itemsList': [], // pass an empty list of maps
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SixthPage(
+                                              product: detail,
+                                              item:  [],
+                                              body: {},
+                                              itemsList: [],
+                                            )), // pass the selected product here
+                                      );
+                                    },
+                                    child: Container(child: Text(detail.referenceNumber)),
+                                  ),
+                                )),
+                            DataCell(
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  onEnter: (event) {
+                                    setState(() {
+                                      detail.isSelected = true;
+                                    });
+                                  },
+                                  onExit: (event) {
+                                    detail.isSelected = false;
+                                  },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.go('/OrdersList', extra: {
+                                        'product': detail,
+                                        'item': [], // pass an empty list of maps
+                                        'body': {},
+                                        'itemsList': [], // pass an empty list of maps
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SixthPage(
+                                              product: detail,
+                                              item:  [],
+                                              body: {},
+                                              itemsList: [],
+                                            )), // pass the selected product here
+                                      );
+                                    },
+                                    child: Container(child: Text(detail.total.toString())),
+                                  ),
+                                )),
+                            DataCell(
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  onEnter: (event) {
+                                    setState(() {
+                                      detail.isSelected = true;
+                                    });
+                                  },
+                                  onExit: (event) {
+                                    detail.isSelected = false;
+                                  },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.go('/OrdersList', extra: {
+                                        'product': detail,
+                                        'item': [], // pass an empty list of maps
+                                        'body': {},
+                                        'itemsList': [], // pass an empty list of maps
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SixthPage(
+                                              product: detail,
+                                              item:  [],
+                                              body: {},
+                                              itemsList: [],
+                                            )), // pass the selected product here
+                                      );
+                                    },
+                                    child: Container(child: Text(detail.deliveryStatus)),
+                                  ),
+                                )),
 
                           ]);
                     }).toList(),

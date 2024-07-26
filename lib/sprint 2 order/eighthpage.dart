@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:btb/sprint%202%20order/seventhpage%20.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -210,442 +211,429 @@ class _EighthPageState extends State<EighthPage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints){
-            return Row(
-              children: [
-                Container(
-                  width: 200,
-                  height: constraints.maxHeight,
-                  color: const Color(0xFFF7F6FA),
-                  padding: const EdgeInsets.only(left: 20, top: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Align(
-                        // Added Align widget for the left side menu
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          height: 910,
-                          width: 200,
-                          color: const Color(0xFFF7F6FA),
-                          padding: const EdgeInsets.only(left: 20, top: 30),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextButton.icon(
-                                onPressed: () {
-                                  // context
-                                  //     .go('${PageName.main}/${PageName.subpage1Main}');
-                                  context.go('/Orders/dashboard');
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder:
-                                          (context, animation, secondaryAnimation) =>
-                                      const Dashboard(
-                                      ),
-                                      transitionDuration:
-                                      const Duration(milliseconds: 200),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                  );
-                                  // context.go('${PageName.dashboardRoute}');
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(builder: (context) => Dashboard()),
-                                  // );
-                                  // Navigator.pushReplacementNamed(
-                                  //     context, PageName.dashboardRoute);
-                                  // context
-                                  //     .go('${PageName.main} / ${PageName.subpage1Main}');
-                                },
-                                icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
-                                label: Text(
-                                  'Home',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {
-                                  context.go('/orders/productpage/:product');
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder:
-                                          (context, animation, secondaryAnimation) =>
-                                      const ProductPage(
-                                        product: null,
-                                      ),
-                                      transitionDuration:
-                                      const Duration(milliseconds: 200),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                                icon: Icon(Icons.image_outlined,
-                                    color: Colors.indigo[900]),
-                                label: Text(
-                                  'Products',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {
-                                  setState(() {
-                                    isOrdersSelected = false;
-                                    // Handle button press19
-                                  });
-                                },
-                                icon: Icon(Icons.warehouse,
-                                    color: isOrdersSelected
-                                        ? Colors.blueAccent
-                                        : Colors.blueAccent),
-                                label: const Text(
-                                  'Orders',
-                                  style: TextStyle(
-                                    color: Colors.blueAccent,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.fire_truck_outlined,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Delivery',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.document_scanner_rounded,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Invoice',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.payment_outlined,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Payment',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.backspace_sharp,
-                                    color: Colors.blue[900]),
-                                label: Text(
-                                  'Return',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.insert_chart, color: Colors.blue[900]),
-                                label: Text(
-                                  'Reports',
-                                  style: TextStyle(color: Colors.indigo[900]),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(child:
-                Stack(
+          double maxHeight = constraints.maxHeight;
+          double maxWidth = constraints.maxWidth;
+            return SingleChildScrollView(
+              child: Stack(
                 children: [
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 0,
-                        left: 0,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        color: Colors.white,
-                        height: 50,
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon:
-                              const Icon(Icons.arrow_back), // Back button icon
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const Orderspage(),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(left: 30),
-                              child: Text(
-                                'Parts Order List',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 80),
-                              child: IconButton(
-                                icon: Icon(Icons.arrow_circle_left_rounded,color: Colors.blue,),
-                                tooltip: 'Go Back', onPressed: () {  },
-                              ),
-                            ),
-                            Text('Go back')
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 0, left: 300),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 10), // Space above/below the border
-                      height: constraints.maxHeight,
-                      // width: 1500,
-                      width: 2,// Border height
-                      color: Colors.grey[300], // Border color
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 43, left: 0),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10), // Space above/below the border
-                      height: 2,
-                      // width: 1500,
-                      width: constraints.maxWidth,// Border height
-                      color: Colors.grey[300], // Border color
-                    ),
-                  ),
                   Container(
-                    margin: const EdgeInsets.only(
-                      top: 56,
-                      left: 0,
-                    ),
-                    width: 300,
-                    height: 984,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            SizedBox(
-                              height: 100,
-                              width: 60,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 1,top: 10),
-                                child: TextFormField(
-                                  controller: _orderIdController, // Assign the controller to the TextFormField
-                                  decoration: InputDecoration(
-                                    // labelText: 'Order ID',
-                                    hintText: 'Search Order',
-                                    contentPadding: EdgeInsets.all(8),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.search_outlined),
+                    width: 200,
+                    height: 1050,
+                    color: const Color(0xFFF7F6FA),
+                    padding: const EdgeInsets.only(left: 20, top: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          // Added Align widget for the left side menu
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                           // height: 984,
+                           // width: 250,
+                            color: const Color(0xFFF7F6FA),
+                            padding: const EdgeInsets.only(left: 20, top: 30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextButton.icon(
+                                  onPressed: () {
+                                    // context
+                                    //     .go('${PageName.main}/${PageName.subpage1Main}');
+                                    context.go('/Orders/dashboard');
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder:
+                                            (context, animation, secondaryAnimation) =>
+                                        const Dashboard(
+                                        ),
+                                        transitionDuration:
+                                        const Duration(milliseconds: 200),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                    // context.go('${PageName.dashboardRoute}');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(builder: (context) => Dashboard()),
+                                    // );
+                                    // Navigator.pushReplacementNamed(
+                                    //     context, PageName.dashboardRoute);
+                                    // context
+                                    //     .go('${PageName.main} / ${PageName.subpage1Main}');
+                                  },
+                                  icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
+                                  label: Text(
+                                    'Home',
+                                    style: TextStyle(color: Colors.indigo[900]),
                                   ),
                                 ),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            _loading
-                                ? Center(child: CircularProgressIndicator())
-                                : _errorMessage.isNotEmpty
-                                ? Center(child: Text(_errorMessage))
-                                : _orders.isEmpty
-                                ? Center(child: Text('No product found'))
-                                : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: _orders.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: (){
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {
+                                    context.go('/orders/productpage/:product');
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder:
+                                            (context, animation, secondaryAnimation) =>
+                                        const ProductPage(
+                                          product: null,
+                                        ),
+                                        transitionDuration:
+                                        const Duration(milliseconds: 200),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(Icons.image_outlined,
+                                      color: Colors.indigo[900]),
+                                  label: Text(
+                                    'Products',
+                                    style: TextStyle(color: Colors.indigo[900]),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {
                                     setState(() {
-                                      _showProductDetails(index);
-                                      //  Text('Order # ${_orders[index]['contactPerson']}');
-                                      //  contactPersonController.text = ${_orders[index]['contactPerson']
+                                      isOrdersSelected = false;
+                                      // Handle button press19
                                     });
                                   },
-                                  child: Container(
-                                    margin: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: ListTile(
-                                      title: Text('Order #${_orders[index]['orderId']}'),
-                                      subtitle: Text('Order Date: ${_orders[index]['orderDate']}'),
+                                  icon: Icon(Icons.warehouse,
+                                      color: isOrdersSelected
+                                          ? Colors.blueAccent
+                                          : Colors.blueAccent),
+                                  label: const Text(
+                                    'Orders',
+                                    style: TextStyle(
+                                      color: Colors.blueAccent,
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 350, top: 100),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 10),
-                            borderRadius: BorderRadius.circular(4),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          // container starting with
-                          child: Container(
-                            height: 115,
-                            width: constraints.maxWidth * 0.7,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white, // Container background color
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              // Spacing between elements
-                              children: [
-                                // First Field and TextFormField
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 60, right: 60),
-                                  child: _buildCheckboxItem(
-                                      'Order Placed', _isChecked1, ' ', (value) {
-                                    setState(() {
-                                      _isChecked1 = value;
-                                    });
-                                  }),
                                 ),
-                                const SizedBox(
-                                  width: 50,
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.fire_truck_outlined,
+                                      color: Colors.blue[900]),
+                                  label: Text(
+                                    'Delivery',
+                                    style: TextStyle(color: Colors.indigo[900]),
+                                  ),
                                 ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 60, right: 60),
-                                  child: _buildCheckboxItem(
-                                      'Invoice', _isChecked2, ' ', (value) {
-                                    setState(() {
-                                      _isChecked2 = value;
-                                    });
-                                  }),
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.document_scanner_rounded,
+                                      color: Colors.blue[900]),
+                                  label: Text(
+                                    'Invoice',
+                                    style: TextStyle(color: Colors.indigo[900]),
+                                  ),
                                 ),
-                                const SizedBox(
-                                  width: 50,
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.payment_outlined,
+                                      color: Colors.blue[900]),
+                                  label: Text(
+                                    'Payment',
+                                    style: TextStyle(color: Colors.indigo[900]),
+                                  ),
                                 ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 50, right: 60),
-                                  child: _buildCheckboxItem(
-                                      'Payments', _isChecked3, ' ', (value) {
-                                    setState(() {
-                                      _isChecked3 = value;
-                                    });
-                                  }),
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.backspace_sharp,
+                                      color: Colors.blue[900]),
+                                  label: Text(
+                                    'Return',
+                                    style: TextStyle(color: Colors.indigo[900]),
+                                  ),
                                 ),
-                                const SizedBox(
-                                  width: 50,
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 70, right: 50),
-                                  child: _buildCheckboxItem(
-                                      'Delivery', _isChecked4, ' ', (value) {
-                                    setState(() {
-                                      _isChecked4 = value;
-                                    });
-                                  }),
-                                ),
-                                const SizedBox(
-                                  width: 50,
+                                const SizedBox(height: 20),
+                                TextButton.icon(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.insert_chart, color: Colors.blue[900]),
+                                  label: Text(
+                                    'Reports',
+                                    style: TextStyle(color: Colors.indigo[900]),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                   Positioned(
+                     top: 0,
+                     left: 200,
+                     right: 0,
+                     child: Padding(
+                       padding: const EdgeInsets.only(
+                         top: 0,
+                         left: 0,
+                       ),
+                       child: Container(
+                         padding: const EdgeInsets.symmetric(horizontal: 16),
+                         color: Colors.white,
+                         height: 50,
+                         child: Row(
+                           children: [
+                             IconButton(
+                               icon:
+                               const Icon(Icons.arrow_back), // Back button icon
+                               onPressed: () {
+                                 Navigator.push(
+                                   context,
+                                   PageRouteBuilder(
+                                     pageBuilder:
+                                         (context, animation, secondaryAnimation) =>
+                                     const Orderspage(),
+                                     transitionDuration:
+                                     const Duration(milliseconds: 200),
+                                     transitionsBuilder: (context, animation,
+                                         secondaryAnimation, child) {
+                                       return FadeTransition(
+                                         opacity: animation,
+                                         child: child,
+                                       );
+                                     },
+                                   ),
+                                 );
+                               },
+                             ),
+                             const Padding(
+                               padding: EdgeInsets.only(left: 30),
+                               child: Text(
+                                 'Parts Order List',
+                                 style: TextStyle(
+                                   fontSize: 20,
+                                   fontWeight: FontWeight.bold,
+                                 ),
+                                 textAlign: TextAlign.center,
+                               ),
+                             ),
+                             // Padding(
+                             //   padding: const EdgeInsets.only(left: 80),
+                             //   child: IconButton(
+                             //     icon: Icon(Icons.arrow_circle_left_rounded,color: Colors.blue,),
+                             //     tooltip: 'Go Back', onPressed: () {  },
+                             //   ),
+                             // ),
+                             // Text('Go back')
+                           ],
+                         ),
+                       ),
+                     ),
+                   ),
+                   Padding(
+                     padding: const EdgeInsets.only(top: 0, left: 500),
+                     child: Container(
+                       margin: const EdgeInsets.symmetric(
+                           horizontal: 10), // Space above/below the border
+                       height: 1050,
+                       // width: 1500,
+                       width: 2,// Border height
+                       color: Colors.grey[300], // Border color
+                     ),
+                   ),
+                   Padding(
+                     padding: const EdgeInsets.only(top: 43, left: 200),
+                     child: Container(
+                       margin: const EdgeInsets.symmetric(
+                           vertical: 10), // Space above/below the border
+                       height: 2,
+                       // width: 1500,
+                       width: constraints.maxWidth,// Border height
+                       color: Colors.grey[300], // Border color
+                     ),
+                   ),
+                   Container(
+                     margin: const EdgeInsets.only(
+                       top: 56,
+                       left: 200,
+                     ),
+                     width: 300,
+                     height: 984,
+                     decoration: BoxDecoration(
+                       color: Color(0xFFFFFFFF),
+                       borderRadius: BorderRadius.circular(4),
+                     ),
+                     child: Form(
+                       key: _formKey,
+                       child: SingleChildScrollView(
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.stretch,
+                           children: [
+                             SizedBox(
+                               height: 100,
+                               width: 60,
+                               child: Padding(
+                                 padding: const EdgeInsets.only(
+                                     left: 15, right: 15, bottom: 1,top: 10),
+                                 child: TextFormField(
+                                   controller: _orderIdController, // Assign the controller to the TextFormField
+                                   decoration: InputDecoration(
+                                     // labelText: 'Order ID',
+                                     hintText: 'Search Order',
+                                     contentPadding: EdgeInsets.all(8),
+                                     border: OutlineInputBorder(),
+                                     prefixIcon: Icon(Icons.search_outlined),
+                                   ),
+                                 ),
+                               ),
+                             ),
+                             SizedBox(height: 5),
+                             _loading
+                                 ? Center(child: CircularProgressIndicator())
+                                 : _errorMessage.isNotEmpty
+                                 ? Center(child: Text(_errorMessage))
+                                 : _orders.isEmpty
+                                 ? Center(child: Text('No product found'))
+                                 : ListView.builder(
+                               shrinkWrap: true,
+                               itemCount: _orders.length,
+                               itemBuilder: (context, index) {
+                                 return GestureDetector(
+                                   onTap: (){
+                                     setState(() {
+                                       _showProductDetails(index);
+                                       //  Text('Order # ${_orders[index]['contactPerson']}');
+                                       //  contactPersonController.text = ${_orders[index]['contactPerson']
+                                     });
+                                   },
+                                   child: Container(
+                                     margin: const EdgeInsets.all(5),
+                                     decoration: BoxDecoration(
+                                       color: Colors.white,
+                                       border: Border.all(color: Colors.grey),
+                                       borderRadius: BorderRadius.circular(5),
+                                     ),
+                                     child: ListTile(
+                                       title: Text('Order #${_orders[index]['orderId']}'),
+                                       subtitle: Text('Order Date: ${_orders[index]['orderDate']}'),
+                                     ),
+                                   ),
+                                 );
+                               },
+                             ),
+                           ],
+                         ),
+                       ),
+                     ),
+
+                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 550, top: 100,right: 60),
+                    child: Container(
+                      height: 100,
+                      width: maxWidth,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ],
+                      child: const Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.check_box,
+                                    color: Colors.green,
+                                  ),
+                                  Text(
+                                    'Order',
+                                    style: TextStyle(
+                                      color: Colors.black,fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.check_box,
+                                    color: Colors.green,
+                                  ),
+                                  Text(
+                                    'Invoice',
+                                    style: TextStyle(
+                                      color: Colors.grey,fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.check_box,
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    'Payments',
+                                    style: TextStyle(
+                                      color: Colors.grey,fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.check_box,
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    'Delivery',
+                                    style: TextStyle(
+                                      color: Colors.grey,fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 350,top: 270),
+                    padding: const EdgeInsets.only(left: 550, top: 270,right: 60),
                     child: Container(
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        // border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
@@ -675,9 +663,19 @@ class _EighthPageState extends State<EighthPage> {
                           ),
                           SizedBox(height: 20,),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              Expanded(
+                                flex: 1,
+                                child:Column(
+                                         children: [
+                                           Text('Field'),
+                                           Text('1521321'),
+                                         ],
+                                       ),
+                              ),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -685,8 +683,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 200,right: 50),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -694,17 +692,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 150),
-                                child: Column(
-                                  children: [
-                                    Text('Field'),
-                                    Text('1521321'),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 30,left: 180),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -719,22 +708,13 @@ class _EighthPageState extends State<EighthPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 350,top: 440),
+                    padding: const EdgeInsets.only(left: 550, top: 440,right: 60),
                     child: Container(
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        // border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
@@ -747,7 +727,7 @@ class _EighthPageState extends State<EighthPage> {
                                   child: Text('Invoice',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
-                                Text(' Not Available for Download'),
+                                Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
@@ -764,9 +744,19 @@ class _EighthPageState extends State<EighthPage> {
                           ),
                           SizedBox(height: 20,),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              Expanded(
+                                flex: 1,
+                                child:Column(
+                                  children: [
+                                    Text('Field'),
+                                    Text('1521321'),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -774,8 +764,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 200,right: 50),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -783,17 +773,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 150),
-                                child: Column(
-                                  children: [
-                                    Text('Field'),
-                                    Text('1521321'),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 30,left: 180),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -808,22 +789,13 @@ class _EighthPageState extends State<EighthPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 350,top: 610),
+                    padding: const EdgeInsets.only(left: 550, top: 610,right: 60),
                     child: Container(
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        // border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
@@ -836,7 +808,7 @@ class _EighthPageState extends State<EighthPage> {
                                   child: Text('Payments',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
-                                Text('Not Available for Download'),
+                                Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
@@ -853,9 +825,19 @@ class _EighthPageState extends State<EighthPage> {
                           ),
                           SizedBox(height: 20,),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              Expanded(
+                                flex: 1,
+                                child:Column(
+                                  children: [
+                                    Text('Field'),
+                                    Text('1521321'),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -863,8 +845,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 200,right: 50),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -872,17 +854,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 150),
-                                child: Column(
-                                  children: [
-                                    Text('Field'),
-                                    Text('1521321'),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 30,left: 180),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -897,22 +870,13 @@ class _EighthPageState extends State<EighthPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 350,top: 780),
+                    padding: const EdgeInsets.only(left: 550, top: 780,right: 60),
                     child: Container(
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        // border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
@@ -925,7 +889,7 @@ class _EighthPageState extends State<EighthPage> {
                                   child: Text('Delivery',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
-                                Text('Not Available for Download'),
+                                Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
@@ -942,9 +906,19 @@ class _EighthPageState extends State<EighthPage> {
                           ),
                           SizedBox(height: 20,),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              Expanded(
+                                flex: 1,
+                                child:Column(
+                                  children: [
+                                    Text('Field'),
+                                    Text('1521321'),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -952,8 +926,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 200,right: 50),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -961,17 +935,8 @@ class _EighthPageState extends State<EighthPage> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 150),
-                                child: Column(
-                                  children: [
-                                    Text('Field'),
-                                    Text('1521321'),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 30,left: 180),
+                              Expanded(
+                                flex: 1,
                                 child: Column(
                                   children: [
                                     Text('Field'),
@@ -986,12 +951,9 @@ class _EighthPageState extends State<EighthPage> {
                     ),
                   ),
 
+
                 ],
-                                )
-
-                )
-
-              ],
+              ),
             );
         }
       )

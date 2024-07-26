@@ -417,42 +417,45 @@ class _EditOrderState extends State<EditOrder> {
                         ),
                       ),
                       const Spacer(),
-                      Align(
-                        alignment: const Alignment(0.7,0.7),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            _selectedValue = widget.inputText;
-                            _selectedValue1 = widget.subText;
-                            _selectedValue2 = widget.unitText;
-                            _selectedValue3 = widget.taxText;
-                            productNameController.text = widget.textInput!;
-                            priceController.text = widget.priceInput!;
-                            discountController.text = widget.discountInput!;
-                            selectedImages.clear();
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 7),
+                        child: Align(
+                          alignment: const Alignment(0.7,0.7),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              _selectedValue = widget.inputText;
+                              _selectedValue1 = widget.subText;
+                              _selectedValue2 = widget.unitText;
+                              _selectedValue3 = widget.taxText;
+                              productNameController.text = widget.textInput!;
+                              priceController.text = widget.priceInput!;
+                              discountController.text = widget.discountInput!;
+                              selectedImages.clear();
 
-                            storeImageBytes1 = widget.imagePath;
-                            print(storeImageBytes1);
-                            print('---wel');
-                            print(widget.imageId);
-                            loadImage(widget.imageId);
-                            //uploadImage(widget.imageId);
-                                   },
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor:
-                            Colors.grey[400], // Blue background color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  5), // Rounded corners
+                              storeImageBytes1 = widget.imagePath;
+                              print(storeImageBytes1);
+                              print('---wel');
+                              print(widget.imageId);
+                              loadImage(widget.imageId);
+                              //uploadImage(widget.imageId);
+                                     },
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor:
+                              Colors.grey.shade200, // Blue background color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    5), // Rounded corners
+                              ),
+                              side: BorderSide.none, // No outline
                             ),
-                            side: BorderSide.none, // No outline
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 15,
-                              // Increase font size if desired
-                              // Bold text
-                              color: Colors.indigo[900], // White text color
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 15,
+                                // Increase font size if desired
+                                // Bold text
+                                color: Colors.indigo[900], // White text color
+                              ),
                             ),
                           ),
                         ),
@@ -460,112 +463,115 @@ class _EditOrderState extends State<EditOrder> {
                       const SizedBox(
                         width: 35,
                       ),
-                      Align(
-                        alignment: const Alignment(0.0,0.7),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            print(storeImage);
-                            token = window.sessionStorage["token"] ?? " ";
-                            if (!areRequiredFieldsFilled()) {
-                              if (mounted) {
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 7),
+                        child: Align(
+                          alignment: const Alignment(0.0,0.7),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              print(storeImage);
+                              token = window.sessionStorage["token"] ?? " ";
+                              if (!areRequiredFieldsFilled()) {
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "Please fill in all required fields")),
+                                  );
+                                }
+                              } else {
+                                checkSave(
+                                  productNameController.text,
+                                  _selectedValue!, // Replace with actual value
+                                  _selectedValue1!, // Replace with actual value
+                                  _selectedValue3!, // Replace with actual value
+                                  _selectedValue2!, // Replace with actual value
+                                  double.parse(
+                                      priceController.text.toString()),
+                                  discountController.text,
+                                  storeImage,
+                                );
+                                uploadImage(storeImage);
+                                // fetchImage(storeImage);
+                                widget.productData['imageId'] =
+                                storeImage == ""
+                                    ? widget.imageId
+                                    : storeImage;
+                                widget.productData['productName'] =
+                                    productNameController.text;
+                                widget.productData['category'] =
+                                    _selectedValue;
+                                widget.productData['subCategory'] =
+                                    _selectedValue1;
+                                widget.productData['tax'] = _selectedValue3;
+                                widget.productData['unit'] = _selectedValue2;
+                                widget.productData['price'] =
+                                    priceController.text;
+                                widget.productData['discount'] =
+                                    discountController.text;
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(
-                                          "Please fill in all required fields")),
+                                          "Product updated successfully")),
                                 );
+                                // context.go(
+                                //     '${PageName.subsubpage2Main}/${PageName.subpage2Main}');
+                                //router maha dev
+                                context.go('/dashboard/productpage/ontap/Edit/Update1', extra: {
+                                  'displayData':  widget.productData,
+                                  'product': null,
+                                  'imagePath': null,
+                                  'productText': widget.productData['productName'],
+                                  'selectedValue': widget.productData['category'],
+                                  'selectedValue1': widget.productData['subCategory'],
+                                  'selectedValue3': widget.productData['tax'],
+                                  'selectedvalue2': widget.productData['unit'],
+                                  'priceText': widget.productData['price'],
+                                  'discountText': widget.productData['discount'],
+                                  'prodId': widget.prodId,
+                                });
+                                Navigator.of(context).push(PageRouteBuilder(
+                                  pageBuilder: (context, animation,
+                                      secondaryAnimation) =>
+                                      ProductForm1(
+                                        displayData: widget.productData,
+                                        product: null,
+                                        imagePath: null,
+                                        // imageName: widget.product!.imageId,
+                                        productText:
+                                        widget.productData['productName'],
+                                        selectedValue:
+                                        widget.productData['category'],
+                                        selectedValue1:
+                                        widget.productData['subCategory'],
+                                        selectedValue3: widget.productData['tax'],
+                                        selectedvalue2:
+                                        widget.productData['unit'],
+                                        priceText: widget.productData['price'],
+                                        discountText:
+                                        widget.productData['discount'],
+                                        prodId: widget.prodId,
+                                      ),
+                                ));
                               }
-                            } else {
-                              checkSave(
-                                productNameController.text,
-                                _selectedValue!, // Replace with actual value
-                                _selectedValue1!, // Replace with actual value
-                                _selectedValue3!, // Replace with actual value
-                                _selectedValue2!, // Replace with actual value
-                                double.parse(
-                                    priceController.text.toString()),
-                                discountController.text,
-                                storeImage,
-                              );
-                              uploadImage(storeImage);
-                              // fetchImage(storeImage);
-                              widget.productData['imageId'] =
-                              storeImage == ""
-                                  ? widget.imageId
-                                  : storeImage;
-                              widget.productData['productName'] =
-                                  productNameController.text;
-                              widget.productData['category'] =
-                                  _selectedValue;
-                              widget.productData['subCategory'] =
-                                  _selectedValue1;
-                              widget.productData['tax'] = _selectedValue3;
-                              widget.productData['unit'] = _selectedValue2;
-                              widget.productData['price'] =
-                                  priceController.text;
-                              widget.productData['discount'] =
-                                  discountController.text;
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        "Product updated successfully")),
-                              );
-                              // context.go(
-                              //     '${PageName.subsubpage2Main}/${PageName.subpage2Main}');
-                              //router maha dev
-                              context.go('/dashboard/productpage/ontap/Edit/Update1', extra: {
-                                'displayData':  widget.productData,
-                                'product': null,
-                                'imagePath': null,
-                                'productText': widget.productData['productName'],
-                                'selectedValue': widget.productData['category'],
-                                'selectedValue1': widget.productData['subCategory'],
-                                'selectedValue3': widget.productData['tax'],
-                                'selectedvalue2': widget.productData['unit'],
-                                'priceText': widget.productData['price'],
-                                'discountText': widget.productData['discount'],
-                                'prodId': widget.prodId,
-                              });
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (context, animation,
-                                    secondaryAnimation) =>
-                                    ProductForm1(
-                                      displayData: widget.productData,
-                                      product: null,
-                                      imagePath: null,
-                                      // imageName: widget.product!.imageId,
-                                      productText:
-                                      widget.productData['productName'],
-                                      selectedValue:
-                                      widget.productData['category'],
-                                      selectedValue1:
-                                      widget.productData['subCategory'],
-                                      selectedValue3: widget.productData['tax'],
-                                      selectedvalue2:
-                                      widget.productData['unit'],
-                                      priceText: widget.productData['price'],
-                                      discountText:
-                                      widget.productData['discount'],
-                                      prodId: widget.prodId,
-                                    ),
-                              ));
-                            }
-                          },
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors
-                                .blueAccent, // Button background color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  5), // Rounded corners
+                            },
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors
+                                  .blueAccent, // Button background color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    5), // Rounded corners
+                              ),
+                              side: BorderSide.none, // No outline
                             ),
-                            side: BorderSide.none, // No outline
-                          ),
-                          child: const Text(
-                            'Update',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                            child: const Text(
+                              'Save',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

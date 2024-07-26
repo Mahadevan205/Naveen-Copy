@@ -117,6 +117,8 @@ class _ReturnpageState extends State<Returnpage> {
         backgroundColor: const Color(0xFFFFFFFF),
         appBar:
         AppBar(
+          automaticallyImplyLeading: false,
+          leading: null,
           backgroundColor: const Color(0xFFFFFFFF),
           title: Image.asset("images/Final-Ikyam-Logo.png"),
           // Set background color to white
@@ -268,20 +270,13 @@ class _ReturnpageState extends State<Returnpage> {
                                     },
                                   ),
                                 );
-
-                                setState(() {
-                                  isOrdersSelected = false;
-                                  // Handle button press19
-                                });
                               },
                               icon: Icon(Icons.warehouse,
-                                  color: isOrdersSelected
-                                      ? Colors.blueAccent
-                                      : Colors.blueAccent),
-                              label: const Text(
+                                  color: Colors.blue[900]),
+                              label:  Text(
                                 'Orders',
                                 style: TextStyle(
-                                  color: Colors.blueAccent,
+                                  color: Colors.blue[900],
                                 ),
                               ),
                             ),
@@ -317,12 +312,19 @@ class _ReturnpageState extends State<Returnpage> {
                             ),
                             const SizedBox(height: 20),
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  isOrdersSelected = false;
+                                  // Handle button press19
+                                });
+                              },
                               icon: Icon(Icons.backspace_sharp,
-                                  color: Colors.blue[900]),
+                                  color: isOrdersSelected
+                                      ? Colors.blueAccent
+                                      : Colors.blueAccent),
                               label: Text(
                                 'Return',
-                                style: TextStyle(color: Colors.indigo[900]),
+                                style: TextStyle(color: Colors.blueAccent),
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -373,13 +375,13 @@ class _ReturnpageState extends State<Returnpage> {
                                       // context.go(
                                       //     '${PageName.dashboardRoute}/${PageName.subpage1}');
                                       //router
-                                      // context.go('/Create_Order');
+                                       context.go('/Order_Return');
                                       Navigator.push(
                                         context,
                                         PageRouteBuilder(
                                           pageBuilder: (context, animation,
                                               secondaryAnimation) =>
-                                              CreateReturn(),
+                                              CreateReturn(storeImage: 'even', imageSizeString: [],imageSizeStrings: [],storeImages: [],orderDetails: [],orderDetailsMap: {},),
                                           transitionDuration:
                                           const Duration(milliseconds: 200),
                                           transitionsBuilder: (context, animation,
@@ -783,10 +785,16 @@ class _ReturnpageState extends State<Returnpage> {
                     headingRowHeight: 50,
                     columns: [
                       DataColumn(label: Container(
-                          child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
-                            fontWeight: FontWeight.bold,),))),
-                      DataColumn(label: Container(child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 25),
+                            child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+                              fontWeight: FontWeight.bold,),),
+                          ))),
+                      DataColumn(label: Container(child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                            fontWeight: FontWeight.bold),),
+                      ))),
                       DataColumn(label: Container(child: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
                           fontWeight: FontWeight.bold),))),
                       DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
@@ -851,10 +859,19 @@ class _ReturnpageState extends State<Returnpage> {
                             //       ),
                             //     )),
                             DataCell(Container( child: Text(detail.orderId!))),
-                            DataCell(Container( child: Text(detail.orderDate))),
+                            DataCell(Container( child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text(detail.orderDate),
+                            ))),
                             DataCell(Container(child: Text(detail.referenceNumber))),
-                            DataCell(Container(child: Text(detail.total.toString()))),
-                            DataCell(Container(child: Text(detail.deliveryStatus))),
+                            DataCell(Container(child: Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Text(detail.total.toString()),
+                            ))),
+                            DataCell(Container(child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text(detail.deliveryStatus),
+                            ))),
 
                           ]);
                     }).toList(),
@@ -904,146 +921,86 @@ class _ReturnpageState extends State<Returnpage> {
 // }
 
 
-class detail {
-  final String? orderId;
-  final String? value;
-  final String orderDate;
-  bool isSelected = false;
-  final double total;
-  final String status;
-  final String deliveryStatus;
-  final String referenceNumber;
-  final String? deliveryLocation;
-  final String? deliveryAddress;
-  final String? contactPerson;
-  final String? contactNumber;
-  final String? comments;
-  final List<dynamic> items;
-
-  detail({
-    this.orderId,
-    required this.orderDate,
-    required this.total,
-    required this.status,
-    required this.deliveryStatus,
-    this.value,
-    required this.referenceNumber,
-    this.deliveryLocation,
-    this.deliveryAddress,
-    this.contactPerson,
-    this.contactNumber,
-    this.comments,
-    required this.items,
-
-  });
-
-  factory detail.fromJson(Map<String, dynamic> json) {
-    return detail(
-      orderId: json['orderId'],
-      orderDate: json['orderDate'] ?? 'Unknown date',
-      total: json['total'].toDouble(),
-      status: 'In preparation',
-      // Dummy value
-      deliveryStatus: 'Not Started',
-      // Dummy value
-      referenceNumber: '  ', // Dummy value
-      deliveryLocation: json['deliveryLocation'],
-      deliveryAddress: json['deliveryAddress'],
-      contactPerson: json['contactPerson'],
-      contactNumber: json['contactNumber'],
-      comments: json['comments'],
-      items: json['items'],
-    );
-  }
-
-  factory detail.fromString(String jsonString) {
-    final jsonMap = jsonDecode(jsonString);
-    return detail.fromJson(jsonMap);
-  }
-
-  @override
-  String toString() {
-    return 'Order ID: $orderId, Order Date: $orderDate, Total: $total, Status: $status, Delivery Status: $deliveryStatus, Reference Number: $referenceNumber';
-  }
-
-  String toJson() {
-    return jsonEncode({
-      "orderId": orderId,
-      "orderDate": orderDate,
-      "total": total,
-      "status": status,
-      "deliveryStatus": deliveryStatus,
-      "referenceNumber": referenceNumber,
-      "items": items,
-      "deliveryLocation": deliveryLocation,
-      "deliveryAddress": deliveryAddress,
-      "contactPerson": contactPerson,
-      "contactNumber": contactNumber,
-      "comments": comments,
-    });
-  }
-}
-
-
-// class Detail {
+// class detail {
 //   final String? orderId;
-//   final String? orderDate;
+//   final String? value;
+//   final String orderDate;
+//   bool isSelected = false;
+//   final double total;
+//   final String status;
+//   final String deliveryStatus;
+//   final String referenceNumber;
 //   final String? deliveryLocation;
 //   final String? deliveryAddress;
 //   final String? contactPerson;
 //   final String? contactNumber;
 //   final String? comments;
-//   final double total;
 //   final List<dynamic> items;
 //
-//   Detail({
+//   detail({
 //     this.orderId,
-//     this.orderDate,
+//     required this.orderDate,
+//     required this.total,
+//     required this.status,
+//     required this.deliveryStatus,
+//     this.value,
+//     required this.referenceNumber,
 //     this.deliveryLocation,
 //     this.deliveryAddress,
 //     this.contactPerson,
 //     this.contactNumber,
 //     this.comments,
-//     required this.total,
 //     required this.items,
+//
 //   });
 //
-//   factory Detail.fromJson(Map<String, dynamic> json) {
-//     return Detail(
+//   factory detail.fromJson(Map<String, dynamic> json) {
+//     return detail(
 //       orderId: json['orderId'],
-//       orderDate: json['orderDate'],
+//       orderDate: json['orderDate'] ?? 'Unknown date',
+//       total: json['total'].toDouble(),
+//       status: 'In preparation',
+//       // Dummy value
+//       deliveryStatus: 'Not Started',
+//       // Dummy value
+//       referenceNumber: '  ', // Dummy value
 //       deliveryLocation: json['deliveryLocation'],
 //       deliveryAddress: json['deliveryAddress'],
 //       contactPerson: json['contactPerson'],
 //       contactNumber: json['contactNumber'],
 //       comments: json['comments'],
-//       total: json['total'].toDouble(),
 //       items: json['items'],
 //     );
 //   }
 //
-//   factory Detail.fromString(String jsonString) {
+//   factory detail.fromString(String jsonString) {
 //     final jsonMap = jsonDecode(jsonString);
-//     return Detail.fromJson(jsonMap);
+//     return detail.fromJson(jsonMap);
 //   }
 //
 //   @override
 //   String toString() {
-//     return 'Order ID: $orderId, Order Date: $orderDate, Delivery Location: $deliveryLocation, Delivery Address: $deliveryAddress, Contact Person: $contactPerson, Contact Number: $contactNumber, Comments: $comments, Total: $total, Items: $items';
+//     return 'Order ID: $orderId, Order Date: $orderDate, Total: $total, Status: $status, Delivery Status: $deliveryStatus, Reference Number: $referenceNumber';
 //   }
 //
 //   String toJson() {
 //     return jsonEncode({
 //       "orderId": orderId,
 //       "orderDate": orderDate,
+//       "total": total,
+//       "status": status,
+//       "deliveryStatus": deliveryStatus,
+//       "referenceNumber": referenceNumber,
+//       "items": items,
 //       "deliveryLocation": deliveryLocation,
 //       "deliveryAddress": deliveryAddress,
 //       "contactPerson": contactPerson,
 //       "contactNumber": contactNumber,
 //       "comments": comments,
-//       "total": total,
-//       "items": items,
 //     });
 //   }
 // }
+
+
+
 

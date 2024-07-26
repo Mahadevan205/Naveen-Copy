@@ -369,6 +369,7 @@ class _DashboardState extends State<Dashboard> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
+                                context.go('/dashboard/return/:return');
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(

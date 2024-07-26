@@ -74,49 +74,34 @@ class _NextPageState extends State<NextPage> {
   String? dropdownValue2 = 'Filter II';
   String token = window.sessionStorage["token"] ?? " ";
   String _searchText = '';
+ // int _pageSize = 10; // Define the page size (e.g., 10 items per page)
   final String _category = '';
   final int _quantity = 0;
   final String _subCategory = '';
+  List<Product> allProducts = [];
   // int startIndex = 0;
   String? _selectedValue;
   int currentPage = 1;
   Timer? _searchDebounceTimer;
   List<Product> filteredProducts = [];
   List<Product> selectedProducts = [];
-  int _currentPage = 1;
+  int _previousPage = 1;
+ // int _currentPage = 1;
   int _startIndex = 0;
   // List<Product> productList = [];
-  int _totalPages = 1;
+ // int _totalPages = 1;
   List<Map<String, dynamic>> savedProducts = [];
 
   List<Product> _allProducts = [];
+  int _currentPage = 1;
+  int _totalPages = 1;
+  int _pageSize = 10;
 
-  void _prevPage() {
-    if (_currentPage > 1) {
-      _startIndex -= 10;
-      _currentPage--;
-      //_currentPage = (_currentPage - 1) < 1? 1 : _currentPage - 1;
 
-      fetchProducts();
-    }
-  }
-
-  void _nextPage() {
-    if (_currentPage < _totalPages) {
-      _startIndex += 10;
-      _currentPage++;
-      // _currentPage = (_currentPage + 1) > _totalPages? _totalPages : _currentPage + 1;
-      //});
-      fetchProducts();
-    }
-  }
-
-  Future<void> fetchProducts({int? page}) async {
-    final startIndex = (page ?? 1) * 10 -
-        10; // Calculate the start index based on the page number
+  Future<void> fetchProducts(int page, int pageSize) async {
     final response = await http.get(
       Uri.parse(
-        'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/productmaster/get_all_productmaster?startIndex=$startIndex&limit=10',
+        'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/productmaster/get_all_productmaster?page=$page&pageSize=$pageSize',
       ),
       headers: {
         "Content-type": "application/json",
@@ -128,34 +113,18 @@ class _NextPageState extends State<NextPage> {
       try {
         final jsonData = jsonDecode(response.body);
         if (jsonData is List) {
-          final products =
-          jsonData.map((item) => Product.fromJson(item)).toList();
-          if (mounted) {
-            setState(() {
-              _allProducts.addAll(
-                  products); // Add the new products to the end of _allProducts
-              productList = _allProducts.sublist(
-                  (page! - 1) * 10, page * 10); // Show only the next 5 items
-              _totalPages = (_allProducts.length / 10).ceil();
-            });
-          }
-        } else if (jsonData is Map) {
-          final products =
-          jsonData['body'].map((item) => Product.fromJson(item)).toList();
-          if (mounted) {
-            setState(() {
-              _allProducts.addAll(
-                  products); // Add the new products to the end of _allProducts
-              productList = _allProducts.sublist(
-                  (page! - 1) * 10, page * 10); // Show only the next 5 items
-              _totalPages = (_allProducts.length / 10).ceil();
-            });
-          }
+          final products = jsonData.map((item) => Product.fromJson(item)).toList();
+          setState(() {
+            _allProducts = products;
+            _totalPages = (jsonData.length / pageSize).ceil();
+            _updateProductList(); // Update the initial product list
+          });
         } else {
           if (mounted) {
             setState(() {
-              _allProducts = []; // Initialize with an empty list
-              productList = []; // Initialize with an empty list
+              _allProducts = [];
+              productList = [];
+              _totalPages = 1;
             });
           }
         }
@@ -167,20 +136,62 @@ class _NextPageState extends State<NextPage> {
     }
   }
 
-  void _gotoPage(int page) {
+
+  void _updateProductList() {
+    final filteredProducts = _allProducts
+        .where((product) => product.productName
+        .toLowerCase()
+        .contains(_searchText.toLowerCase()))
+        .toList();
+
+    final startIndex = (_currentPage - 1) * _pageSize;
+    final endIndex = startIndex + _pageSize;
+
     setState(() {
-      _currentPage = page;
-      productList.clear(); // Clear the productList before loading new data
-      productList.addAll(_allProducts.sublist((page - 1) * 10, page * 10));
+      productList = filteredProducts
+          .sublist(startIndex, endIndex > filteredProducts.length ? filteredProducts.length : endIndex);
     });
   }
 
-  void loadMoreData() {
+
+
+  void _updateSearch(String searchText) {
     setState(() {
-      _currentPage++;
+      _searchText = searchText;
+      _currentPage = 1;  // Reset to first page when searching
+      _updateProductList();
+     // _clearSearch();
     });
-    fetchProducts(page: _currentPage);
   }
+
+
+  void _nextPage() {
+    if (_currentPage < _totalPages) {
+      setState(() {
+        _currentPage++;
+        _updateProductList();
+      });
+    }
+  }
+
+  void _prevPage() {
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+        _updateProductList();
+      });
+    }
+  }
+
+  void _clearSearch() {
+    setState(() {
+      _searchText = '';
+      _currentPage = 1;
+      _updateProductList();
+    });
+  }
+
+
 
   @override
   void dispose() {
@@ -204,7 +215,7 @@ class _NextPageState extends State<NextPage> {
   void initState() {
     super.initState();
     if(widget.subText == 'hii'){
-      fetchProducts(page: currentPage);
+      fetchProducts(_currentPage, _pageSize);
       print('hellllloo');
       print(widget.product);
       data2 = widget.data;
@@ -217,7 +228,7 @@ class _NextPageState extends State<NextPage> {
     }
     else if(widget.inputText == 'hello'){
 
-      fetchProducts(page: currentPage);
+       fetchProducts(_currentPage, _pageSize);
       print('ordermodule');
       data2 = widget.data;
       // _total = data2['total'];
@@ -231,7 +242,7 @@ class _NextPageState extends State<NextPage> {
       }
     }
     else{
-      fetchProducts(page: currentPage);
+      fetchProducts(_currentPage, _pageSize);
       print('--song--');
       print(widget.product);
       products.add(widget.product);
@@ -620,143 +631,119 @@ class _NextPageState extends State<NextPage> {
                 const SizedBox(height: 1),
                 //new one
                 Container(
-                  width: maxWidth,
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,),
+                    border: Border.all(color:  Colors.grey),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(
-                      top: 5,
-                      bottom: 5,
-                    ),
-                    child: SizedBox(
-                      height: 34,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 48,
-                                right: 60,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "SN",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5,bottom: 5),
+                    child: Table(
+                      // border: TableBorder.all(color: Colors.grey),
+                      columnWidths: {
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(2.7),
+                        2: FlexColumnWidth(2),
+                        3: FlexColumnWidth(1.8),
+                        4: FlexColumnWidth(2),
+                        5: FlexColumnWidth(1),
+                        6: FlexColumnWidth(2),
+                        7:FlexColumnWidth(1),
+                        // 8:FlexColumnWidth(2),
+
+                      },
+                      children: [
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  //   right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('SN',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Product Name',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('Product Name',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Category",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('Category',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Sub Category",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('Sub Category',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Price",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('Price',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "QTY",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('QTY',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Total Amount",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
+                                child: Center(child: Text('Total Amount',style: TextStyle(fontWeight: FontWeight.bold),)),
                               ),
                             ),
-                          ),
-                          Expanded(
-                             child: Padding(
-                               padding: EdgeInsets.all(8.0),
-                               child: Center(
-                                child: Text("  ",
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: 15,
+                                  bottom: 5,
                                 ),
-                                                           ),
-                             ),
-                          ),
-                        ],
-                      ),
+                                child: Center(child: Text('        ')),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -770,6 +757,15 @@ class _NextPageState extends State<NextPage> {
                     Product product = products[index];
                     return Table(
                       border: TableBorder.all(color: Colors.grey),
+                      columnWidths: {
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(2.7),
+                        2: FlexColumnWidth(2),
+                        3: FlexColumnWidth(1.8),
+                        4: FlexColumnWidth(2),
+                        5: FlexColumnWidth(1),
+                        6: FlexColumnWidth(2),
+                      },
                       children: [
                         TableRow(
                           children: [
@@ -916,57 +912,12 @@ class _NextPageState extends State<NextPage> {
                     );
                   },
                 ),
-
-                // top result
-                //           SingleChildScrollView(
-                //             scrollDirection: Axis.horizontal,
-                //             child: Padding(
-                //               padding: const EdgeInsets.only(top: 6),
-                //               child: products.isEmpty
-                //                   ? const Center(child: Text('No data available'))
-                //                   : DataTable(
-                //                 columnSpacing: 102,
-                //                 columns: const [
-                //                   DataColumn(label: Text('Product Name', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                   DataColumn(label: Text('Category', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                   DataColumn(label: Text('Sub Category', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                   DataColumn(label: Text('Price', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                   DataColumn(label: Text('QTY', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                   DataColumn(label: Text('Total Amount', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                   DataColumn(label: Text('Action', style: TextStyle(fontWeight: FontWeight.bold))),
-                //                 ],
-                //                 rows: products.map((product) {
-                //                   return DataRow(
-                //                     cells: [
-                //                       DataCell(Text(product.productName)),
-                //                       DataCell(Text(product.category)),
-                //                       DataCell(Text(product.subCategory)),
-                //                       DataCell(Text('${product.price}')),
-                //                       DataCell(Text('${product.quantity}')),
-                //                       DataCell(Text('${product.total}')),
-                //                       DataCell(
-                //                         IconButton(
-                //                           onPressed: () {
-                //                             _deleteProduct(products.indexOf(product));
-                //                           },
-                //                           icon: Icon(
-                //                             Icons.remove_circle_outline,
-                //                             color: Colors.blue,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   );
-                //                 }).toList(),
-                //               ),
-                //             ),
-                //           ),
               ],
             ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 30,
-                right: maxWidth *0.16),
+                right: maxWidth *0.12),
             child: Align(
               alignment: Alignment.topRight,
               child: SizedBox(
@@ -1058,115 +1009,6 @@ class _NextPageState extends State<NextPage> {
     );
   }
 
-  // Widget buildSearchField1() {
-  //   return
-  //     Center(
-  //       child: LayoutBuilder(
-  //         builder: (context, constraints) {
-  //           return Padding(
-  //             padding: const EdgeInsets.only(top: 100, bottom: 50),
-  //             child: SingleChildScrollView(
-  //               scrollDirection: Axis.horizontal,
-  //               child: Container(
-  //                 height: constraints.maxHeight * 0.7,
-  //                 width: constraints.maxWidth * 0.8,
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.white,
-  //                   borderRadius: BorderRadius.circular(8.0),
-  //                   boxShadow: [
-  //                     BoxShadow(
-  //                       color: Colors.grey.withOpacity(0.5),
-  //                       spreadRadius: 2,
-  //                       blurRadius: 5,
-  //                       offset: Offset(0, 3),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 child: SingleChildScrollView(
-  //                   child: Column(
-  //                     children: [
-  //                       Container(
-  //                         width: double.infinity,
-  //                         padding: EdgeInsets.all(16.0),
-  //                         decoration: BoxDecoration(
-  //                           color: Colors.blue,
-  //                           borderRadius: BorderRadius.only(
-  //                             topLeft: Radius.circular(8.0),
-  //                             topRight: Radius.circular(8.0),
-  //                           ),
-  //                         ),
-  //                         child: Text(
-  //                           'Selected Products',
-  //                           style: TextStyle(
-  //                             color: Colors.white,
-  //                             fontSize: 18.0,
-  //                             fontWeight: FontWeight.bold,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       Divider(color: Colors.grey),
-  //                       // SingleChildScrollView(
-  //                       //   scrollDirection: Axis.horizontal,
-  //                       //   child:
-  //                       //   // DataTable(
-  //                       //   //   columnSpacing: 90,
-  //                       //   //   headingRowColor: MaterialStateColor.resolveWith(
-  //                       //   //           (states) => Colors.white),
-  //                       //   //   headingTextStyle: TextStyle(
-  //                       //   //       color: Colors.black,
-  //                       //   //       fontWeight: FontWeight.bold),
-  //                       //   //   columns: [
-  //                       //   //     DataColumn(label: Text('Product Name')),
-  //                       //   //     DataColumn(label: Text('Category')),
-  //                       //   //     DataColumn(label: Text('Sub Category')),
-  //                       //   //     DataColumn(label: Text('Price')),
-  //                       //   //     DataColumn(label: Text('QTY')),
-  //                       //   //     DataColumn(label: Text('Total Amount')),
-  //                       //   //     DataColumn(label: Text('Action')),
-  //                       //   //   ],
-  //                       //   //   rows: products.map((product) {
-  //                       //   //        return DataRow(
-  //                       //   //          cells: [
-  //                       //   //            DataCell(Text(product.productName)),
-  //                       //   //            DataCell(Text(product.category)),
-  //                       //   //            DataCell(Text(product.subCategory)),
-  //                       //   //            DataCell(Text('${product.price}')),
-  //                       //   //            DataCell(Text('${product.quantity}')),
-  //                       //   //            DataCell(Text('${product.total}')),
-  //                       //   //            DataCell(
-  //                       //   //              IconButton(
-  //                       //   //                onPressed: () {
-  //                       //   //                  _deleteProduct(products.indexOf(product));
-  //                       //   //                },
-  //                       //   //                icon: Icon(
-  //                       //   //                  Icons.remove_circle_outline,
-  //                       //   //                  color: Colors.blue,
-  //                       //   //                ),
-  //                       //   //              ),
-  //                       //   //            ),
-  //                       //   //          ],
-  //                       //   //        );
-  //                       //   //      }).toList(),
-  //                       //   //   border: TableBorder(
-  //                       //   //     horizontalInside: BorderSide.none,
-  //                       //   //     verticalInside: BorderSide(
-  //                       //   //       color: Colors.grey.shade300,
-  //                       //   //       width: 1,
-  //                       //   //     ),
-  //                       //   //   ),
-  //                       //   // ),
-  //                       //
-  //                       // ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     );
-  // }
   Widget buildSearchField1() {
     return
       Container(
@@ -1245,17 +1087,24 @@ class _NextPageState extends State<NextPage> {
                   color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(4.0),
                 ),
-                child: const SizedBox(
+                child:  SizedBox(
                   height: 40,
                   width: 350,
-                  child:  TextField(
+                  child:  TextFormField(
+                    //controller: ,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
+
+                      prefixIcon: Icon(Icons.search
+
+
+                      ),
                       hintText: 'Search for products',
                       contentPadding:  EdgeInsets.symmetric(
                           horizontal: 8, vertical: 8),
                       border: InputBorder.none,
                     ),
+    //int _previousPage = 1; // Store the previous page number
+                    onChanged: _updateSearch,
                   ),
                 ),
               ),
@@ -1268,210 +1117,7 @@ class _NextPageState extends State<NextPage> {
   }
   Widget buildDataTable() {
     double maxWidth = MediaQuery.of(context).size.width;
-    filteredProducts = productList
-        .where((Product) => Product.productName
-        .toLowerCase()
-        .contains(_searchText.toLowerCase()))
-        .where((Product) => _category.isEmpty || Product.category == _category)
-        .where((Product) =>
-    _subCategory.isEmpty || Product.subCategory == _subCategory)
-        .toList();
-
     return
-      // SizedBox(
-      //   height: 350,
-      //   width: 1390,
-      //   child: Column(
-      //     children: [
-      //       Container(
-      //         color: Colors.white,
-      //         child: DataTable(
-      //           border: TableBorder.all(
-      //             color: Colors.grey,
-      //             width: 2,
-      //           ),
-      //           // decoration: BoxDecoration(
-      //           //   border: Border.all(color: Colors.blue, width: 1),
-      //           // ),
-      //           columnSpacing: 114,
-      //           headingRowColor: MaterialStateColor.resolveWith(
-      //                   (states) => Colors.white),
-      //           headingTextStyle: const TextStyle(
-      //               color: Colors.black, fontWeight: FontWeight.bold),
-      //           headingRowHeight: 50,
-      //           columns: const [
-      //             DataColumn(label: Text('Product Name')),
-      //             DataColumn(label: Text('Category')),
-      //             DataColumn(label: Text('Sub Category')),
-      //             DataColumn(label: Text('Price')),
-      //             DataColumn(label: Text('QTY')),
-      //             DataColumn(label: Text('Total Amount')),
-      //             DataColumn(label: Text('Action')),
-      //           ],
-      //           rows: filteredProducts.map((Product) {
-      //             return DataRow.byIndex(
-      //               index: filteredProducts.indexOf(Product),
-      //               cells: [
-      //                 DataCell(
-      //                   Container(
-      //                     height: 35,
-      //                     decoration: BoxDecoration(
-      //                       color: Colors.grey[300],
-      //                     ),
-      //                     child: Center(
-      //                       child: Text(
-      //                         Product.productName,
-      //                         style: const TextStyle(color: Colors.black),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 DataCell(
-      //                   Padding(
-      //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-      //                     child: Container(
-      //                       height: 35,
-      //                       decoration: BoxDecoration(
-      //                         color: Colors.grey[300],
-      //                       ),
-      //                       child: Center(
-      //                         child: Text(
-      //                           Product.category,
-      //                           style: const TextStyle(color: Colors.black),
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 DataCell(
-      //                   Padding(
-      //                     padding: const EdgeInsets.fromLTRB(6, 8, 6, 2),
-      //                     child: Container(
-      //                       height: 35,
-      //                       decoration: BoxDecoration(
-      //                         color: Colors.grey[300],
-      //                       ),
-      //                       child: Center(
-      //                         child: Text(
-      //                           Product.subCategory,
-      //                           style: const TextStyle(color: Colors.black),
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 DataCell(
-      //                   Padding(
-      //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-      //                     child: Container(
-      //                       height: 35,
-      //                       decoration: BoxDecoration(
-      //                         color: Colors.grey[300],
-      //                       ),
-      //                       child: Center(
-      //                         child: Text(
-      //                           Product.price.toString(),
-      //                           style: const TextStyle(color: Colors.black),
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 DataCell(
-      //                   Padding(
-      //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-      //                     child: Container(
-      //                       height: 35,
-      //                       decoration: BoxDecoration(
-      //                         color: Colors.grey[300],
-      //                       ),
-      //                       child: Center(
-      //                         child: TextFormField(
-      //                           autofocus: true, // Add this line
-      //                           initialValue: '', // Add this line
-      //                           onChanged: (value) {
-      //                             setState(() {
-      //                               Product.quantity = int.tryParse(value) ?? 0;
-      //                               Product.total =
-      //                               (Product.price * Product.quantity) as double;
-      //                               _calculateTotal();
-      //                             });
-      //                           },
-      //                           decoration: const InputDecoration(
-      //                             border:
-      //                             InputBorder.none, // Hide the underline
-      //                             contentPadding: EdgeInsets.only(
-      //                                 bottom: 12), // Remove the padding
-      //                           ),
-      //                           textAlign: TextAlign.center,
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 DataCell(
-      //                   Padding(
-      //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-      //                     child: Container(
-      //                       height: 35,
-      //                       decoration: BoxDecoration(
-      //                         color: Colors.grey[300],
-      //                       ),
-      //                       child: Center(
-      //                         child: Text(
-      //                           Product.total.toString(),
-      //                           style: const TextStyle(color: Colors.black),
-      //                         ),
-      //                         // Adjust the spacing as needed
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 DataCell(
-      //                     IconButton(
-      //                       onPressed: () {
-      //                         if (product.quantity == null || product.quantity == 0) {
-      //                           // Show a popup to fill the quantity field
-      //                           showDialog(
-      //                             context: context,
-      //                             builder: (context) => AlertDialog(
-      //                               title: const Text('Error'),
-      //                               content: const Text('Please fill the quantity field'),
-      //                               actions: [
-      //                                 TextButton(
-      //                                   child: const Text('OK'),
-      //                                   onPressed: () {
-      //                                     Navigator.of(context).pop();
-      //                                   },
-      //                                 ),
-      //                               ],
-      //                             ),
-      //                           );
-      //                         } else {
-      //                           _handleAddButtonPress(product);
-      //                           _scrollController.jumpTo(0);
-      //                           setState(() {
-      //                             product.quantity = 0;
-      //                             product.total = 0; // Reset the quantity to 0
-      //                           });
-      //                         }
-      //                       },
-      //                       icon: const Icon(
-      //                         Icons.add_circle_rounded,
-      //                         color: Colors.blue,
-      //                       ),
-      //                     )
-      //                 ),
-      //               ],
-      //             );
-      //           }).toList(),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // );
-      // SingleChildScrollView(
-      //   scrollDirection: Axis.horizontal,
       SizedBox(
         height: 650, // set the desired height
         width:
@@ -1480,107 +1126,130 @@ class _NextPageState extends State<NextPage> {
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: Colors.grey, width: 1),
+                border: Border.all(color:  Colors.grey),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 30,
-                  top: 10,
-                  bottom: 10,
-                ),
-                child: SizedBox(
-                  height: 35,
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 45,right: 50),
-                          child: Text(
-                            'Product Name',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                padding: const EdgeInsets.only(top: 5,bottom: 5),
+                child: Table(
+                  // border: TableBorder.all(color: Colors.grey),
+                  columnWidths: {
+                    0: FlexColumnWidth(2.3),
+                    1: FlexColumnWidth(2),
+                    2: FlexColumnWidth(1.8),
+                    3: FlexColumnWidth(1.7),
+                    4: FlexColumnWidth(1),
+                    5: FlexColumnWidth(1.5),
+                    6:FlexColumnWidth(1),
+                    // 8:FlexColumnWidth(2),
+
+                  },
+                  children: [
+                    TableRow(
+                      children: [
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
                             ),
+                            child: Center(child: Text('Product Name',style: TextStyle(fontWeight: FontWeight.bold),)),
                           ),
                         ),
-                      ),
-                      const Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left:75,right: 45),
-                          child: Text(
-                            "Category",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
                             ),
+                            child: Center(child: Text('Category',style: TextStyle(fontWeight: FontWeight.bold),)),
                           ),
                         ),
-                      ),
-                      const Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 55,right: 60),
-                          child: Text(
-                            "Sub Category",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
                             ),
+                            child: Center(child: Text('Sub Category',style: TextStyle(fontWeight: FontWeight.bold),)),
                           ),
                         ),
-                      ),
-                      const Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 85,right: 25),
-                          child: Text(
-                            "Price",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
                             ),
+                            child: Center(child: Text('Price',style: TextStyle(fontWeight: FontWeight.bold),)),
                           ),
                         ),
-                      ),
-                      const Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 95,right: 0),
-                          child: Text(
-                            "QTY",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
                             ),
-                          ),
-                        ),),
-                      const Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 75,right: 25),
-                          child: Text(
-                            "Total Amount",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            child: Center(child: Text('QTY',style: TextStyle(fontWeight: FontWeight.bold),)),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 10,right: 10),
-                          child: Text("  ",
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
+                            ),
+                            child: Center(child: Text('Total Amount',style: TextStyle(fontWeight: FontWeight.bold),)),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              // left: 10,
+                              // right: 10,
+                              top: 15,
+                              bottom: 5,
+                            ),
+                            child: Center(child: Text('        ')),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredProducts.length,
+    itemCount: productList.length,
+         //     itemCount: filteredProducts.length,
               itemBuilder: (context, index) {
-                Product product = filteredProducts[index];
+    final product = productList[index];
+                //Product product = filteredProducts[index];
                 return Table(
                   border: TableBorder.all(
                       color: Colors.grey),
                   // Add this line
+                  columnWidths: {
+                    0: FlexColumnWidth(2.3),
+                    1: FlexColumnWidth(2),
+                    2: FlexColumnWidth(1.8),
+                    3: FlexColumnWidth(1.7),
+                    4: FlexColumnWidth(1),
+                    5: FlexColumnWidth(1.5),
+                    6: FlexColumnWidth(1),
+                  },
                   children: [
                     TableRow(
                       children: [
@@ -1776,492 +1445,25 @@ class _NextPageState extends State<NextPage> {
             ),
             SizedBox(height: 10,),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                  onPressed: () {
-                    if (_currentPage > 1) {
-                      _gotoPage(_currentPage - 1);
-                    }
-                  },
-                  child: const Icon(Icons.arrow_back),
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: _prevPage,
                 ),
-                Text(
-                  'Page $_currentPage of $_totalPages',
-                  style: const TextStyle(fontSize: 16),
+                Text('Page $_currentPage of $_totalPages'),
+                IconButton(
+                  icon: Icon(Icons.arrow_forward),
+                  onPressed: _nextPage,
                 ),
-                const SizedBox(width: 10),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    if (_currentPage < _totalPages) {
-                      _gotoPage(_currentPage + 1);
-                    }
-                  },
-                  child: const Icon(Icons.arrow_forward),
-                )
               ],
             ),
-            // Row(
-            //    mainAxisAlignment: MainAxisAlignment.end,
-            //   children: [
-            //     for (int i = 1; i <= _totalPages; i++)
-            //       TextButton(
-            //         onPressed: () {
-            //           _gotoPage(i);
-            //         },
-            //         child: Text('$i'),
-            //       ),
-            //   ],
-            // )
           ],
         ),
       );
     // );
   }
-  // Widget buildDataTable() {
-  //   filteredProducts = productList
-  //       .where((Product) => Product.productName
-  //       .toLowerCase()
-  //       .contains(_searchText.toLowerCase()))
-  //       .where((Product) => _category.isEmpty || Product.category == _category)
-  //       .where((Product) =>
-  //   _subCategory.isEmpty || Product.subCategory == _subCategory)
-  //       .toList();
-  //
-  //   return
-  //     // SizedBox(
-  //     //   height: 350,
-  //     //   width: 1390,
-  //     //   child: Column(
-  //     //     children: [
-  //     //       Container(
-  //     //         color: Colors.white,
-  //     //         child: DataTable(
-  //     //           border: TableBorder.all(
-  //     //             color: Colors.grey,
-  //     //             width: 2,
-  //     //           ),
-  //     //           // decoration: BoxDecoration(
-  //     //           //   border: Border.all(color: Colors.blue, width: 1),
-  //     //           // ),
-  //     //           columnSpacing: 114,
-  //     //           headingRowColor: MaterialStateColor.resolveWith(
-  //     //                   (states) => Colors.white),
-  //     //           headingTextStyle: const TextStyle(
-  //     //               color: Colors.black, fontWeight: FontWeight.bold),
-  //     //           headingRowHeight: 50,
-  //     //           columns: const [
-  //     //             DataColumn(label: Text('Product Name')),
-  //     //             DataColumn(label: Text('Category')),
-  //     //             DataColumn(label: Text('Sub Category')),
-  //     //             DataColumn(label: Text('Price')),
-  //     //             DataColumn(label: Text('QTY')),
-  //     //             DataColumn(label: Text('Total Amount')),
-  //     //             DataColumn(label: Text('Action')),
-  //     //           ],
-  //     //           rows: filteredProducts.map((Product) {
-  //     //             return DataRow.byIndex(
-  //     //               index: filteredProducts.indexOf(Product),
-  //     //               cells: [
-  //     //                 DataCell(
-  //     //                   Container(
-  //     //                     height: 35,
-  //     //                     decoration: BoxDecoration(
-  //     //                       color: Colors.grey[300],
-  //     //                     ),
-  //     //                     child: Center(
-  //     //                       child: Text(
-  //     //                         Product.productName,
-  //     //                         style: const TextStyle(color: Colors.black),
-  //     //                       ),
-  //     //                     ),
-  //     //                   ),
-  //     //                 ),
-  //     //                 DataCell(
-  //     //                   Padding(
-  //     //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //     //                     child: Container(
-  //     //                       height: 35,
-  //     //                       decoration: BoxDecoration(
-  //     //                         color: Colors.grey[300],
-  //     //                       ),
-  //     //                       child: Center(
-  //     //                         child: Text(
-  //     //                           Product.category,
-  //     //                           style: const TextStyle(color: Colors.black),
-  //     //                         ),
-  //     //                       ),
-  //     //                     ),
-  //     //                   ),
-  //     //                 ),
-  //     //                 DataCell(
-  //     //                   Padding(
-  //     //                     padding: const EdgeInsets.fromLTRB(6, 8, 6, 2),
-  //     //                     child: Container(
-  //     //                       height: 35,
-  //     //                       decoration: BoxDecoration(
-  //     //                         color: Colors.grey[300],
-  //     //                       ),
-  //     //                       child: Center(
-  //     //                         child: Text(
-  //     //                           Product.subCategory,
-  //     //                           style: const TextStyle(color: Colors.black),
-  //     //                         ),
-  //     //                       ),
-  //     //                     ),
-  //     //                   ),
-  //     //                 ),
-  //     //                 DataCell(
-  //     //                   Padding(
-  //     //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //     //                     child: Container(
-  //     //                       height: 35,
-  //     //                       decoration: BoxDecoration(
-  //     //                         color: Colors.grey[300],
-  //     //                       ),
-  //     //                       child: Center(
-  //     //                         child: Text(
-  //     //                           Product.price.toString(),
-  //     //                           style: const TextStyle(color: Colors.black),
-  //     //                         ),
-  //     //                       ),
-  //     //                     ),
-  //     //                   ),
-  //     //                 ),
-  //     //                 DataCell(
-  //     //                   Padding(
-  //     //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //     //                     child: Container(
-  //     //                       height: 35,
-  //     //                       decoration: BoxDecoration(
-  //     //                         color: Colors.grey[300],
-  //     //                       ),
-  //     //                       child: Center(
-  //     //                         child: TextFormField(
-  //     //                           autofocus: true, // Add this line
-  //     //                           initialValue: '', // Add this line
-  //     //                           onChanged: (value) {
-  //     //                             setState(() {
-  //     //                               Product.quantity = int.tryParse(value) ?? 0;
-  //     //                               Product.total =
-  //     //                               (Product.price * Product.quantity) as double;
-  //     //                               _calculateTotal();
-  //     //                             });
-  //     //                           },
-  //     //                           decoration: const InputDecoration(
-  //     //                             border:
-  //     //                             InputBorder.none, // Hide the underline
-  //     //                             contentPadding: EdgeInsets.only(
-  //     //                                 bottom: 12), // Remove the padding
-  //     //                           ),
-  //     //                           textAlign: TextAlign.center,
-  //     //                         ),
-  //     //                       ),
-  //     //                     ),
-  //     //                   ),
-  //     //                 ),
-  //     //                 DataCell(
-  //     //                   Padding(
-  //     //                     padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //     //                     child: Container(
-  //     //                       height: 35,
-  //     //                       decoration: BoxDecoration(
-  //     //                         color: Colors.grey[300],
-  //     //                       ),
-  //     //                       child: Center(
-  //     //                         child: Text(
-  //     //                           Product.total.toString(),
-  //     //                           style: const TextStyle(color: Colors.black),
-  //     //                         ),
-  //     //                         // Adjust the spacing as needed
-  //     //                       ),
-  //     //                     ),
-  //     //                   ),
-  //     //                 ),
-  //     //                 DataCell(
-  //     //                     IconButton(
-  //     //                       onPressed: () {
-  //     //                         if (product.quantity == null || product.quantity == 0) {
-  //     //                           // Show a popup to fill the quantity field
-  //     //                           showDialog(
-  //     //                             context: context,
-  //     //                             builder: (context) => AlertDialog(
-  //     //                               title: const Text('Error'),
-  //     //                               content: const Text('Please fill the quantity field'),
-  //     //                               actions: [
-  //     //                                 TextButton(
-  //     //                                   child: const Text('OK'),
-  //     //                                   onPressed: () {
-  //     //                                     Navigator.of(context).pop();
-  //     //                                   },
-  //     //                                 ),
-  //     //                               ],
-  //     //                             ),
-  //     //                           );
-  //     //                         } else {
-  //     //                           _handleAddButtonPress(product);
-  //     //                           _scrollController.jumpTo(0);
-  //     //                           setState(() {
-  //     //                             product.quantity = 0;
-  //     //                             product.total = 0; // Reset the quantity to 0
-  //     //                           });
-  //     //                         }
-  //     //                       },
-  //     //                       icon: const Icon(
-  //     //                         Icons.add_circle_rounded,
-  //     //                         color: Colors.blue,
-  //     //                       ),
-  //     //                     )
-  //     //                 ),
-  //     //               ],
-  //     //             );
-  //     //           }).toList(),
-  //     //         ),
-  //     //       ),
-  //     //     ],
-  //     //   ),
-  //     // );
-  //     SizedBox(
-  //       height: 650, // set the desired height
-  //       width: 1390, // set the desired width// change contianer width in this place
-  //       child: Column(
-  //         children: [
-  //           SingleChildScrollView(
-  //             scrollDirection: Axis.horizontal,
-  //             child: Container(
-  //               color: Colors.white,
-  //               child: DataTable(
-  //                 border: TableBorder.all(
-  //                   color: Colors.grey,
-  //                   width: 2,
-  //                 ),
-  //                 columnSpacing: 93.5,
-  //                 headingRowColor: MaterialStateColor.resolveWith(
-  //                         (states) => Colors.white),
-  //                 headingTextStyle: const TextStyle(
-  //                     color: Colors.black, fontWeight: FontWeight.bold),
-  //                 headingRowHeight: 50,
-  //                 columns: const [
-  //                   DataColumn(label: Text('Product Name')),
-  //                   DataColumn(label: Text('Category')),
-  //                   DataColumn(label: Text('Sub Category')),
-  //                   DataColumn(label: Text('Price')),
-  //                   DataColumn(label: Text('QTY')),
-  //                   DataColumn(label: Text('Total Amount')),
-  //                   DataColumn(label: Text('Action')),
-  //                 ],
-  //                 rows: filteredProducts.map((Product product) {
-  //                   return DataRow.byIndex(
-  //                     index: filteredProducts.indexOf(product),
-  //                     cells: [
-  //                       DataCell(
-  //                         Container(
-  //                           height: 35,
-  //                           decoration: BoxDecoration(
-  //                             color: Colors.grey[300],
-  //                           ),
-  //                           child: Center(
-  //                             child: Text(
-  //                               product.productName,
-  //                               style: const TextStyle(color: Colors.black),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(
-  //                         Padding(
-  //                           padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //                           child: Container(
-  //                             height: 35,
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.grey[300],
-  //                             ),
-  //                             child: Center(
-  //                               child: Text(
-  //                                 product.category,
-  //                                 style: const TextStyle(color: Colors.black),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(
-  //                         Padding(
-  //                           padding: const EdgeInsets.fromLTRB(6, 8, 6, 2),
-  //                           child: Container(
-  //                             height: 35,
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.grey[300],
-  //                             ),
-  //                             child: Center(
-  //                               child: Text(
-  //                                 product.subCategory,
-  //                                 style: const TextStyle(color: Colors.black),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(
-  //                         Padding(
-  //                           padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //                           child: Container(
-  //                             height: 35,
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.grey[300],
-  //                             ),
-  //                             child: Center(
-  //                               child: Text(
-  //                                 product.price.toString(),
-  //                                 style: const TextStyle(color: Colors.black),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(
-  //                         Padding(
-  //                           padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //                           child: Container(
-  //                             height: 35,
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.grey[300],
-  //                             ),
-  //                             child: Center(
-  //                               child: TextFormField(
-  //                                 autofocus: true,
-  //                                 initialValue: '',
-  //                                 onChanged: (value) {
-  //                                   setState(() {
-  //                                     product.quantity = int.tryParse(value) ?? 0;
-  //                                     product.total = (product.price * product.quantity) as double;
-  //                                     _calculateTotal();
-  //                                   });
-  //                                 },
-  //                                 decoration: const InputDecoration(
-  //                                   border: InputBorder.none,
-  //                                   contentPadding: EdgeInsets.only(bottom: 12),
-  //                                 ),
-  //                                 textAlign: TextAlign.center,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(
-  //                         Padding(
-  //                           padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
-  //                           child: Container(
-  //                             height: 35,
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.grey[300],
-  //                             ),
-  //                             child: Center(
-  //                               child: Text(
-  //                                 product.total.toString(),
-  //                                 style: const TextStyle(color: Colors.black),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       DataCell(
-  //                         IconButton(
-  //                           onPressed: () {
-  //                             if (product.quantity == null || product.quantity == 0) {
-  //                               showDialog(
-  //                                 context: context,
-  //                                 builder: (context) => AlertDialog(
-  //                                   title: const Text('Error'),
-  //                                   content: const Text('Please fill the quantity field'),
-  //                                   actions: [
-  //                                     TextButton(
-  //                                       child: const Text('OK'),
-  //                                       onPressed: () {
-  //                                         Navigator.of(context).pop();
-  //                                       },
-  //                                     ),
-  //                                   ],
-  //                                 ),
-  //                               );
-  //                             } else {
-  //                               _handleAddButtonPress(product);
-  //                               _scrollController.jumpTo(0);
-  //                               setState(() {
-  //                                 product.quantity = 0;
-  //                                 product.total = 0;
-  //                               });
-  //                             }
-  //                           },
-  //                           icon: const Icon(
-  //                             Icons.add_circle_rounded,
-  //                             color: Colors.blue,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   );
-  //                 }).toList(),
-  //               ),
-  //             ),
-  //           ),
-  //           SizedBox(height: 20,),
-  //              Row(
-  //               mainAxisAlignment: MainAxisAlignment.end,
-  //               children: [
-  //                 TextButton(
-  //                   onPressed: () {
-  //                     if (_currentPage > 1) {
-  //                       _gotoPage(_currentPage - 1);
-  //                     }
-  //                   },
-  //                   child: const Icon(Icons.arrow_back),
-  //                 ),
-  //                 Text(
-  //                   'Page $_currentPage of $_totalPages',
-  //                   style: const TextStyle(fontSize: 16),
-  //                 ),
-  //                 const SizedBox(width: 10),
-  //                 const SizedBox(width: 10),
-  //                 TextButton(
-  //                   onPressed: () {
-  //                     if (_currentPage < _totalPages) {
-  //                       _gotoPage(_currentPage + 1);
-  //                     }
-  //                   },
-  //                   child: const Icon(Icons.arrow_forward),
-  //                 )
-  //               ],
-  //             ),
-  //           // Row(
-  //           //    mainAxisAlignment: MainAxisAlignment.end,
-  //           //   children: [
-  //           //     for (int i = 1; i <= _totalPages; i++)
-  //           //       TextButton(
-  //           //         onPressed: () {
-  //           //           _gotoPage(i);
-  //           //         },
-  //           //         child: Text('$i'),
-  //           //       ),
-  //           //   ],
-  //           // )
-  //         ],
-  //       ),
-  //     );
-  // }
 
-  Widget _buildPageButtons() {
-    return Row(children: [
-      for (int i = 1; i <= _totalPages; i++)
-        TextButton(
-          onPressed: () {
-            _gotoPage(i);
-          },
-          child: Text('$i'),
-        ),
-    ]);
-  }
 
   Widget buildSideMenu() {
     return
@@ -2434,130 +1636,7 @@ class _NextPageState extends State<NextPage> {
       );
   }
 
-  // Widget buildProductListTitle() {
-  //   return
-  //     Positioned(
-  //     left: 203,
-  //     right: 0,
-  //     top: 1,
-  //     height: kToolbarHeight,
-  //     child: Row(
-  //       children: [
-  //         IconButton(
-  //           icon: const Icon(Icons.arrow_back), // Back button icon
-  //           onPressed: () {
-  //             context.go('/dasbaord//OrderPage/:product/arrowBack');
-  //             // product error occur so handle carefully for entering orderspage3
-  //             Navigator.push(
-  //               context,
-  //               MaterialPageRoute(
-  //                   builder: (context) => const OrderPage3(data: {}, )),
-  //             );
-  //           },
-  //         ),
-  //         const Padding(
-  //           padding: EdgeInsets.only(left: 30),
-  //           child: Text(
-  //             'Go back',
-  //             style: TextStyle(
-  //               fontSize: 20,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //             textAlign: TextAlign.left,
-  //           ),
-  //         ),
-  //         Spacer(),
-  //         Align(
-  //           alignment: Alignment.topLeft,
-  //           child: Padding(
-  //             padding: const EdgeInsets.only(right: 110,top: 10),
-  //             child: Builder(
-  //               builder: (context) {
-  //                 return OutlinedButton(
-  //                   onPressed: () {
-  //                     if (products.isNotEmpty && widget.inputText == '') {
-  //                       // context.go(
-  //                       //   '/dasbaord/Orderspage/addproduct/addparts/addbutton/saveproducts',
-  //                       //   extra: {
-  //                       //     'selectedProducts': products,
-  //                       //     'data': data2,
-  //                       //   },
-  //                       // );
-  //                       print('----weellls');
-  //                       print(selectedProducts);
-  //                       Navigator.push(
-  //                         context,
-  //                         PageRouteBuilder(
-  //                           pageBuilder: (context, animation,
-  //                               secondaryAnimation) =>
-  //                               FifthPage(
-  //                                 selectedProducts: products, data: data2, select: '',  ),
-  //                           transitionDuration:
-  //                           const Duration(milliseconds: 200),
-  //                           transitionsBuilder: (context, animation,
-  //                               secondaryAnimation, child) {
-  //                             return FadeTransition(
-  //                               opacity: animation,
-  //                               child: child,
-  //                             );
-  //                           },
-  //                         ),
-  //                       );
-  //                     }
-  //                     else
-  //                     {
-  //                       List<Order> orders = widget.selectedProducts.map((product) => product.productToOrder()).toList();
-  //                       print(
-  //                           '-------order data'
-  //                       );
-  //                       data2['total'] = _total.toString();
-  //
-  //                       print(orders);
-  //                       Navigator.push(
-  //                         context,
-  //                         PageRouteBuilder(
-  //                           pageBuilder: (context, animation,
-  //                               secondaryAnimation) =>
-  //                               SelectedProductPage(
-  //                                 selectedProducts: products,
-  //                                 data: data2,),
-  //                           transitionDuration:
-  //                           const Duration(milliseconds: 200),
-  //                           transitionsBuilder: (context, animation,
-  //                               secondaryAnimation, child) {
-  //                             return FadeTransition(
-  //                               opacity: animation,
-  //                               child: child,
-  //                             );
-  //                           },
-  //                         ),
-  //                       );
-  //                     }
-  //                     // print('button clicked');
-  //                     // _handleAddButtonPress1(selectedProducts)
-  //                     print('----Nothing else----');
-  //                     print(products);
-  //                   },
-  //                   style: OutlinedButton.styleFrom(
-  //                     backgroundColor: Colors.blue,
-  //                     shape: RoundedRectangleBorder(
-  //                       borderRadius: BorderRadius.circular(5),
-  //                     ),
-  //                     side: BorderSide.none,
-  //                   ),
-  //                   child: const Text(
-  //                     "Save Products",
-  //                     style: TextStyle(color: Colors.white, fontSize: 15),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+
 
   void _calculateTotal() {
     double total = 0;

@@ -284,12 +284,6 @@ class _SecondPageState extends State<SecondPage> {
           const SnackBar(content: Text("Failed to add product: error")),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Product addedss successfully")),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("please pick image")),
-        );
         if (pickedImagePath != null) {
           final imageResponse = await http.post(
             Uri.parse(
@@ -1218,53 +1212,101 @@ class _SecondPageState extends State<SecondPage> {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius:
-                                            BorderRadius.circular(2),
-                                            border: Border.all(
-                                                color: Colors.blue[100]!),
+                                            borderRadius: BorderRadius.circular(2),
+                                            border: Border.all(color: Colors.blue[100]!),
                                           ),
                                           child: TextFormField(
                                             controller: discountController,
-                                            keyboardType:
-                                            TextInputType.number,
+                                            keyboardType: TextInputType.number,
                                             inputFormatters: [
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly,
-                                              LengthLimitingTextInputFormatter(
-                                                  10),
-                                              // limits to 10 digits
+                                              FilteringTextInputFormatter.digitsOnly,
+                                              LengthLimitingTextInputFormatter(10),
                                             ],
                                             decoration: InputDecoration(
                                               fillColor: Colors.white,
-                                              contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 10),
+                                              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                               border: InputBorder.none,
                                               filled: true,
                                               hintText: 'Enter Discount',
                                               errorText: errorMessage,
                                             ),
                                             onChanged: (value) {
-                                              if (value.isNotEmpty &&
-                                                  !isNumeric(value)) {
+                                              if (value.isNotEmpty && !isNumeric(value)) {
                                                 setState(() {
-                                                  ScaffoldMessenger.of(
-                                                      context)
-                                                      .showSnackBar(
-                                                    const SnackBar(
-                                                        content: Text(
-                                                            "Please enter decimal number only")),
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(content: Text("Please enter decimal number only")),
                                                   );
                                                 });
                                               } else {
                                                 setState(() {
                                                   errorMessage = null;
                                                 });
+                                                if (value.isNotEmpty) {
+                                                  discountController.text = '$value%';
+                                                  discountController.selection = TextSelection.fromPosition(
+                                                    TextPosition(offset: discountController.text.length - 1),
+                                                  );
+                                                } else {
+                                                  discountController.text = value;
+                                                }
                                               }
                                             },
                                           ),
                                         ),
                                       ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.all(8.0),
+                                      //   child: Container(
+                                      //     decoration: BoxDecoration(
+                                      //       color: Colors.white,
+                                      //       borderRadius:
+                                      //       BorderRadius.circular(2),
+                                      //       border: Border.all(
+                                      //           color: Colors.blue[100]!),
+                                      //     ),
+                                      //     child: TextFormField(
+                                      //       controller: discountController,
+                                      //       keyboardType:
+                                      //       TextInputType.number,
+                                      //       inputFormatters: [
+                                      //         FilteringTextInputFormatter
+                                      //             .digitsOnly,
+                                      //         LengthLimitingTextInputFormatter(
+                                      //             5),
+                                      //         // limits to 10 digits
+                                      //       ],
+                                      //       decoration: InputDecoration(
+                                      //         fillColor: Colors.white,
+                                      //         contentPadding:
+                                      //         const EdgeInsets.symmetric(
+                                      //             horizontal: 10),
+                                      //         border: InputBorder.none,
+                                      //         filled: true,
+                                      //         hintText: 'Enter Discount',
+                                      //         suffixText: '%',
+                                      //         errorText: errorMessage,
+                                      //       ),
+                                      //       onChanged: (value) {
+                                      //         if (value.isNotEmpty &&
+                                      //             !isNumeric(value)) {
+                                      //           setState(() {
+                                      //             ScaffoldMessenger.of(
+                                      //                 context)
+                                      //                 .showSnackBar(
+                                      //               const SnackBar(
+                                      //                   content: Text(
+                                      //                       "Please enter decimal number only")),
+                                      //             );
+                                      //           });
+                                      //         } else {
+                                      //           setState(() {
+                                      //             errorMessage = null;
+                                      //           });
+                                      //         }
+                                      //       },
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),

@@ -85,7 +85,7 @@ class OrderPage3State extends State<OrderPage3> {
           if (mounted) {
             setState(() {
               if (currentPage == 1) {
-                productList = products.take(10).toList();
+                productList = products.take(9).toList();
               } else {
                 productList.addAll(products);
               }
@@ -271,7 +271,7 @@ class OrderPage3State extends State<OrderPage3> {
                         child: SingleChildScrollView(
                           child: Container(
                             height: 635,
-                            width: maxWidth,
+                            width: 1504,
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
                               color: Colors.white,
@@ -377,99 +377,111 @@ class OrderPage3State extends State<OrderPage3> {
 
     return SizedBox(
       height: 350,
-      width: 1500,
+      width: 1504,
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
-              border: Border.all(
-                  color: Colors.grey, width: 1),
+              border: Border.all(color:  Colors.grey),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 10,
-                right: 30,
-                top: 10,
-                bottom: 10,
-              ),
-              child: SizedBox(
-                height: 20,
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 45,right: 50),
-                        child: Text(
-                          'Product Name',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+              padding: const EdgeInsets.only(top: 5,bottom: 5),
+              child: Table(
+                // border: TableBorder.all(color: Colors.grey),
+                columnWidths: {
+                  0: FlexColumnWidth(2.3),
+                  1: FlexColumnWidth(2),
+                  2: FlexColumnWidth(1.8),
+                  3: FlexColumnWidth(1.7),
+                  4: FlexColumnWidth(1),
+                  5: FlexColumnWidth(1.5),
+                  6:FlexColumnWidth(1),
+                  // 8:FlexColumnWidth(2),
+
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
                           ),
+                          child: Center(child: Text('Product Name',style: TextStyle(fontWeight: FontWeight.bold),)),
                         ),
                       ),
-                    ),
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left:75,right: 45),
-                        child: Text(
-                          "Category",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
                           ),
+                          child: Center(child: Text('Category',style: TextStyle(fontWeight: FontWeight.bold),)),
                         ),
                       ),
-                    ),
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 55,right: 60),
-                        child: Text(
-                          "Sub Category",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
                           ),
+                          child: Center(child: Text('Sub Category',style: TextStyle(fontWeight: FontWeight.bold),)),
                         ),
                       ),
-                    ),
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 85,right: 25),
-                        child: Text(
-                          "Price",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
                           ),
+                          child: Center(child: Text('Price',style: TextStyle(fontWeight: FontWeight.bold),)),
                         ),
                       ),
-                    ),
-                    const Expanded(
-                      child: Padding(
-                      padding: EdgeInsets.only(left: 95,right: 0),
-                      child: Text(
-                        "QTY",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),),
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 75,right: 25),
-                        child: Text(
-                          "Total Amount",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
                           ),
+                          child: Center(child: Text('QTY',style: TextStyle(fontWeight: FontWeight.bold),)),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 10,right: 10),
-                        child: Text("  ",
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
+                          ),
+                          child: Center(child: Text('Total Amount',style: TextStyle(fontWeight: FontWeight.bold),)),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            // left: 10,
+                            // right: 10,
+                            top: 15,
+                            bottom: 5,
+                          ),
+                          child: Center(child: Text('        ')),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -483,6 +495,15 @@ class OrderPage3State extends State<OrderPage3> {
                 border: TableBorder.all(
                     color: Colors.grey),
                 // Add this line
+                columnWidths: {
+                  0: FlexColumnWidth(2.3),
+                  1: FlexColumnWidth(2),
+                  2: FlexColumnWidth(1.8),
+                  3: FlexColumnWidth(1.7),
+                  4: FlexColumnWidth(1),
+                  5: FlexColumnWidth(1.5),
+                  6: FlexColumnWidth(1),
+                },
                 children: [
                   TableRow(
                     children: [

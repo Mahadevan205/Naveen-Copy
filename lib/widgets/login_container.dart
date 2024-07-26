@@ -128,8 +128,8 @@ class _LoginContainerState extends State<LoginContainer1> {
                     ),
                     const SizedBox(height: 10),
                     const Align(
-                      alignment: Alignment(0.49,0.2),
-                      child: Text('Forgot password!'),
+                      alignment: Alignment(0.47,0.2),
+                      child: Text('Forgot password ?'),
                     ),
                     const SizedBox(height: 20,),
                     Align(

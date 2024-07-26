@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
+import 'package:btb/Return%20Module/return%20first%20page.dart';
 import 'package:btb/fifthpage/Edit.dart';
 import 'package:btb/fourthpage/orderspage%20order.dart';
 import 'package:btb/screen/login.dart';
@@ -20,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Return Module/return module design.dart';
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   final productProvider = ProductProvider();
@@ -96,6 +99,13 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
+        path: '/dashboard/return/:return',
+        builder: (context, state) {
+         // final product = state.extra as ord.Product?;
+          return Returnpage();
+        },
+      ),
+      GoRoute(
         path: '/OrdersList',
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>?;
@@ -152,8 +162,8 @@ class MyApp extends StatelessWidget {
         pageBuilder: (context, state) => MaterialPage(
           key: state.pageKey,
           child: FifthPage(
-            selectedProducts: (state.extra as Map<String, dynamic>)['selectedProducts'] as List<Product>,
-            data: (state.extra as Map<String, dynamic>)['data'] as Map<String, dynamic>,
+            selectedProducts: (state.extra as Map<String, dynamic>)['selectedProducts'] as List<Product> ?? [],
+            data: (state.extra as Map<String, dynamic>)['data'] as Map<String, dynamic> ?? {},
             select: '',
           ),
         ),
@@ -221,7 +231,7 @@ class MyApp extends StatelessWidget {
             selectedProductsMap = (extra as Map<String, dynamic>)['selectedProducts'] as Map<String, dynamic>?;
           }
 
-          return SeventhPage(selectedProducts: selectedProductsMap ?? {});
+          return SeventhPage(selectedProducts: selectedProductsMap ?? {},product: null,);
         },
       ),
       GoRoute(
@@ -454,6 +464,10 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: '/Create_Order',
         builder: (context, state) =>  OrdersSecond(),
+      ),
+      GoRoute(
+        path: '/Order_Return',
+        builder: (context, state) =>  CreateReturn(storeImages: [],storeImage: '',imageSizeStrings: [],imageSizeString: [],orderDetailsMap: {},orderDetails: [],),
       ),
       GoRoute(
         path: '/dasbaord/Orderspage/addproduct/arrowback',

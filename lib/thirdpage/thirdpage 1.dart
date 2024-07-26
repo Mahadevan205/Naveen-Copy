@@ -592,8 +592,8 @@ class _ProductForm1State extends State<ProductForm1> {
                       top: 60,
                       left: 200,
                     ),
-                    width: maxWidth *0.15,
-                    height: maxHeight * 0.98,
+                    width:250,
+                    height: 980,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(4),
@@ -632,7 +632,7 @@ class _ProductForm1State extends State<ProductForm1> {
                           height: 5,
                         ),
                         Container(
-                          height: maxHeight * 0.85,
+                          height: maxHeight * 0.83,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -915,7 +915,7 @@ class _ProductForm1State extends State<ProductForm1> {
                     ),
                   ),
                   Padding(
-                    padding:  EdgeInsets.only(top: 0, left: maxWidth * 0.25),
+                    padding:  EdgeInsets.only(top: 0, left: 450),
                     child: Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 10), // Space above/below the border

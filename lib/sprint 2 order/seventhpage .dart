@@ -16,18 +16,20 @@ import '../thirdpage/dashboard.dart';
 import '../thirdpage/productclass.dart';
 import 'add productmaster sample.dart';
 
-void main(){
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SeventhPage(selectedProducts: {},),
-  ));
-}
+// void main(){
+//   runApp(MaterialApp(
+//     debugShowCheckedModeBanner: false,
+//     home: SeventhPage(selectedProducts: {},),
+//   ));
+// }
+
 
 
 class SeventhPage extends StatefulWidget {
 
   final Map<String, dynamic> selectedProducts;
-  SeventhPage({super.key,required this.selectedProducts});
+  final detail? product;
+  SeventhPage({super.key,required this.selectedProducts,required this.product});
 
   @override
   State<SeventhPage> createState() => _SeventhPageState();
@@ -67,12 +69,160 @@ class _SeventhPageState extends State<SeventhPage> {
   bool isOrdersSelected = false;
   String _errorMessage = '';
   final _orderIdController = TextEditingController();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchOrders();
+//     print('product');
+//     print(widget.product);
+//
+//     if (widget.product != null && _orders.isNotEmpty) {
+//       int index = _orders.indexWhere((element) => element['orderId'] == widget.product?.orderId);
+//       if (index != -1) {
+//         setState(() {
+//           _selectedIndex = index;
+//         });
+
+//       }
+//     }
+//
+//
+//     // if (widget.product != null) {
+//     //   _selectedIndex = widget.product! as int;
+//     // } else {
+//     //   print('Error: Product is null');
+//     //   // You can also show a error message to the user
+//     //   // For example:
+//     //   // ScaffoldMessenger.of(context).showSnackBar(
+//     //   //   SnackBar(content: Text('Error: Product is null')),
+//     //   // );
+//     // }
+//
+//
+//
+//
+//     if (widget.product != null) {
+//       //data2['deliveryLocation'] = widget.product.
+//       WidgetsBinding.instance.addPostFrameCallback((_) {
+//         setState(() {
+//           orderIdController.text = widget.product!.orderId ?? '';
+//           print('orderIdController.text');
+//           print('Selected items length: ${selectedItems.length}');
+//           print(orderIdController.text);
+//           totalController.text = widget.product!.total.toString() ?? '';
+//           deliveryAddressController.text = widget.product!.deliveryAddress! ?? '';
+//           contactPersonController.text = widget.product!.contactPerson! ?? '';
+//           contactNumberController.text = widget.product!.contactNumber! ?? '';
+//           commentsController.text = widget.product!.comments! ?? '';
+//           data2['deliveryLocation'] = widget.product!.deliveryLocation! ?? '';
+//        //   selectedItems = widget.product!.items as List<Map<String, dynamic>>;
+//
+//           // widget.product!.items = widget.body[it];
+//
+//           //  displayItemDetails();
+//         });
+//       });
+//     widget.selectedProducts;
+//
+//
+//
+//     print('--updated details');
+//     if (widget.selectedProducts['total']!= null) {
+//       totalController.text = widget.selectedProducts['total'].toString();
+//     }
+//     if (widget.selectedProducts['orderDate']!= null) {
+//       CreatedDateController.text = widget.selectedProducts['orderDate'].toString();
+//     }
+//     if (widget.selectedProducts['contactPerson']!= null) {
+//       contactPersonController.text = widget.selectedProducts['contactPerson'];
+//     }
+//     if (widget.selectedProducts['deliveryAddress']!= null) {
+//       deliveryAddressController.text = widget.selectedProducts['deliveryAddress'];
+//     }
+//     if (widget.selectedProducts['contactNumber']!= null) {
+//       contactNumberController.text = widget.selectedProducts['contactNumber'];
+//     }
+//     if (widget.selectedProducts['comments']!= null) {
+//       commentsController.text = widget.selectedProducts['comments'];
+//     }
+//     if (widget.selectedProducts['deliveryLocation']!= null) {
+//       data2['deliveryLocation'] = widget.selectedProducts['deliveryLocation'];
+//     }
+//     if (widget.selectedProducts['contactPerson']!= null) {
+//       widget.selectedProducts['contactPerson'] = contactPersonController.text;
+//     }
+// //  widget.selectedProducts['contactPerson'] = contactPersonController.text;
+//     if (widget.selectedProducts != null && widget.selectedProducts['items'] != null) {
+//       for (var item in widget.selectedProducts['items']) {
+//         selectedItems.add({
+//           'productName': '${item['productName']}',
+//           'category': '${item['category']}',
+//           'subCategory': '${item['subCategory']}',
+//           'price': '${item['price']}',
+//           'qty': item['qty'].toString(),
+//           'totalAmount': item['totalAmount'] = item['qty'] * item['price']
+//
+//         });
+//       }
+//
+//
+//
+//
+//         // _selectedOrder = widget.product!;
+//         // print(_selectedOrder);
+//         print('-----selectorder');
+//       } else {
+//         print('Product is null');
+//         //  deliveryAddressController.text = widget.product!.deliveryAddress! ?? '';
+//
+// //
+// //    _selectedOrder = widget.product!;
+// //
+// //   _selectedOrder = _selectedOrder;
+// //    print(_selectedOrder);
+//
+//       }
+//
+//     }
+//     // if (data2!= null) {
+//     //     totalAmount = data2['total']!= null? double.parse(data2['total']) : 0.0;
+//     //   }
+//
+//     print(widget.selectedProducts);
+//     _orderIdController.addListener(_fetchOrders);
+//     _dateController = TextEditingController();
+//
+//     _selectedDate = DateTime.now();
+//     _dateController.text = DateFormat.yMd().format(_selectedDate!);
+//
+//     // Populate the _productItems list
+//     // if (widget.selectedProducts['items']!= null) {
+//     //   _productItems = widget.selectedProducts['items'];
+//     // }
+//
+//     // if (widget.product != null) {
+//     //   _selectedIndex = widget.product! as int;
+//     // } else {
+//     //   print('Error: Product is null');
+//     //   // You can also show a error message to the user
+//     //   // For example:
+//     //   // ScaffoldMessenger.of(context).showSnackBar(
+//     //   //   SnackBar(content: Text('Error: Product is null')),
+//     //   // );
+//     // }
+//   }
+
+
 
   @override
   void initState() {
     super.initState();
     _fetchOrders();
     widget.selectedProducts;
+    _orderIdController.addListener((){
+      _fetchOrders();
+    });
 
     print('--updated details');
     if (widget.selectedProducts['total']!= null) {
@@ -130,6 +280,7 @@ class _SeventhPageState extends State<SeventhPage> {
     //   _productItems = widget.selectedProducts['items'];
     // }
   }
+
 
   // @override
   // void initState() {
@@ -207,10 +358,343 @@ class _SeventhPageState extends State<SeventhPage> {
     }
   }
 
+  // Future<void> _fetchOrders() async {
+  //   setState(() {
+  //     _loading = true;
+  //     _orders = []; // clear the orders list
+  //     _errorMessage = ''; // clear the error message
+  //   });
+  //   try {
+  //     final orderId = _orderIdController.text
+  //         .trim(); // trim to remove whitespace
+  //     final url = orderId.isEmpty
+  //         ? 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'
+  //         : 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId';
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: {
+  //         'Authorization': 'Bearer $token', // Replace with your API key
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final responseBody = response.body;
+  //       if (responseBody != null) {
+  //         final jsonData = jsonDecode(responseBody).cast<
+  //             Map<dynamic, dynamic>>();
+  //         setState(() {
+  //           _orders =
+  //               jsonData; // update _orders with all orders or search results
+  //           _errorMessage = ''; // clear the error message
+  //         });
+  //       } else {
+  //         setState(() {
+  //           _orders = []; // clear the orders list
+  //           _errorMessage = 'Failed to load orders';
+  //         });
+  //       }
+  //     } else {
+  //       setState(() {
+  //         _orders = []; // clear the orders list
+  //         _errorMessage = 'Failed to load orders';
+  //       });
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       _orders = []; // clear the orders list
+  //       _errorMessage = 'Error: $e';
+  //     });
+  //   } finally {
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //   }
+  // }
+
 
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    TableRow row1 = TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            child: Text('Delivery Location'),
+          ),
+        ),
+        TableCell(
+          child: Row(
+            children: [
+              Spacer(),
+              const Text(
+                'Order Date',
+                style: TextStyle(
+              //    fontSize: 16,
+                  // fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(width: 5),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Container(
+                  height: 35,
+                  width: 175,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: TextFormField(
+                     enabled: isEditing,
+                      controller: CreatedDateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: IconButton(
+                          icon: const Icon(Icons.calendar_month),
+                          iconSize: 20,
+                          onPressed: () {
+                           _showDatePicker(context);
+                          },
+                        ),
+                      ),
+                      hintText: _selectedDate != null
+                          ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+                          : 'Select Date',
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      border: InputBorder.none,
+                      filled: true,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    TableRow row2 = TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            child: Text('Address'),
+          ),
+        ),
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10,top: 10,bottom: 10),
+            child: Text('Comments'),
+          ),
+        ),
+      ],
+    );
+    TableRow row3 = TableRow(
+      children: [
+        TableCell(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30,top: 10),
+                      child: Text('Select Delivery Location'),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30),
+                      child: SizedBox(
+                        width: screenWidth * 0.35,
+                        height: 40,
+                        child: DropdownButtonFormField<String>(
+                          value: data2['deliveryLocation'] != null &&
+                                                   list.contains(data2['deliveryLocation'])
+                                                   ? data2['deliveryLocation']
+                                                   : null,
+                          decoration: InputDecoration(
+                            filled: true,
+
+                            fillColor: Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Select Location',
+                            contentPadding:const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
+                          ),
+                          onChanged: (String? value) {
+    setState(() {
+                             data2['deliveryLocation'] = value!;
+                           });
+                          },
+                          items: list.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              enabled: isEditing,
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          isExpanded: true,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30),
+                      child: Text('Delivery Address'),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30),
+                      child: SizedBox(
+                        width: screenWidth * 0.35,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: deliveryAddressController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor:Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Enter Your Address',
+                          ),
+                          maxLines: 3,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 30),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: const Text('Contact Person'),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: SizedBox(
+                        width: screenWidth * 0.2,
+                        height: 40,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: contactPersonController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Contact Person Name',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    const Text('Contact Number'),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: SizedBox(
+                        width: screenWidth * 0.2,
+                        height: 40,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: contactNumberController,
+                          keyboardType:
+                          TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter
+                                .digitsOnly,
+                            LengthLimitingTextInputFormatter(
+                                10),
+                            // limits to 10 digits
+                          ],
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Contact Person Number',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        TableCell(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('    '),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10,left: 10,bottom: 5),
+                      child: SizedBox(
+                        height: 250,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: commentsController,
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: 'Enter Your Comments'
+
+
+                          ),
+                          maxLines: 5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
     return Scaffold(
         backgroundColor: Colors.white,
         appBar:  AppBar(
@@ -634,7 +1118,7 @@ class _SeventhPageState extends State<SeventhPage> {
                               height: 100,
                               width: maxWidth,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey, width: 2),
+                                border: Border.all(color: Color(0xFFB2C2D3), width: 2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Padding(
@@ -664,8 +1148,8 @@ class _SeventhPageState extends State<SeventhPage> {
                                       child: Column(
                                         children: [
                                           Icon(
-                                            Icons.check_box_outline_blank,
-                                            color: Colors.grey,
+                                            Icons.check_box,
+                                            color: Colors.green,
                                           ),
                                           Text(
                                             'Invoice',
@@ -681,7 +1165,7 @@ class _SeventhPageState extends State<SeventhPage> {
                                       child: Column(
                                         children: [
                                           Icon(
-                                            Icons.check_box_outline_blank,
+                                            Icons.check_box,
                                             color: Colors.grey,
                                           ),
                                           Text(
@@ -698,7 +1182,7 @@ class _SeventhPageState extends State<SeventhPage> {
                                       child: Column(
                                         children: [
                                           Icon(
-                                            Icons.check_box_outline_blank,
+                                            Icons.check_box,
                                             color: Colors.grey,
                                           ),
                                           Text(
@@ -716,277 +1200,299 @@ class _SeventhPageState extends State<SeventhPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 550,top:50,right: 120),
+                            padding: const EdgeInsets.only(left: 550,right: 120,top: 50),
                             child: Container(
-                              height: 400,
-                              width: maxWidth ,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey, width: 2),
-                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: Color(0xFFB2C2D3)),
+                                borderRadius: BorderRadius.circular(3.5), // Set border radius here
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Table(
+                                border: TableBorder.all(color: Color(0xFFB2C2D3)),
+
+                                columnWidths: {
+                                  0: FlexColumnWidth(2),
+                                  1: FlexColumnWidth(1.4),
+                                },
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left:20),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          'Delivery Location',
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Order Date',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(width: 5),
-                                            DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              child: Container(
-                                                height: 39,
-                                                width: 175,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white.withOpacity(1),
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: TextFormField(
-                                                  enabled: isEditing,
-                                                  controller: CreatedDateController,
-                                                  readOnly: true,
-                                                  decoration: InputDecoration(
-                                                    suffixIcon: Padding(
-                                                      padding: const EdgeInsets.only(right: 20),
-                                                      child: IconButton(
-                                                        icon: const Icon(Icons.calendar_month),
-                                                        iconSize: 20,
-                                                        onPressed: () {
-                                                          _showDatePicker(context);
-                                                        },
-                                                      ),
-                                                    ),
-                                                    hintText: _selectedDate != null
-                                                        ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
-                                                        : 'Select Date',
-                                                    fillColor: Colors.white,
-                                                    contentPadding: const EdgeInsets.symmetric(
-                                                        horizontal: 8, vertical: 8),
-                                                    border: InputBorder.none,
-                                                    filled: true,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Divider(color: Colors.grey),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 20),
-                                        child: Text(
-                                          'Address',
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(right: maxWidth * 0.20),
-                                        child: Text(
-                                          'Comments',
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Divider(
-                                    color: Colors.grey,
-                                    thickness: 1.0,
-                                    height: 1.0,
-                                  ),
-                                  const SizedBox(height: 5.0),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text('Select Delivery Location'),
-                                              const SizedBox(height: 10),
-                                              SizedBox(
-                                                width: 450,
-                                                height: 40,
-                                                child: DropdownButtonFormField<String>(
-                                                  value: data2['deliveryLocation'] != null &&
-                                                      list.contains(data2['deliveryLocation'])
-                                                      ? data2['deliveryLocation']
-                                                      : null,
-                                                  decoration: InputDecoration(
-                                                    enabled: isEditing,
-                                                    filled: true,
-                                                    fillColor: Colors.grey[200],
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(5.0),
-                                                      borderSide: BorderSide.none,
-                                                    ),
-                                                    contentPadding: const EdgeInsets.symmetric(
-                                                        horizontal: 8, vertical: 8),
-                                                  ),
-                                                  onChanged: (String? value) {
-                                                    setState(() {
-                                                      data2['deliveryLocation'] = value!;
-                                                    });
-                                                  },
-                                                  items: list.map<DropdownMenuItem<String>>((String value) {
-                                                    return DropdownMenuItem<String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
-                                                  isExpanded: true,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 20.0),
-                                              const Text('Delivery Address'),
-                                              const SizedBox(height: 10),
-                                              SizedBox(
-                                                width: maxWidth * 0.2,
-                                                child: TextField(
-                                                  enabled: isEditing,
-                                                  controller: deliveryAddressController,
-                                                  decoration: InputDecoration(
-                                                    filled: true,
-                                                    fillColor: Colors.grey[200],
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(5.0),
-                                                      borderSide: BorderSide.none,
-                                                    ),
-                                                    hintText: 'Address Details',
-                                                  ),
-                                                  maxLines: 3,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 20.0),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text('Contact Person'),
-                                              const SizedBox(height: 10),
-                                              SizedBox(
-                                                width: maxWidth * 0.2,
-                                                height: 40,
-                                                child: TextField(
-                                                  enabled: isEditing,
-                                                  controller: contactPersonController,
-                                                  decoration: InputDecoration(
-                                                    filled: true,
-                                                    fillColor: Colors.grey[200],
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(5.0),
-                                                      borderSide: BorderSide.none,
-                                                    ),
-                                                    hintText: 'Contact Person Name',
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 24.0),
-                                              const Text('Contact Number'),
-                                              const SizedBox(height: 10),
-                                              SizedBox(
-                                                width: maxWidth * 0.2,
-                                                height: 40,
-                                                child: TextField(
-                                                  enabled: isEditing,
-                                                  controller: contactNumberController,
-                                                  keyboardType: TextInputType.number,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter.digitsOnly,
-                                                    LengthLimitingTextInputFormatter(10),
-                                                  ],
-                                                  decoration: InputDecoration(
-                                                    filled: true,
-                                                    fillColor: Colors.grey[200],
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(5.0),
-                                                      borderSide: BorderSide.none,
-                                                    ),
-                                                    hintText: 'Contact Person Number',
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 243,
-                                        width: 1,
-                                        color: Colors.grey,
-                                        margin: EdgeInsets.zero,
-                                      ),
-                                      const SizedBox(width: 20.0),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Text('    '),
-                                            SizedBox(
-                                              width: maxWidth * 0.22,
-                                              child: TextField(
-                                                enabled: isEditing,
-                                                controller: commentsController,
-                                                decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Colors.grey[200],
-                                                  border: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.circular(5.0),
-                                                    borderSide: BorderSide.none,
-                                                  ),
-                                                  hintText: 'Enter your comments',
-                                                ),
-                                                maxLines: 5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  row1,
+                                  row2,
+                                  row3,
                                 ],
                               ),
                             ),
                           ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 550,top:50,right: 120),
+                          //   child: Container(
+                          //     height: 400,
+                          //     width: maxWidth ,
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(color: Colors.grey, width: 2),
+                          //       borderRadius: BorderRadius.circular(8.0),
+                          //     ),
+                          //     child: Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       children: [
+                          //         Padding(
+                          //           padding: const EdgeInsets.only(left:20),
+                          //           child: Row(
+                          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //             children: [
+                          //               const Text(
+                          //                 'Delivery Location',
+                          //                 style: TextStyle(
+                          //                   fontSize: 18.0,
+                          //                   fontWeight: FontWeight.bold,
+                          //                 ),
+                          //               ),
+                          //               Row(
+                          //                 children: [
+                          //                   const Text(
+                          //                     'Order Date',
+                          //                     style: TextStyle(
+                          //                       fontSize: 16,
+                          //                       fontWeight: FontWeight.bold,
+                          //                     ),
+                          //                   ),
+                          //                   SizedBox(width: 5),
+                          //                   DecoratedBox(
+                          //                     decoration: BoxDecoration(
+                          //                       border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
+                          //                       borderRadius: BorderRadius.circular(10),
+                          //                     ),
+                          //                     child: Container(
+                          //                       height: 39,
+                          //                       width: 175,
+                          //                       decoration: BoxDecoration(
+                          //                         color: Colors.white.withOpacity(1),
+                          //                         borderRadius: BorderRadius.circular(4),
+                          //                       ),
+                          //                       child: TextFormField(
+                          //                         enabled: isEditing,
+                          //                         controller: CreatedDateController,
+                          //                         readOnly: true,
+                          //                         decoration: InputDecoration(
+                          //                           suffixIcon: Padding(
+                          //                             padding: const EdgeInsets.only(right: 20),
+                          //                             child: IconButton(
+                          //                               icon: const Icon(Icons.calendar_month),
+                          //                               iconSize: 20,
+                          //                               onPressed: () {
+                          //                                 _showDatePicker(context);
+                          //                               },
+                          //                             ),
+                          //                           ),
+                          //                           hintText: _selectedDate != null
+                          //                               ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+                          //                               : 'Select Date',
+                          //                           fillColor: Colors.white,
+                          //                           contentPadding: const EdgeInsets.symmetric(
+                          //                               horizontal: 8, vertical: 8),
+                          //                           border: InputBorder.none,
+                          //                           filled: true,
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                   ),
+                          //                 ],
+                          //               ),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //         const Divider(color: Colors.grey),
+                          //         Row(
+                          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //           children: [
+                          //             Padding(
+                          //               padding: EdgeInsets.only(left: 20),
+                          //               child: Text(
+                          //                 'Address',
+                          //                 style: TextStyle(
+                          //                   fontSize: 15.0,
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //             Padding(
+                          //               padding: EdgeInsets.only(right: maxWidth * 0.20),
+                          //               child: Text(
+                          //                 'Comments',
+                          //                 style: TextStyle(
+                          //                   fontSize: 15.0,
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //         const Divider(
+                          //           color: Colors.grey,
+                          //           thickness: 1.0,
+                          //           height: 1.0,
+                          //         ),
+                          //         const SizedBox(height: 5.0),
+                          //         Row(
+                          //           crossAxisAlignment: CrossAxisAlignment.start,
+                          //           children: [
+                          //             Expanded(
+                          //               flex: 2,
+                          //               child: Padding(
+                          //                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          //                 child: Column(
+                          //                   crossAxisAlignment: CrossAxisAlignment.start,
+                          //                   children: [
+                          //                     const Text('Select Delivery Location'),
+                          //                     const SizedBox(height: 10),
+                          //                     SizedBox(
+                          //                       width: 450,
+                          //                       height: 40,
+                          //                       child: DropdownButtonFormField<String>(
+                          //                         value: data2['deliveryLocation'] != null &&
+                          //                             list.contains(data2['deliveryLocation'])
+                          //                             ? data2['deliveryLocation']
+                          //                             : null,
+                          //                         decoration: InputDecoration(
+                          //                           enabled: isEditing,
+                          //                           filled: true,
+                          //                           fillColor: Colors.grey[200],
+                          //                           border: OutlineInputBorder(
+                          //                             borderRadius: BorderRadius.circular(5.0),
+                          //                             borderSide: BorderSide.none,
+                          //                           ),
+                          //                           contentPadding: const EdgeInsets.symmetric(
+                          //                               horizontal: 8, vertical: 8),
+                          //                         ),
+                          //                         onChanged: (String? value) {
+                          //                           setState(() {
+                          //                             data2['deliveryLocation'] = value!;
+                          //                           });
+                          //                         },
+                          //                         items: list.map<DropdownMenuItem<String>>((String value) {
+                          //                           return DropdownMenuItem<String>(
+                          //                             value: value,
+                          //                             child: Text(value),
+                          //                           );
+                          //                         }).toList(),
+                          //                         isExpanded: true,
+                          //                       ),
+                          //                     ),
+                          //                     const SizedBox(height: 20.0),
+                          //                     const Text('Delivery Address'),
+                          //                     const SizedBox(height: 10),
+                          //                     SizedBox(
+                          //                       width: maxWidth * 0.2,
+                          //                       child: TextField(
+                          //                         enabled: isEditing,
+                          //                         controller: deliveryAddressController,
+                          //                         decoration: InputDecoration(
+                          //                           filled: true,
+                          //                           fillColor: Colors.grey[200],
+                          //                           border: OutlineInputBorder(
+                          //                             borderRadius: BorderRadius.circular(5.0),
+                          //                             borderSide: BorderSide.none,
+                          //                           ),
+                          //                           hintText: 'Address Details',
+                          //                         ),
+                          //                         maxLines: 3,
+                          //                       ),
+                          //                     ),
+                          //                   ],
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //             const SizedBox(width: 20.0),
+                          //             Expanded(
+                          //               flex: 3,
+                          //               child: Padding(
+                          //                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          //                 child: Column(
+                          //                   crossAxisAlignment: CrossAxisAlignment.start,
+                          //                   children: [
+                          //                     const Text('Contact Person'),
+                          //                     const SizedBox(height: 10),
+                          //                     SizedBox(
+                          //                       width: maxWidth * 0.2,
+                          //                       height: 40,
+                          //                       child: TextField(
+                          //                         enabled: isEditing,
+                          //                         controller: contactPersonController,
+                          //                         decoration: InputDecoration(
+                          //                           filled: true,
+                          //                           fillColor: Colors.grey[200],
+                          //                           border: OutlineInputBorder(
+                          //                             borderRadius: BorderRadius.circular(5.0),
+                          //                             borderSide: BorderSide.none,
+                          //                           ),
+                          //                           hintText: 'Contact Person Name',
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     const SizedBox(height: 24.0),
+                          //                     const Text('Contact Number'),
+                          //                     const SizedBox(height: 10),
+                          //                     SizedBox(
+                          //                       width: maxWidth * 0.2,
+                          //                       height: 40,
+                          //                       child: TextField(
+                          //                         enabled: isEditing,
+                          //                         controller: contactNumberController,
+                          //                         keyboardType: TextInputType.number,
+                          //                         inputFormatters: [
+                          //                           FilteringTextInputFormatter.digitsOnly,
+                          //                           LengthLimitingTextInputFormatter(10),
+                          //                         ],
+                          //                         decoration: InputDecoration(
+                          //                           filled: true,
+                          //                           fillColor: Colors.grey[200],
+                          //                           border: OutlineInputBorder(
+                          //                             borderRadius: BorderRadius.circular(5.0),
+                          //                             borderSide: BorderSide.none,
+                          //                           ),
+                          //                           hintText: 'Contact Person Number',
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                   ],
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //             Container(
+                          //               height: 243,
+                          //               width: 1,
+                          //               color: Colors.grey,
+                          //               margin: EdgeInsets.zero,
+                          //             ),
+                          //             const SizedBox(width: 20.0),
+                          //             Expanded(
+                          //               flex: 3,
+                          //               child: Column(
+                          //                 crossAxisAlignment: CrossAxisAlignment.start,
+                          //                 children: [
+                          //                   const Text('    '),
+                          //                   SizedBox(
+                          //                     width: maxWidth * 0.22,
+                          //                     child: TextField(
+                          //                       enabled: isEditing,
+                          //                       controller: commentsController,
+                          //                       decoration: InputDecoration(
+                          //                         filled: true,
+                          //                         fillColor: Colors.grey[200],
+                          //                         border: OutlineInputBorder(
+                          //                           borderRadius: BorderRadius.circular(5.0),
+                          //                           borderSide: BorderSide.none,
+                          //                         ),
+                          //                         hintText: 'Enter your comments',
+                          //                       ),
+                          //                       maxLines: 5,
+                          //                     ),
+                          //                   ),
+                          //                 ],
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                           //maha copy
                           // Padding(
                           //   padding: const EdgeInsets.only(top: 240, left: 550, right: 20),
@@ -1237,7 +1743,7 @@ class _SeventhPageState extends State<SeventhPage> {
                               width: maxWidth,
                               //   padding: const EdgeInsets.all(0.0),
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey, width:
+                                border: Border.all(color: Color(0xFFB2C2D3), width:
                                 2),
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
@@ -1255,103 +1761,213 @@ class _SeventhPageState extends State<SeventhPage> {
                                       ),
                                     ),
                                   ),
-                                  Container(
+                              Container(
                                     width: maxWidth,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.grey,),
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(
-                                        top: 5,
-                                        bottom: 5,
-                                      ),
-                                      child: SizedBox(
-                                        // height: 34,
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex:1,
-                                              child: Center(
-                                                child: Text(
-                                                  "SN",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Center(
-                                                child: Text(
-                                                  'Product Name',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Center(
-                                                child: Text(
-                                                  "Category",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Center(
-                                                child: Text(
-                                                  "Sub Category",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Center(
-                                                child: Text(
-                                                  "Price",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Center(
-                                                child: Text(
-                                                  "QTY",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Center(
-                                                child: Text(
-                                                  "Total Amount",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                 decoration: BoxDecoration(
+                            border: Border.all(color: Color(0xFFB2C2D3)),
+                          ),
+                 child: Padding(
+                padding: EdgeInsets.only(top: 5, bottom: 5),
+                child: Table(
+                  columnWidths: {
+                     0: FlexColumnWidth(1),
+                     1: FlexColumnWidth(2.7),
+                     2: FlexColumnWidth(2),
+                     3: FlexColumnWidth(1.8),
+                     4: FlexColumnWidth(2),
+                     5: FlexColumnWidth(1),
+                     6: FlexColumnWidth(2),
+                   },
+                   children: [
+                     TableRow(
+                       children: [
+                         TableCell(
+                           child: Padding(
+                             padding: const EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'SN',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                         TableCell(
+                           child: Padding(
+                             padding: EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'Product Name',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                         TableCell(
+                           child: Padding(
+                             padding: EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'Category',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                         TableCell(
+                           child: Padding(
+                             padding: EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'Sub Category',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                         TableCell(
+                           child: Padding(
+                             padding: EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'Price',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                         TableCell(
+                           child: Padding(
+                             padding: EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'QTY',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                         TableCell(
+                           child: Padding(
+                             padding: EdgeInsets.only(top: 10, bottom: 10),
+                             child: Center(
+                               child: Text(
+                                 'Total Amount',
+                                 style: TextStyle(fontWeight: FontWeight.bold),
+                               ),
+                             ),
+                           ),
+                         ),
+                       ],
+                     ),
+                    ],
+                  ),
+                ),
+              ),
+                                  // Container(
+                                  //   width: maxWidth,
+                                  //   decoration: BoxDecoration(
+                                  //     border: Border.all(
+                                  //       color: Colors.grey,),
+                                  //   ),
+                                  //   child:  Padding(
+                                  //     padding: EdgeInsets.only(
+                                  //       top: 5,
+                                  //       bottom: 5,
+                                  //     ),
+                                  //     child: SizedBox(
+                                  //       // height: 34,
+                                  //       child: Row(
+                                  //         children: [
+                                  //           Expanded(
+                                  //             flex:1,
+                                  //             child: Padding(
+                                  //               padding: EdgeInsets.only(left: 25,),
+                                  //               child: Text(
+                                  //                 "SN",
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //           Expanded(
+                                  //             flex: 1,
+                                  //             child: Padding(
+                                  //               padding: EdgeInsets.only(left: 10,right: 10),
+                                  //               child: Text(
+                                  //                 'Product Name',
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //           Expanded(
+                                  //             flex: 1,
+                                  //             child: Padding(padding: EdgeInsets.only(left: 50,right: 15),
+                                  //               child: Text(
+                                  //                 "Category",
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //           Expanded(
+                                  //             flex: 1,
+                                  //             child: Padding(
+                                  //               padding: EdgeInsets.only(left: 45,right: 10),
+                                  //               child: Text(
+                                  //                 "Sub Category",
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //           Expanded(
+                                  //             flex: 1,
+                                  //             child: Padding(
+                                  //               padding: EdgeInsets.only(left: 90,right: 10),
+                                  //               child: Text(
+                                  //                 "Price",
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //
+                                  //           const Expanded(
+                                  //             flex: 1,
+                                  //             child: Padding(
+                                  //               padding: EdgeInsets.only(left: 65,right: 10),
+                                  //               child: Text(
+                                  //                 "QTY",
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //           Expanded(
+                                  //             flex: 1,
+                                  //             child: Padding(
+                                  //               padding: EdgeInsets.only(right: 10),
+                                  //               child: Text(
+                                  //                 "Total Amount",
+                                  //                 style: TextStyle(
+                                  //                   fontWeight: FontWeight.bold,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   ListView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
@@ -1361,7 +1977,16 @@ class _SeventhPageState extends State<SeventhPage> {
                                       // int index = selectedItems.indexOf(item) + 1;
                                       return Table(
                                         border: TableBorder.all(
-                                            color: Colors.grey),
+                                            color: Color(0xFFB2C2D3)),
+                                        columnWidths: {
+                                          0: FlexColumnWidth(1),
+                                          1: FlexColumnWidth(2.7),
+                                          2: FlexColumnWidth(2),
+                                          3: FlexColumnWidth(1.8),
+                                          4: FlexColumnWidth(2),
+                                          5: FlexColumnWidth(1),
+                                          6: FlexColumnWidth(2),
+                                        },
                                         // Add this line
                                         children: [
                                           TableRow(
@@ -1532,15 +2157,15 @@ class _SeventhPageState extends State<SeventhPage> {
                                     },
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(right: 25 ,top: 5,bottom: 5),
+                                    padding: const EdgeInsets.only(top: 9,bottom: 9),
                                     child: Align(
-                                      alignment: Alignment.centerRight,
+                                      alignment: Alignment(0.9,0.8),
                                       child: Container(
                                         height: 40,
                                         padding: EdgeInsets.only(left: 15,right: 10,top: 10,bottom: 2),
                                         decoration: BoxDecoration(
                                           border: Border.all(color: Colors.blue),
-                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderRadius: BorderRadius.circular(2.0),
                                           color: Colors.white,
                                         ),
                                         child: Padding(
@@ -1636,6 +2261,421 @@ class _SeventhPageState extends State<SeventhPage> {
                               ),
                             ),
                           ),
+                          // Padding(
+                          //   padding:  EdgeInsets.only(left: 550, top: 50,right: 120),
+                          //   child: Container(
+                          //     // height: 150,
+                          //     width: maxWidth,
+                          //     //   padding: const EdgeInsets.all(0.0),
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(color: Colors.grey, width:
+                          //       2),
+                          //       borderRadius: BorderRadius.circular(5.0),
+                          //     ),
+                          //     child: Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       children: [
+                          //         Padding(
+                          //           padding: const EdgeInsets.only(left: 30, top: 10),
+                          //           child: Text(
+                          //             'Add Products',
+                          //             style: TextStyle(
+                          //               fontSize: 16,
+                          //               fontWeight: FontWeight.bold,
+                          //               color: Colors.grey[600],
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         // Container(
+                          //         //   width: maxWidth,
+                          //         //   decoration: BoxDecoration(
+                          //         //     border: Border.all(
+                          //         //       color: Colors.grey,),
+                          //         //   ),
+                          //         //   child: const Padding(
+                          //         //     padding: EdgeInsets.only(
+                          //         //       top: 5,
+                          //         //       bottom: 5,
+                          //         //     ),
+                          //         //     child: SizedBox(
+                          //         //       // height: 34,
+                          //         //       child: Row(
+                          //         //         children: [
+                          //         //           Expanded(
+                          //         //             flex:1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 "SN",
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //           Expanded(
+                          //         //             flex: 1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 'Product Name',
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //           Expanded(
+                          //         //             flex: 1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 "Category",
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //           Expanded(
+                          //         //             flex: 1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 "Sub Category",
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //           Expanded(
+                          //         //             flex: 1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 "Price",
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //           Expanded(
+                          //         //             flex: 1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 "QTY",
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //           Expanded(
+                          //         //             flex: 1,
+                          //         //             child: Center(
+                          //         //               child: Text(
+                          //         //                 "Total Amount",
+                          //         //                 style: TextStyle(
+                          //         //                   fontWeight: FontWeight.bold,
+                          //         //                 ),
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //         ],
+                          //         //       ),
+                          //         //     ),
+                          //         //   ),
+                          //         // ),
+                          //         ListView.builder(
+                          //           shrinkWrap: true,
+                          //           physics: const NeverScrollableScrollPhysics(),
+                          //           itemCount: selectedItems.length,
+                          //           itemBuilder: (context, index) {
+                          //             var item = selectedItems[index];
+                          //             // int index = selectedItems.indexOf(item) + 1;
+                          //             return Table(
+                          //               border: TableBorder.all(
+                          //                   color: Colors.grey),
+                          //               columnWidths: {
+                          //                 0: FlexColumnWidth(1),
+                          //                 1: FlexColumnWidth(3),
+                          //                 2: FlexColumnWidth(2),
+                          //                 3: FlexColumnWidth(2),
+                          //                 4: FlexColumnWidth(2),
+                          //                 5: FlexColumnWidth(1),
+                          //                 6: FlexColumnWidth(2),
+                          //               },
+                          //               // Add this line
+                          //               children: [
+                          //                 TableRow(
+                          //                   children: [
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 10,
+                          //                             bottom: 10),
+                          //                         child: Center(
+                          //                           child: Text(
+                          //                             ' ${index + 1}',
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: const EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 5,
+                          //                             bottom: 5),
+                          //                         child: Container(
+                          //                           height: 35,
+                          //                           decoration: BoxDecoration(
+                          //                             color: Colors.grey[300],
+                          //                             borderRadius: BorderRadius
+                          //                                 .circular(4.0),
+                          //                           ),
+                          //                           child: Center(
+                          //                             child: Text(
+                          //                               item['productName'],
+                          //                               textAlign: TextAlign
+                          //                                   .center,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: const EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 5,
+                          //                             bottom: 5),
+                          //                         child: Container(
+                          //                           height: 35,
+                          //                           decoration: BoxDecoration(
+                          //                             color: Colors.grey[300],
+                          //                             borderRadius: BorderRadius
+                          //                                 .circular(4.0),
+                          //                           ),
+                          //                           child: Center(
+                          //                             child: Text(
+                          //                               item['category'],
+                          //                               textAlign: TextAlign
+                          //                                   .center,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: const EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 5,
+                          //                             bottom: 5),
+                          //                         child: Container(
+                          //                           height: 35,
+                          //                           decoration: BoxDecoration(
+                          //                             color: Colors.grey[300],
+                          //                             borderRadius: BorderRadius
+                          //                                 .circular(4.0),
+                          //                           ),
+                          //                           child: Center(
+                          //                             child: Text(
+                          //                               item['subCategory'],
+                          //                               textAlign: TextAlign
+                          //                                   .center,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: const EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 5,
+                          //                             bottom: 5),
+                          //                         child: Container(
+                          //                           height: 35,
+                          //                           decoration: BoxDecoration(
+                          //                             color: Colors.grey[300],
+                          //                             borderRadius: BorderRadius
+                          //                                 .circular(4.0),
+                          //                           ),
+                          //                           child: Center(
+                          //                             child: Text(
+                          //                               item['price'].toString(),
+                          //                               textAlign: TextAlign
+                          //                                   .center,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: const EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 5,
+                          //                             bottom: 5),
+                          //                         child: Container(
+                          //                           height: 35,
+                          //                           decoration: BoxDecoration(
+                          //                             color: Colors.grey[300],
+                          //                             borderRadius: BorderRadius
+                          //                                 .circular(4.0),
+                          //                           ),
+                          //                           child: Center(
+                          //                             child: Text(
+                          //                               item['qty'].toString(),
+                          //                               textAlign: TextAlign
+                          //                                   .center,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                     TableCell(
+                          //                       child: Padding(
+                          //                         padding: const EdgeInsets.only(
+                          //                             left: 10,
+                          //                             right: 10,
+                          //                             top: 5,
+                          //                             bottom: 5),
+                          //                         child: Container(
+                          //                           height: 35,
+                          //                           decoration: BoxDecoration(
+                          //                             color: Colors.grey[300],
+                          //                             borderRadius: BorderRadius
+                          //                                 .circular(4.0),
+                          //                           ),
+                          //                           child: Center(
+                          //                             child: Text(
+                          //                               item['totalAmount']
+                          //                                   .toString(),
+                          //                               textAlign: TextAlign
+                          //                                   .center,
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                   ],
+                          //                 ),
+                          //               ],
+                          //             );
+                          //           },
+                          //         ),
+                          //         Padding(
+                          //           padding: const EdgeInsets.only(right: 25 ,top: 5,bottom: 5),
+                          //           child: Align(
+                          //             alignment: Alignment.centerRight,
+                          //             child: Container(
+                          //               height: 40,
+                          //               padding: EdgeInsets.only(left: 15,right: 10,top: 10,bottom: 2),
+                          //               decoration: BoxDecoration(
+                          //                 border: Border.all(color: Colors.blue),
+                          //                 borderRadius: BorderRadius.circular(8.0),
+                          //                 color: Colors.white,
+                          //               ),
+                          //               child: Padding(
+                          //                 padding: const EdgeInsets.only(bottom: 2),
+                          //                 child: Row(
+                          //                   mainAxisSize: MainAxisSize.min,
+                          //                   children: [
+                          //                     RichText(text:
+                          //                     TextSpan(
+                          //                       children: [
+                          //                         TextSpan(
+                          //                           text:  'Total',
+                          //                           style: TextStyle(
+                          //                               fontSize: 14,
+                          //                               color: Colors.blue
+                          //                             // fontWeight: FontWeight.bold,
+                          //                           ),
+                          //                         ),
+                          //                         const TextSpan(
+                          //                           text: '  ₹',
+                          //                           style: TextStyle(
+                          //                             color: Colors.black,
+                          //                           ),
+                          //                         ),
+                          //                         TextSpan(
+                          //                           text:
+                          //                           totalController.text,
+                          //                           style: const TextStyle(
+                          //                             color: Colors.black,
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),
+                          //                     )
+                          //                   ],
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         // const Divider(color: Colors.grey,),
+                          //         // Padding(
+                          //         //   padding: EdgeInsets.only(top: 20,left: maxWidth * 0.2 ,right: maxWidth * 0.2),
+                          //         //   child: Row(
+                          //         //     children: [
+                          //         //       Expanded(
+                          //         //         child: Container(
+                          //         //   width: maxWidth * 0.25,
+                          //         //           decoration: BoxDecoration(
+                          //         //             border: Border.all(color: Colors.blue),
+                          //         //           ),
+                          //         //           child: Padding(
+                          //         //             padding: const EdgeInsets.only(
+                          //         //               top: 10,
+                          //         //               bottom: 10,
+                          //         //               left: 5,
+                          //         //               right: 5,
+                          //         //             ),
+                          //         //             child: RichText(
+                          //         //               text: TextSpan(
+                          //         //                 children: [
+                          //         //                   const TextSpan(
+                          //         //                     text: 'Total',
+                          //         //                     style: TextStyle(
+                          //         //                       fontWeight: FontWeight.bold,
+                          //         //                       color: Colors.blue,
+                          //         //                     ),
+                          //         //                   ),
+                          //         //                   const TextSpan(
+                          //         //                     text: '  ₹',
+                          //         //                     style: TextStyle(
+                          //         //                       color: Colors.black,
+                          //         //                     ),
+                          //         //                   ),
+                          //         //                   TextSpan(
+                          //         //                     text: totalController.text,
+                          //         //                     style: const TextStyle(
+                          //         //                       color: Colors.black,
+                          //         //                     ),
+                          //         //                   ),
+                          //         //                 ],
+                          //         //               ),
+                          //         //             ),
+                          //         //           ),
+                          //         //         ),
+                          //         //       ),
+                          //         //     ],
+                          //         //   ),
+                          //         // ),
+                          //
+                          //
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
 
 
                         ],

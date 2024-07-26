@@ -387,6 +387,285 @@ class _SixthPageState extends State<SixthPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    TableRow row1 = TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            child: Text('Delivery Location'),
+          ),
+        ),
+
+        TableCell(
+          child: Row(
+            children: [
+              Spacer(),
+              const Text(
+                'Order Date',
+                style: TextStyle(
+                  //    fontSize: 16,// fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(width: 5),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Container(
+                  height: 35,
+                  width: 175,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: TextFormField(
+                    enabled: isEditing,
+                    controller: CreatedDateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: IconButton(
+                          icon: const Icon(Icons.calendar_month),
+                          iconSize: 20,
+                          onPressed: () {
+                            _showDatePicker(context);
+                          },
+                        ),
+                      ),
+                      hintText: _selectedDate != null
+                          ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+                          : 'Select Date',
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      border: InputBorder.none,
+                      filled: true,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    TableRow row2 = TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            child: Text('Address'),
+          ),
+        ),
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10,top: 10,bottom: 10),
+            child: Text('Comments'),
+          ),
+        ),
+      ],
+    );
+    TableRow row3 = TableRow(
+      children: [
+        TableCell(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30,top: 10),
+                      child: Text('Select Delivery Location'),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30),
+                      child: SizedBox(
+                        width: screenWidth * 0.35,
+                        height: 40,
+                        child: DropdownButtonFormField<String>(
+                          value: data2['deliveryLocation'] != null &&
+                              list.contains(data2['deliveryLocation'])
+                              ? data2['deliveryLocation']
+                              : null,
+                          decoration: InputDecoration(
+                            filled: true,
+
+                            fillColor: Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Select Location',
+                            contentPadding:const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
+                          ),
+                          onChanged: (String? value) {
+                            setState(() {
+                              data2['deliveryLocation'] = value!;
+                            });
+                          },
+                          items: list.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              enabled: isEditing,
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          isExpanded: true,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30),
+                      child: Text('Delivery Address'),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding:  EdgeInsets.only(left: 30),
+                      child: SizedBox(
+                        width: screenWidth * 0.35,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: deliveryAddressController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor:Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Enter Your Address',
+                          ),
+                          maxLines: 3,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 30),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: const Text('Contact Person'),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: SizedBox(
+                        width: screenWidth * 0.2,
+                        height: 40,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: contactPersonController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Contact Person Name',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    const Text('Contact Number'),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: SizedBox(
+                        width: screenWidth * 0.2,
+                        height: 40,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: contactNumberController,
+                          keyboardType:
+                          TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter
+                                .digitsOnly,
+                            LengthLimitingTextInputFormatter(
+                                10),
+                            // limits to 10 digits
+                          ],
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Contact Person Number',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        TableCell(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('    '),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10,left: 10,bottom: 5),
+                      child: SizedBox(
+                        height: 250,
+                        child: TextField(
+                          enabled: isEditing,
+                          controller: commentsController,
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: 'Enter Your Comments'
+
+
+                          ),
+                          maxLines: 5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -743,7 +1022,8 @@ class _SixthPageState extends State<SixthPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => EighthPage()),
+                                          builder: (context) =>
+                                              EighthPage()),
                                     );
                                   },
                                   style: OutlinedButton.styleFrom(
@@ -931,7 +1211,7 @@ class _SixthPageState extends State<SixthPage> {
                         height: 100,
                         width: maxWidth,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 2),
+                          border: Border.all(color: Color(0xFFB2C2D3), width: 2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Padding(
@@ -961,7 +1241,7 @@ class _SixthPageState extends State<SixthPage> {
                                 child: Column(
                                   children: [
                                     Icon(
-                                      Icons.check_box_outline_blank,
+                                      Icons.check_box,
                                       color: Colors.grey,
                                     ),
                                     Text(
@@ -978,7 +1258,7 @@ class _SixthPageState extends State<SixthPage> {
                                 child: Column(
                                   children: [
                                     Icon(
-                                      Icons.check_box_outline_blank,
+                                      Icons.check_box,
                                       color: Colors.grey,
                                     ),
                                     Text(
@@ -995,7 +1275,7 @@ class _SixthPageState extends State<SixthPage> {
                                 child: Column(
                                   children: [
                                     Icon(
-                                      Icons.check_box_outline_blank,
+                                      Icons.check_box,
                                       color: Colors.grey,
                                     ),
                                     Text(
@@ -1013,277 +1293,299 @@ class _SixthPageState extends State<SixthPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 550,top:250,right: 120),
+                      padding: const EdgeInsets.only(left: 550,right: 120,top: 250),
                       child: Container(
-                        height: 400,
-                        width: maxWidth * 0.8,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 2),
-                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(color: Color(0xFFB2C2D3)),
+                          borderRadius: BorderRadius.circular(3.5), // Set border radius here
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Table(
+                          border: TableBorder.all(color: Color(0xFFB2C2D3)),
+
+                          columnWidths: {
+                            0: FlexColumnWidth(2),
+                            1: FlexColumnWidth(1.4),
+                          },
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left:20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Delivery Location',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'Order Date',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Container(
-                                          height: 39,
-                                          width: 175,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(1),
-                                            borderRadius: BorderRadius.circular(4),
-                                          ),
-                                          child: TextFormField(
-                                            enabled: isEditing,
-                                            controller: CreatedDateController,
-                                            readOnly: true,
-                                            decoration: InputDecoration(
-                                              suffixIcon: Padding(
-                                                padding: const EdgeInsets.only(right: 20),
-                                                child: IconButton(
-                                                  icon: const Icon(Icons.calendar_month),
-                                                  iconSize: 20,
-                                                  onPressed: () {
-                                                    _showDatePicker(context);
-                                                  },
-                                                ),
-                                              ),
-                                              hintText: _selectedDate != null
-                                                  ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
-                                                  : 'Select Date',
-                                              fillColor: Colors.white,
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                  horizontal: 8, vertical: 8),
-                                              border: InputBorder.none,
-                                              filled: true,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Divider(color: Colors.grey),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    'Address',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(right: maxWidth * 0.16),
-                                  child: Text(
-                                    'Comments',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Divider(
-                              color: Colors.grey,
-                              thickness: 1.0,
-                              height: 1.0,
-                            ),
-                            const SizedBox(height: 5.0),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('Select Delivery Location'),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: 450,
-                                          height: 40,
-                                          child: DropdownButtonFormField<String>(
-                                            value: data2['deliveryLocation'] != null &&
-                                                list.contains(data2['deliveryLocation'])
-                                                ? data2['deliveryLocation']
-                                                : null,
-                                            decoration: InputDecoration(
-                                              enabled: isEditing,
-                                              filled: true,
-                                              fillColor: Colors.grey[200],
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                  horizontal: 8, vertical: 8),
-                                            ),
-                                            onChanged: (String? value) {
-                                              setState(() {
-                                                data2['deliveryLocation'] = value!;
-                                              });
-                                            },
-                                            items: list.map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            isExpanded: true,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 20.0),
-                                        const Text('Delivery Address'),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: maxWidth * 0.2,
-                                          child: TextField(
-                                            enabled: isEditing,
-                                            controller: deliveryAddressController,
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.grey[200],
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              hintText: 'Address Details',
-                                            ),
-                                            maxLines: 3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 20.0),
-                                Expanded(
-                                  flex: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('Contact Person'),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: maxWidth * 0.2,
-                                          height: 40,
-                                          child: TextField(
-                                            enabled: isEditing,
-                                            controller: contactPersonController,
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.grey[200],
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              hintText: 'Contact Person Name',
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 24.0),
-                                        const Text('Contact Number'),
-                                        const SizedBox(height: 10),
-                                        SizedBox(
-                                          width: maxWidth * 0.2,
-                                          height: 40,
-                                          child: TextField(
-                                            enabled: isEditing,
-                                            controller: contactNumberController,
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.digitsOnly,
-                                              LengthLimitingTextInputFormatter(10),
-                                            ],
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.grey[200],
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              hintText: 'Contact Person Number',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 243,
-                                  width: 1,
-                                  color: Colors.grey,
-                                  margin: EdgeInsets.zero,
-                                ),
-                                const SizedBox(width: 20.0),
-                                Expanded(
-                                  flex: 3,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('    '),
-                                      SizedBox(
-                                        width: maxWidth * 0.22,
-                                        child: TextField(
-                                          enabled: isEditing,
-                                          controller: commentsController,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.grey[200],
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(5.0),
-                                              borderSide: BorderSide.none,
-                                            ),
-                                            hintText: 'Enter your comments',
-                                          ),
-                                          maxLines: 5,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                            row1,
+                            row2,
+                            row3,
                           ],
                         ),
                       ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 550,top:250,right: 120),
+                    //   child: Container(
+                    //     height: 400,
+                    //     width: maxWidth * 0.8,
+                    //     decoration: BoxDecoration(
+                    //       border: Border.all(color: Colors.grey, width: 2),
+                    //       borderRadius: BorderRadius.circular(8.0),
+                    //     ),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Padding(
+                    //           padding: const EdgeInsets.only(left:20),
+                    //           child: Row(
+                    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //             children: [
+                    //               const Text(
+                    //                 'Delivery Location',
+                    //                 style: TextStyle(
+                    //                   fontSize: 18.0,
+                    //                   fontWeight: FontWeight.bold,
+                    //                 ),
+                    //               ),
+                    //               Row(
+                    //                 children: [
+                    //                   const Text(
+                    //                     'Order Date',
+                    //                     style: TextStyle(
+                    //                       fontSize: 16,
+                    //                       fontWeight: FontWeight.bold,
+                    //                     ),
+                    //                   ),
+                    //                   SizedBox(width: 5),
+                    //                   DecoratedBox(
+                    //                     decoration: BoxDecoration(
+                    //                       border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
+                    //                       borderRadius: BorderRadius.circular(10),
+                    //                     ),
+                    //                     child: Container(
+                    //                       height: 39,
+                    //                       width: 175,
+                    //                       decoration: BoxDecoration(
+                    //                         color: Colors.white.withOpacity(1),
+                    //                         borderRadius: BorderRadius.circular(4),
+                    //                       ),
+                    //                       child: TextFormField(
+                    //                         enabled: isEditing,
+                    //                         controller: CreatedDateController,
+                    //                         readOnly: true,
+                    //                         decoration: InputDecoration(
+                    //                           suffixIcon: Padding(
+                    //                             padding: const EdgeInsets.only(right: 20),
+                    //                             child: IconButton(
+                    //                               icon: const Icon(Icons.calendar_month),
+                    //                               iconSize: 20,
+                    //                               onPressed: () {
+                    //                                 _showDatePicker(context);
+                    //                               },
+                    //                             ),
+                    //                           ),
+                    //                           hintText: _selectedDate != null
+                    //                               ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+                    //                               : 'Select Date',
+                    //                           fillColor: Colors.white,
+                    //                           contentPadding: const EdgeInsets.symmetric(
+                    //                               horizontal: 8, vertical: 8),
+                    //                           border: InputBorder.none,
+                    //                           filled: true,
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //         const Divider(color: Colors.grey),
+                    //         Row(
+                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //           children: [
+                    //             Padding(
+                    //               padding: EdgeInsets.only(left: 20),
+                    //               child: Text(
+                    //                 'Address',
+                    //                 style: TextStyle(
+                    //                   fontSize: 15.0,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             Padding(
+                    //               padding: EdgeInsets.only(right: maxWidth * 0.16),
+                    //               child: Text(
+                    //                 'Comments',
+                    //                 style: TextStyle(
+                    //                   fontSize: 15.0,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         const Divider(
+                    //           color: Colors.grey,
+                    //           thickness: 1.0,
+                    //           height: 1.0,
+                    //         ),
+                    //         const SizedBox(height: 5.0),
+                    //         Row(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Expanded(
+                    //               flex: 2,
+                    //               child: Padding(
+                    //                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    //                 child: Column(
+                    //                   crossAxisAlignment: CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     const Text('Select Delivery Location'),
+                    //                     const SizedBox(height: 10),
+                    //                     SizedBox(
+                    //                       width: 450,
+                    //                       height: 40,
+                    //                       child: DropdownButtonFormField<String>(
+                    //                         value: data2['deliveryLocation'] != null &&
+                    //                             list.contains(data2['deliveryLocation'])
+                    //                             ? data2['deliveryLocation']
+                    //                             : null,
+                    //                         decoration: InputDecoration(
+                    //                           enabled: isEditing,
+                    //                           filled: true,
+                    //                           fillColor: Colors.grey[200],
+                    //                           border: OutlineInputBorder(
+                    //                             borderRadius: BorderRadius.circular(5.0),
+                    //                             borderSide: BorderSide.none,
+                    //                           ),
+                    //                           contentPadding: const EdgeInsets.symmetric(
+                    //                               horizontal: 8, vertical: 8),
+                    //                         ),
+                    //                         onChanged: (String? value) {
+                    //                           setState(() {
+                    //                             data2['deliveryLocation'] = value!;
+                    //                           });
+                    //                         },
+                    //                         items: list.map<DropdownMenuItem<String>>((String value) {
+                    //                           return DropdownMenuItem<String>(
+                    //                             value: value,
+                    //                             child: Text(value),
+                    //                           );
+                    //                         }).toList(),
+                    //                         isExpanded: true,
+                    //                       ),
+                    //                     ),
+                    //                     const SizedBox(height: 20.0),
+                    //                     const Text('Delivery Address'),
+                    //                     const SizedBox(height: 10),
+                    //                     SizedBox(
+                    //                       width: maxWidth * 0.2,
+                    //                       child: TextField(
+                    //                         enabled: isEditing,
+                    //                         controller: deliveryAddressController,
+                    //                         decoration: InputDecoration(
+                    //                           filled: true,
+                    //                           fillColor: Colors.grey[200],
+                    //                           border: OutlineInputBorder(
+                    //                             borderRadius: BorderRadius.circular(5.0),
+                    //                             borderSide: BorderSide.none,
+                    //                           ),
+                    //                           hintText: 'Address Details',
+                    //                         ),
+                    //                         maxLines: 3,
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             const SizedBox(width: 20.0),
+                    //             Expanded(
+                    //               flex: 3,
+                    //               child: Padding(
+                    //                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    //                 child: Column(
+                    //                   crossAxisAlignment: CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     const Text('Contact Person'),
+                    //                     const SizedBox(height: 10),
+                    //                     SizedBox(
+                    //                       width: maxWidth * 0.2,
+                    //                       height: 40,
+                    //                       child: TextField(
+                    //                         enabled: isEditing,
+                    //                         controller: contactPersonController,
+                    //                         decoration: InputDecoration(
+                    //                           filled: true,
+                    //                           fillColor: Colors.grey[200],
+                    //                           border: OutlineInputBorder(
+                    //                             borderRadius: BorderRadius.circular(5.0),
+                    //                             borderSide: BorderSide.none,
+                    //                           ),
+                    //                           hintText: 'Contact Person Name',
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                     const SizedBox(height: 24.0),
+                    //                     const Text('Contact Number'),
+                    //                     const SizedBox(height: 10),
+                    //                     SizedBox(
+                    //                       width: maxWidth * 0.2,
+                    //                       height: 40,
+                    //                       child: TextField(
+                    //                         enabled: isEditing,
+                    //                         controller: contactNumberController,
+                    //                         keyboardType: TextInputType.number,
+                    //                         inputFormatters: [
+                    //                           FilteringTextInputFormatter.digitsOnly,
+                    //                           LengthLimitingTextInputFormatter(10),
+                    //                         ],
+                    //                         decoration: InputDecoration(
+                    //                           filled: true,
+                    //                           fillColor: Colors.grey[200],
+                    //                           border: OutlineInputBorder(
+                    //                             borderRadius: BorderRadius.circular(5.0),
+                    //                             borderSide: BorderSide.none,
+                    //                           ),
+                    //                           hintText: 'Contact Person Number',
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             Container(
+                    //               height: 243,
+                    //               width: 1,
+                    //               color: Colors.grey,
+                    //               margin: EdgeInsets.zero,
+                    //             ),
+                    //             const SizedBox(width: 20.0),
+                    //             Expanded(
+                    //               flex: 3,
+                    //               child: Column(
+                    //                 crossAxisAlignment: CrossAxisAlignment.start,
+                    //                 children: [
+                    //                   const Text('    '),
+                    //                   SizedBox(
+                    //                     width: maxWidth * 0.22,
+                    //                     child: TextField(
+                    //                       enabled: isEditing,
+                    //                       controller: commentsController,
+                    //                       decoration: InputDecoration(
+                    //                         filled: true,
+                    //                         fillColor: Colors.grey[200],
+                    //                         border: OutlineInputBorder(
+                    //                           borderRadius: BorderRadius.circular(5.0),
+                    //                           borderSide: BorderSide.none,
+                    //                         ),
+                    //                         hintText: 'Enter your comments',
+                    //                       ),
+                    //                       maxLines: 5,
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     //maha copy
                     // Padding(
                     //   padding: const EdgeInsets.only(top: 240, left: 550, right: 20),
@@ -1534,7 +1836,7 @@ class _SixthPageState extends State<SixthPage> {
                         width: maxWidth,
                         //   padding: const EdgeInsets.all(0.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width:
+                          border: Border.all(color: Color(0xFFB2C2D3), width:
                           2),
                           borderRadius: BorderRadius.circular(5.0),
                         ),
@@ -1555,100 +1857,103 @@ class _SixthPageState extends State<SixthPage> {
                             Container(
                               width: maxWidth,
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey,),
+                                border: Border.all(color: Color(0xFFB2C2D3)),
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.only(
-                                  top: 5,
-                                  bottom: 5,
-                                ),
-                                child: SizedBox(
-                                  // height: 34,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: EdgeInsets.only(left: 35,right: 20),
-                                          child: Center(
-                                            child: Text(
-                                              "SN",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 5, bottom: 5),
+                                child: Table(
+                                  columnWidths: {
+                                    0: FlexColumnWidth(1),
+                                    1: FlexColumnWidth(2.7),
+                                    2: FlexColumnWidth(2),
+                                    3: FlexColumnWidth(1.8),
+                                    4: FlexColumnWidth(2),
+                                    5: FlexColumnWidth(1),
+                                    6: FlexColumnWidth(2),
+                                  },
+                                  children: [
+                                    TableRow(
+                                      children: [
+                                        TableCell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'SN',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text(
-                                            'Product Name',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        TableCell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'Product Name',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text(
-                                            "Category",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        TableCell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'Category',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text(
-                                            "Sub Category",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        TableCell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'Sub Category',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text(
-                                            "Price",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        TableCell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'Price',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text(
-                                            "QTY",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        TableCell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'QTY',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text(
-                                            "Total Amount",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        TableCell(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                                            child: Center(
+                                              child: Text(
+                                                'Total Amount',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                    
-                                    ],
-                                  ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -1661,8 +1966,18 @@ class _SixthPageState extends State<SixthPage> {
                                 // int index = selectedItems.indexOf(item) + 1;
                                 return Table(
                                   border: TableBorder.all(
-                                      color: Colors.grey),
+                                      color: Color(0xFFB2C2D3)),
                                   // Add this line
+                                  columnWidths: {
+                                    0: FlexColumnWidth(1),
+                                    1: FlexColumnWidth(2.7),
+                                    2: FlexColumnWidth(2),
+                                    3: FlexColumnWidth(1.8),
+                                    4: FlexColumnWidth(2),
+                                    5: FlexColumnWidth(1),
+                                    6: FlexColumnWidth(2),
+                                  },
+
                                   children: [
                                     TableRow(
                                       children: [
@@ -1832,15 +2147,15 @@ class _SixthPageState extends State<SixthPage> {
                               },
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(right: 25 ,top: 5,bottom: 5),
+                              padding: const EdgeInsets.only(top: 9,bottom: 9),
                               child: Align(
-                                alignment: Alignment.centerRight,
+                                alignment: Alignment(0.9,0.8),
                                 child: Container(
                                   height: 40,
                                   padding: EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.blue),
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(2.0),
                                     color: Colors.white,
                                   ),
                                   child: Padding(
