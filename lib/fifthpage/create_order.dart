@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'dart:html';
-// import 'package:btb/fifth%20page/crete.dart';
-import 'package:btb/fifthpage/sixthpage.dart';
-import 'package:btb/fifthpage/ss%20sixth%20page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'create order seventh page mahadevan.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: CreateOrder(),
   ));
@@ -167,9 +164,9 @@ class _CreateOrderState extends State<CreateOrder> {
       body: json.encode(productData),
     );
     if (response.statusCode == 200) {
-      print(token);
+
       final responseData = json.decode(response.body);
-      print(responseData);
+
 
       if (responseData.containsKey("error")) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -179,7 +176,7 @@ class _CreateOrderState extends State<CreateOrder> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => CreateOrder2(),
+            builder: (context) => const CreateOrder2(),
           ),
         );
       }
@@ -223,13 +220,13 @@ class _CreateOrderState extends State<CreateOrder> {
           backgroundColor: Colors.white,
           actions: [
             IconButton(
-              icon: Icon(Icons.notifications),
+              icon: const Icon(Icons.notifications),
               onPressed: () {
                 // Handle notification icon press
               },
             ),
             IconButton(
-              icon: Icon(Icons.account_circle),
+              icon: const Icon(Icons.account_circle),
               onPressed: () {
                 // Handle user icon press
               },
@@ -243,61 +240,61 @@ class _CreateOrderState extends State<CreateOrder> {
                 // Added Align widget for the left side menu
                 alignment: Alignment.topLeft,
                 child: Container(
-                  padding: EdgeInsets.only(left: 20, top: 30),
+                  padding: const EdgeInsets.only(left: 20, top: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextButton.icon(
                         onPressed: () {},
                         icon: Icon(Icons.dashboard, color: Colors.blue[900]),
-                        label: Text('Home'),
+                        label: const Text('Home'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CreateOrder()),
+                                builder: (context) => const CreateOrder()),
                           );
                         },
                         icon: Icon(Icons.warehouse_outlined,
                             color: Colors.blue[900]),
-                        label: Text('Orders'),
+                        label: const Text('Orders'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: () {},
                         icon: Icon(Icons.fire_truck_outlined,
                             color: Colors.blue[900]),
-                        label: Text('Delivery'),
+                        label: const Text('Delivery'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: () {},
                         icon: Icon(Icons.document_scanner_rounded,
                             color: Colors.blue[900]),
-                        label: Text('Invoice'),
+                        label: const Text('Invoice'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: () {},
                         icon: Icon(Icons.payment_outlined,
                             color: Colors.blue[900]),
-                        label: Text('Payment'),
+                        label: const Text('Payment'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: () {},
                         icon: Icon(Icons.backspace_sharp,
                             color: Colors.blue[900]),
-                        label: Text('Return'),
+                        label: const Text('Return'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: () {},
                         icon: Icon(Icons.insert_chart, color: Colors.blue[900]),
-                        label: Text('Reports'),
+                        label: const Text('Reports'),
                       ),
                     ],
                   ),
@@ -310,17 +307,17 @@ class _CreateOrderState extends State<CreateOrder> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 200),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     color: Colors.white,
                     child: Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.arrow_back), // Back button icon
+                          icon: const Icon(Icons.arrow_back), // Back button icon
                           onPressed: () {
                             // Implement back button action
                           },
                         ),
-                        Text(
+                      const   Text(
                           'Create Order',
                           style: TextStyle(
                             fontSize: 20,
@@ -373,60 +370,6 @@ class _CreateOrderState extends State<CreateOrder> {
                                 ],
                               );
                             },
-                            // if (!areRequiredFieldsFilled()) {
-                            //   if (mounted) {
-                            //     print('-------please fill all fields----');
-                            //     ScaffoldMessenger.of(context).showSnackBar(
-                            //       const SnackBar(
-                            //         content: Text(
-                            //             "Please fill in all required fields"),
-                            //       ),
-                            //     );
-                            //   }
-                            // } else {
-                            //   // If all required fields are filled, proceed with the action
-                            //   checkSaved(
-                            //     addressLine1Controller.text,
-                            //     addressLine2Controller.text,
-                            //     availableController.text,
-                            //     faxController.text,
-                            //     supplierController.text,
-                            //     outstandingController.text,
-                            //     int.parse(telController.text),
-                            //     typeController.text,
-                            //     commentsController.text,
-                            //     nameController.text,
-                            //     int.parse(phoneController.text),
-                            //     int.parse(creditLimitController.text),
-                            //     // itemDataList.text,
-                            //     notesController.text,
-                            //     totalAmountController.text,
-                            //     invoiceNoController.text,
-                            //     amountController.text,
-                            //     taxController.text,
-                            //     [
-                            //       {
-                            //         "amount": amountController.text,
-                            //         "description": descriptionContoller.text,
-                            //         "part": partController.text,
-                            //         "qty": qtyController.text,
-                            //         "rate": rateController.text,
-                            //         "sno": snoController.text,
-                            //         "uom": uomContoller.text,
-                            //       },
-                            //       {
-                            //         "amount": amountController.text,
-                            //         "description": descriptionContoller.text,
-                            //         "part": partController.text,
-                            //         "qty": qtyController.text,
-                            //         "rate": rateController.text,
-                            //         "sno": snoController.text,
-                            //         "uom": uomContoller.text,
-                            //       }
-                            //     ],
-                            //   );
-                            // }
-                            // },
                             style: OutlinedButton.styleFrom(
                               backgroundColor:
                                   Colors.blueAccent, // Button background color
@@ -436,7 +379,7 @@ class _CreateOrderState extends State<CreateOrder> {
                               ),
                               side: BorderSide.none, // No outline
                             ),
-                            child: Text(
+                            child:const Text(
                               'Save',
                               style: TextStyle(
                                 fontSize: 18,
@@ -466,14 +409,14 @@ class _CreateOrderState extends State<CreateOrder> {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 5,
-                              offset: Offset(0, 3),
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
                         child: Container(
                           height: 100,
                           width: 1400,
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: Colors.white, // Container background color
                             borderRadius: BorderRadius.circular(10),
@@ -492,9 +435,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
+                                      const Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 15),
+                                             EdgeInsets.only(bottom: 15),
                                         child: Text('Supplier'),
                                       ),
                                       SizedBox(
@@ -502,7 +445,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                         width: 350,
                                         child: TextFormField(
                                           controller: supplierController,
-                                          decoration: InputDecoration(
+                                          decoration:const InputDecoration(
                                             hintText: 'Supplier Name',
                                             contentPadding: EdgeInsets.all(8),
                                             border: OutlineInputBorder(),
@@ -515,9 +458,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
+                                      const   Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 15),
+                                             EdgeInsets.only(bottom: 15),
                                         child: Text('Type'),
                                       ),
                                       SizedBox(
@@ -527,7 +470,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                           controller: typeController,
                                           decoration: InputDecoration(
                                             fillColor: Colors.grey[200],
-                                            contentPadding:
+                                            contentPadding:const
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10),
                                             border: InputBorder.none,
@@ -543,8 +486,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
+                                      const    Padding(
+                                        padding:  EdgeInsets.only(
                                           bottom: 15,
                                         ),
                                         child: Text('Dropdown'),
@@ -602,7 +545,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
+                                      const  Padding(
                                         padding: EdgeInsets.only(bottom: 15),
                                         child: Text('Date'),
                                       ),
@@ -615,34 +558,19 @@ class _CreateOrderState extends State<CreateOrder> {
                                           decoration: InputDecoration(
                                             suffixIcon: IconButton(
                                                 icon:
-                                                    Icon(Icons.calendar_month),
+                                                const Icon(Icons.calendar_month),
                                                 onPressed: () {
                                                   _showDatePicker(context);
                                                 }), // Prefix icon
                                             hintText: 'Select Date',
                                             fillColor: Colors.grey[200],
-                                            contentPadding:
+                                            contentPadding:const
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10),
                                             border: InputBorder.none,
                                             filled: true,
                                           ),
                                         ),
-                                        // child: TextFormField(
-                                        //   controller: _dateController,
-                                        //   readOnly:
-                                        //       true, // To make it non-editable
-                                        //   decoration: InputDecoration(
-                                        //     suffixIcon: IconButton(
-                                        //         icon: Icon(Icons.calendar_month),
-                                        //         onPressed: () {
-                                        //           _showDatePicker(context);
-                                        //         }), // Prefix icon
-                                        //     hintText: 'Select Date',
-                                        //     contentPadding: EdgeInsets.all(8),
-                                        //     border: OutlineInputBorder(),
-                                        //   ),
-                                        // ),
                                       ),
                                     ],
                                   ),
@@ -669,7 +597,7 @@ class _CreateOrderState extends State<CreateOrder> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -677,15 +605,15 @@ class _CreateOrderState extends State<CreateOrder> {
                       child: Container(
                         width: 1000,
                         height: 500,
-                        decoration: BoxDecoration(
+                        decoration:const BoxDecoration(
                           color: Colors.white,
                           // Border to emphasize split
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30, top: 20),
+                            const Padding(
+                              padding:  EdgeInsets.only(left: 30, top: 20),
                               child: Text(
                                 'Invoicing Details',
                                 style: TextStyle(
@@ -701,9 +629,9 @@ class _CreateOrderState extends State<CreateOrder> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
+                                const     Padding(
                                   padding:
-                                      const EdgeInsets.only(left: 30, top: 10),
+                                       EdgeInsets.only(left: 30, top: 10),
                                   child: Text(
                                     'Address',
                                   ),
@@ -727,12 +655,12 @@ class _CreateOrderState extends State<CreateOrder> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
+                                        const  Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 30),
+                                               EdgeInsets.only(left: 30),
                                           child: Text('Name'),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         SizedBox(
@@ -745,7 +673,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                               controller: nameController,
                                               decoration: InputDecoration(
                                                 fillColor: Colors.grey[200],
-                                                contentPadding:
+                                                contentPadding:const
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
                                                 border: InputBorder.none,
@@ -758,18 +686,18 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 32),
+                                  const SizedBox(width: 32),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
+                                        const  Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 30),
+                                               EdgeInsets.only(left: 30),
                                           child: Text('Phone'),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         SizedBox(
@@ -790,7 +718,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                               ],
                                               decoration: InputDecoration(
                                                 fillColor: Colors.grey[200],
-                                                contentPadding:
+                                                contentPadding:const
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
                                                 border: InputBorder.none,
@@ -831,12 +759,12 @@ class _CreateOrderState extends State<CreateOrder> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
+                                        const    Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 30),
+                                               EdgeInsets.only(left: 30),
                                           child: Text('Address Line 1'),
                                         ),
-                                        SizedBox(
+                                        const  SizedBox(
                                           height: 10,
                                         ),
                                         SizedBox(
@@ -850,7 +778,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                                   addressLine1Controller,
                                               decoration: InputDecoration(
                                                 fillColor: Colors.grey[200],
-                                                contentPadding:
+                                                contentPadding:const
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
                                                 border: InputBorder.none,
@@ -863,18 +791,18 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 16),
+                                  const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
+                                        const  Padding(
                                           padding:
                                               const EdgeInsets.only(left: 30),
                                           child: Text('Fax'),
                                         ),
-                                        SizedBox(
+                                        const  SizedBox(
                                           height: 10,
                                         ),
                                         SizedBox(
@@ -895,7 +823,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                               ],
                                               decoration: InputDecoration(
                                                 fillColor: Colors.grey[200],
-                                                contentPadding:
+                                                contentPadding:const
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
                                                 border: InputBorder.none,
@@ -937,12 +865,12 @@ class _CreateOrderState extends State<CreateOrder> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
+                                        const   Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 30),
+                                               EdgeInsets.only(left: 30),
                                           child: Text('Address Line 2'),
                                         ),
-                                        SizedBox(
+                                        const     SizedBox(
                                           height: 10,
                                         ),
                                         SizedBox(
@@ -956,7 +884,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                                   addressLine2Controller,
                                               decoration: InputDecoration(
                                                 fillColor: Colors.grey[200],
-                                                contentPadding:
+                                                contentPadding:const
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
                                                 border: InputBorder.none,
@@ -969,18 +897,18 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 16),
+                                  const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
+                                        const    Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 30),
+                                               EdgeInsets.only(left: 30),
                                           child: Text('Tel'),
                                         ),
-                                        SizedBox(
+                                        const      SizedBox(
                                           height: 10,
                                         ),
                                         SizedBox(
@@ -993,7 +921,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                               controller: telController,
                                               decoration: InputDecoration(
                                                 fillColor: Colors.grey[200],
-                                                contentPadding:
+                                                contentPadding:const
                                                     EdgeInsets.symmetric(
                                                         horizontal: 10),
                                                 border: InputBorder.none,
@@ -1026,22 +954,22 @@ class _CreateOrderState extends State<CreateOrder> {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
                   child: Container(
                     width: 400,
                     height: 500,
-                    decoration: BoxDecoration(
+                    decoration:const BoxDecoration(
                       color: Colors.white,
                       // Border to emphasize split
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30, top: 20),
+                        const  Padding(
+                          padding:  EdgeInsets.only(left: 30, top: 20),
                           child: Text(
                             '',
                             style: TextStyle(
@@ -1057,8 +985,8 @@ class _CreateOrderState extends State<CreateOrder> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30, top: 10),
+                            const  Padding(
+                              padding:  EdgeInsets.only(left: 30, top: 10),
                               child: Text(
                                 'Comment',
                               ),
@@ -1094,7 +1022,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                           controller: addressLine2Controller,
                                           decoration: InputDecoration(
                                             fillColor: Colors.grey[200],
-                                            contentPadding:
+                                            contentPadding:const
                                                 EdgeInsets.symmetric(
                                                     horizontal: 5,
                                                     vertical: 70),
@@ -1103,17 +1031,6 @@ class _CreateOrderState extends State<CreateOrder> {
                                             hintText: '',
                                           ),
                                         ),
-                                        //TextFormField(
-                                        //   controller: commentsController,
-                                        //   decoration: InputDecoration(
-                                        //     border: OutlineInputBorder(),
-                                        //     contentPadding:
-                                        //         EdgeInsets.symmetric(
-                                        //       horizontal: 5,
-                                        //       vertical: 70,
-                                        //     ),
-                                        //   ),
-                                        // ),
                                       ),
                                     ),
                                   ),
@@ -1141,14 +1058,14 @@ class _CreateOrderState extends State<CreateOrder> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
                       child: Container(
                         height: 100,
                         width: 1400,
-                        padding: EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Colors.white, // Container background color
                           borderRadius: BorderRadius.circular(10),
@@ -1162,8 +1079,8 @@ class _CreateOrderState extends State<CreateOrder> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15),
+                                const  Padding(
+                                  padding:  EdgeInsets.only(bottom: 15),
                                   child: Text('Credit Limit'),
                                 ),
                                 SizedBox(
@@ -1174,7 +1091,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                     decoration: InputDecoration(
                                       fillColor: Colors.grey[200],
                                       contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
+                                      const EdgeInsets.symmetric(horizontal: 10),
                                       border: InputBorder.none,
                                       filled: true,
                                       hintText: '',
@@ -1186,8 +1103,8 @@ class _CreateOrderState extends State<CreateOrder> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15),
+                                const     Padding(
+                                  padding:  EdgeInsets.only(bottom: 15),
                                   child: Text('Outstanding'),
                                 ),
                                 SizedBox(
@@ -1198,7 +1115,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                     decoration: InputDecoration(
                                       fillColor: Colors.grey[200],
                                       contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
+                                      const EdgeInsets.symmetric(horizontal: 10),
                                       border: InputBorder.none,
                                       filled: true,
                                       hintText: '',
@@ -1210,8 +1127,8 @@ class _CreateOrderState extends State<CreateOrder> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15),
+                                const  Padding(
+                                  padding:  EdgeInsets.only(bottom: 15),
                                   child: Text('Available'),
                                 ),
                                 SizedBox(
@@ -1222,7 +1139,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                     decoration: InputDecoration(
                                       fillColor: Colors.grey[200],
                                       contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
+                                      const EdgeInsets.symmetric(horizontal: 10),
                                       border: InputBorder.none,
                                       filled: true,
                                       hintText: '',
@@ -1252,14 +1169,14 @@ class _CreateOrderState extends State<CreateOrder> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
                       child: Container(
                         height: 200,
                         width: 1400,
-                        padding: EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Colors.white, // Container background color
                           borderRadius: BorderRadius.circular(10),
@@ -1267,8 +1184,8 @@ class _CreateOrderState extends State<CreateOrder> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30, top: 10),
+                            const    Padding(
+                              padding:  EdgeInsets.only(left: 30, top: 10),
                               child: Text(
                                 'Address',
                               ),
@@ -1282,7 +1199,7 @@ class _CreateOrderState extends State<CreateOrder> {
                             Table(
                               border: TableBorder.all(
                                   color: Colors.grey, width: 2.0),
-                              columnWidths: {
+                              columnWidths: const{
                                 0: FlexColumnWidth(3),
                                 1: FlexColumnWidth(2),
                                 2: FlexColumnWidth(1),
@@ -1291,8 +1208,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                 5: FlexColumnWidth(1),
                                 6: FlexColumnWidth(1),
                               },
-                              children: [
-                                TableRow(
+                              children: const[
+                                   TableRow(
                                   children: [
                                     TableCell(
                                       child: SizedBox(
@@ -1309,12 +1226,12 @@ class _CreateOrderState extends State<CreateOrder> {
                                         ),
                                       ),
                                     ),
-                                    TableCell(
-                                      child: const SizedBox(
+                                      TableCell(
+                                      child:  SizedBox(
                                         height:
                                             50, // set the height of the first cell in the second column to 50
                                         child: Center(
-                                          child: const Text(
+                                          child:  Text(
                                             'QTY',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
@@ -1325,7 +1242,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ),
                                     ),
                                     TableCell(
-                                      child: const SizedBox(
+                                      child:  SizedBox(
                                         height:
                                             50, // set the height of the first cell in the third column to 50
                                         child: Center(
@@ -1340,7 +1257,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ),
                                     ),
                                     TableCell(
-                                      child: const SizedBox(
+                                      child:  SizedBox(
                                         height:
                                             50, // set the height of the first cell in the fourth column to 50
                                         child: Center(
@@ -1355,7 +1272,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ),
                                     ),
                                     TableCell(
-                                      child: const SizedBox(
+                                      child:  SizedBox(
                                         height:
                                             50, // set the height of the first cell in the fifth column to 50
                                         child: Center(
@@ -1370,7 +1287,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ),
                                     ),
                                     TableCell(
-                                      child: const SizedBox(
+                                      child:  SizedBox(
                                         height:
                                             50, // set the height of the first cell in the sixth column to 50
                                         child: Center(
@@ -1385,7 +1302,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       ),
                                     ),
                                     TableCell(
-                                      child: const SizedBox(
+                                      child:  SizedBox(
                                         height:
                                             50, // set the height of the first cell in the seventh column to 50
                                         child: Center(
@@ -1410,12 +1327,6 @@ class _CreateOrderState extends State<CreateOrder> {
                                       const EdgeInsets.only(left: 30, top: 20),
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) =>
-                                      //           ProductPage3()),
-                                      // );
                                     },
                                     child: const Text('Add Parts'),
                                   ),

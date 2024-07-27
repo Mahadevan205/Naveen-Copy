@@ -1,16 +1,13 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:btb/target.dart';
-import 'package:http/http.dart' as http;
 import 'package:btb/thirdpage/product_form1.dart'; // Import the ProductForm widget
 
 void main() {
-  runApp(ProductList());
+  runApp(const ProductList());
 }
 
 class ProductList extends StatefulWidget {
+  const ProductList({super.key});
+
   @override
   State<ProductList> createState() => _ProductListState();
 }
@@ -27,13 +24,13 @@ class _ProductListState extends State<ProductList> {
           backgroundColor: Colors.white,
           actions: [
             IconButton(
-              icon: Icon(Icons.notifications),
+              icon: const Icon(Icons.notifications),
               onPressed: () {
                 // Handle notification icon press
               },
             ),
             IconButton(
-              icon: Icon(Icons.account_circle),
+              icon: const Icon(Icons.account_circle),
               onPressed: () {
                 // Handle user icon press
               },
@@ -49,7 +46,7 @@ class _ProductListState extends State<ProductList> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Container(
-                      margin: EdgeInsets.only(top: 30, left: 10),
+                      margin: const EdgeInsets.only(top: 30, left: 10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,9 +57,9 @@ class _ProductListState extends State<ProductList> {
                               Icons.dashboard,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Home'),
+                            label: const Text('Home'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                             height: 20,
                           ),
@@ -72,9 +69,9 @@ class _ProductListState extends State<ProductList> {
                               Icons.warehouse_outlined,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Orders'),
+                            label: const Text('Orders'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                             height: 20,
                           ),
@@ -84,9 +81,9 @@ class _ProductListState extends State<ProductList> {
                               Icons.fire_truck_outlined,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Delivery'),
+                            label: const Text('Delivery'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                             height: 20,
                           ),
@@ -96,9 +93,9 @@ class _ProductListState extends State<ProductList> {
                               Icons.document_scanner_rounded,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Invoice'),
+                            label: const Text('Invoice'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                             height: 20,
                           ),
@@ -108,9 +105,9 @@ class _ProductListState extends State<ProductList> {
                               Icons.payment_outlined,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Payment'),
+                            label: const Text('Payment'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                             height: 20,
                           ),
@@ -120,9 +117,9 @@ class _ProductListState extends State<ProductList> {
                               Icons.backspace_sharp,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Return'),
+                            label: const Text('Return'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                             height: 20,
                           ),
@@ -132,14 +129,14 @@ class _ProductListState extends State<ProductList> {
                               Icons.insert_chart,
                               color: Colors.blue[900],
                             ),
-                            label: Text('Reports'),
+                            label: const Text('Reports'),
                           ),
                         ],
                       ),
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                       top: 40,
                       left: 200,
                     ),
@@ -152,12 +149,12 @@ class _ProductListState extends State<ProductList> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           hintText: 'Search Product',
                           prefix: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               bottom: 5,
                               left: 1,
                             ),
@@ -177,7 +174,7 @@ class _ProductListState extends State<ProductList> {
                   Row(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           top: 20,
                           left: 600,
                         ),
@@ -188,7 +185,7 @@ class _ProductListState extends State<ProductList> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: ProductForm(), // Use the ProductForm widget here
                       ),
@@ -199,7 +196,7 @@ class _ProductListState extends State<ProductList> {
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         left: 200, // Adjust left padding
                         right: 120, // Adjust right padding
                       ),
@@ -207,20 +204,20 @@ class _ProductListState extends State<ProductList> {
                       child: Row(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.arrow_back), // Back button icon
+                            icon: const Icon(Icons.arrow_back), // Back button icon
                             onPressed: () {
                               // Implement back button action
                             },
                           ),
-                          Text(
+                          const Text(
                             'Add New Product',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Spacer(),
-                          SizedBox(width: 16),
+                          const Spacer(),
+                          const SizedBox(width: 16),
                           OutlinedButton(
                             onPressed: () {
                               // Implement edit button action
@@ -234,7 +231,7 @@ class _ProductListState extends State<ProductList> {
                               ),
                               side: BorderSide.none, // No outline
                             ),
-                            child: Text(
+                            child: const Text(
                               'Edit',
                               style: TextStyle(
                                 fontSize: 18,
@@ -256,7 +253,7 @@ class _ProductListState extends State<ProductList> {
                   Column(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(top: 20),
+                        margin: const EdgeInsets.only(top: 20),
                         width: double.infinity,
                         height: 200,
                         decoration: BoxDecoration(
@@ -268,13 +265,13 @@ class _ProductListState extends State<ProductList> {
                           children: [
                             Icon(Icons.cloud_upload,
                                 color: Colors.blue[900], size: 40),
-                            SizedBox(height: 8),
-                            Text(
+                            const SizedBox(height: 8),
+                            const Text(
                               'Click to upload image',
                               textAlign: TextAlign.center,
                             ),
-                            SizedBox(height: 8),
-                            Text(
+                            const SizedBox(height: 8),
+                            const Text(
                               'SVG, PNG, JPG, or GIF Recommended size (1000px * 1248px)',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 12),
@@ -298,17 +295,17 @@ class _ProductListState extends State<ProductList> {
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       color: Colors.white,
                       child: Row(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.arrow_back), // Back button icon
+                            icon: const Icon(Icons.arrow_back), // Back button icon
                             onPressed: () {
                               // Implement back button action
                             },
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               'Add New Product',
                               style: TextStyle(
@@ -331,7 +328,7 @@ class _ProductListState extends State<ProductList> {
                               ),
                               side: BorderSide.none, // No outline
                             ),
-                            child: Text(
+                            child: const Text(
                               'Cancel',
                               style: TextStyle(
                                 fontSize: 18,
@@ -340,7 +337,7 @@ class _ProductListState extends State<ProductList> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 16),
+                          const SizedBox(width: 16),
                           OutlinedButton(
                             onPressed: () {
                               // Implement save button action
@@ -354,7 +351,7 @@ class _ProductListState extends State<ProductList> {
                               ),
                               side: BorderSide.none, // No outline
                             ),
-                            child: Text(
+                            child: const Text(
                               'Save',
                               style: TextStyle(
                                 fontSize: 18,

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:btb/Return%20Module/return%20first%20page.dart';
 import 'package:btb/fifthpage/Edit.dart';
-import 'package:btb/fourthpage/orderspage%20order.dart';
+import 'package:btb/Product Module/Product Screen.dart';
 import 'package:btb/screen/login.dart';
-import 'package:btb/seconpage/secondfinal.dart';
 import 'package:btb/sprint%202%20order/add%20productmaster%20sample.dart';
+import 'package:btb/sprint%202%20order/eighthpage.dart';
 import 'package:btb/sprint%202%20order/fifthpage.dart';
 import 'package:btb/sprint%202%20order/firstpage.dart';
 import 'package:btb/sprint%202%20order/fourthpage.dart';
@@ -13,7 +13,7 @@ import 'package:btb/sprint%202%20order/secondpage.dart';
 import 'package:btb/sprint%202%20order/seventhpage%20.dart';
 import 'package:btb/sprint%202%20order/sixthpage.dart';
 import 'package:btb/sprint%202%20order/thirdpage.dart';
-import 'package:btb/thirdpage/dashboard.dart';
+import 'package:btb/dashboard.dart';
 import 'package:btb/thirdpage/productclass.dart' as ord;
 import 'package:btb/thirdpage/productclass.dart';
 import 'package:btb/thirdpage/thirdpage%201.dart';
@@ -22,6 +22,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Product Module/Create Product.dart';
 import 'Return Module/return module design.dart';
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -102,7 +103,7 @@ class MyApp extends StatelessWidget {
         path: '/dashboard/return/:return',
         builder: (context, state) {
          // final product = state.extra as ord.Product?;
-          return Returnpage();
+          return const Returnpage();
         },
       ),
       GoRoute(
@@ -110,7 +111,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>?;
           if (extra == null) {
-            return SixthPage(
+            return const SixthPage(
               product: null,
               item: [],
               body: {},
@@ -177,6 +178,10 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const SecondPage(),
       ),
       GoRoute(
+        path: '/Download',
+        builder: (context, state) => const EighthPage(),
+      ),
+      GoRoute(
         path: '/Product_List',
         builder: (context, state) {
           final product = state.extra as ord.Product?;
@@ -241,7 +246,7 @@ class MyApp extends StatelessWidget {
           final params = state.extra as Map<String, dynamic>?; // Make it nullable
           if (params == null) {
             // If params is null, return a default EditOrder or handle it as per your requirement
-            return EditOrder(
+            return const EditOrder(
               prodId: '',
               textInput: '',
               priceInput: '',
@@ -423,7 +428,7 @@ class MyApp extends StatelessWidget {
             product: data?['product'] as Product,
             data: data?['data'] as Map<String, dynamic>,
             inputText: data?['inputText'] as String,
-            subText: data?['subText'] as String, products: [], selectedProducts: [], notselect: '',
+            subText: data?['subText'] as String, products: const [], selectedProducts: const [], notselect: '',
           );
         },
       ),
@@ -435,7 +440,7 @@ class MyApp extends StatelessWidget {
             product: data?['product'] as Product,
             data: data?['data'] as Map<String, dynamic>,
             inputText: data?['inputText'] as String,
-            subText: data?['subText'] as String, products: [], selectedProducts: [], notselect: '',
+            subText: data?['subText'] as String, products: const [], selectedProducts: const [], notselect: '',
           );
         },
       ),
@@ -446,7 +451,19 @@ class MyApp extends StatelessWidget {
           return MaterialPage(
             child: SelectedProductPage(
               data: data ?? {}, // If data is null, use an empty map
-              selectedProducts: [],
+              selectedProducts: const [],
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Edit_Order/Add_Product_Item',
+        pageBuilder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+          return MaterialPage(
+            child: SelectedProductPage(
+              data: data ?? {}, // If data is null, use an empty map
+              selectedProducts: const [],
             ),
           );
         },
@@ -467,7 +484,7 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/Order_Return',
-        builder: (context, state) =>  CreateReturn(storeImages: [],storeImage: '',imageSizeStrings: [],imageSizeString: [],orderDetailsMap: {},orderDetails: [],),
+        builder: (context, state) =>  CreateReturn(storeImages: const [],storeImage: '',imageSizeStrings: const [],imageSizeString: const [],orderDetailsMap: const {},orderDetails: const [],),
       ),
       GoRoute(
         path: '/dasbaord/Orderspage/addproduct/arrowback',

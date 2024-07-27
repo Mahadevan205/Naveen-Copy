@@ -71,7 +71,7 @@ class _ProductFormState extends State<ProductForm> {
     //     "price": price,
     //     "subCategory": subCategory,
     //   };
-    final url =
+    const url =
         'https://tn4l1nop44.execute-api.ap-south-1.amazonaws.com/stage1/api/productmaster/update_productmaster';
     // String url =
     //     'https://tn4l1nop44.execute-api.ap-south-1.amazonaws.com/stage1/api/productmaster/add_productmaster';
@@ -144,11 +144,11 @@ class _ProductFormState extends State<ProductForm> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
+                    const Padding(
+                      padding: EdgeInsets.all(4.0),
                       child: Text('Product  Name*'),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -158,7 +158,7 @@ class _ProductFormState extends State<ProductForm> {
                           border: Border.all(color: Colors.blue[100]!),
                         ),
                         child: TextFormField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 10),
                             border: InputBorder.none,
@@ -170,18 +170,18 @@ class _ProductFormState extends State<ProductForm> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
                             child: Text('Category*'),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -191,7 +191,7 @@ class _ProductFormState extends State<ProductForm> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10),
                                   border: InputBorder.none,
@@ -204,16 +204,16 @@ class _ProductFormState extends State<ProductForm> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
                             child: Text('Sub Category*'),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -223,7 +223,7 @@ class _ProductFormState extends State<ProductForm> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10),
                                   border: InputBorder.none,
@@ -238,18 +238,18 @@ class _ProductFormState extends State<ProductForm> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
                             child: Text('Tax*'),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -259,7 +259,7 @@ class _ProductFormState extends State<ProductForm> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10),
                                   border: InputBorder.none,
@@ -272,16 +272,16 @@ class _ProductFormState extends State<ProductForm> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
                             child: Text('Unit*'),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -291,7 +291,7 @@ class _ProductFormState extends State<ProductForm> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10),
                                   border: InputBorder.none,
@@ -306,18 +306,18 @@ class _ProductFormState extends State<ProductForm> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
                             child: Text('Price *'),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -327,7 +327,7 @@ class _ProductFormState extends State<ProductForm> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10),
                                   border: InputBorder.none,
@@ -340,16 +340,16 @@ class _ProductFormState extends State<ProductForm> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
                             child: Text('Discount'),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -359,7 +359,7 @@ class _ProductFormState extends State<ProductForm> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10),
                                   border: InputBorder.none,
@@ -374,7 +374,7 @@ class _ProductFormState extends State<ProductForm> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -391,7 +391,7 @@ class _ProductFormState extends State<ProductForm> {
                         ),
                         side: BorderSide.none, // No outline
                       ),
-                      child: Text(
+                      child: const Text(
                         'Cancel',
                         style: TextStyle(
                           fontSize: 18, // Increase font size if desired
@@ -400,7 +400,7 @@ class _ProductFormState extends State<ProductForm> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     OutlinedButton(
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
@@ -411,7 +411,7 @@ class _ProductFormState extends State<ProductForm> {
                         ),
                         side: BorderSide.none, // No outline
                       ),
-                      child: Text(
+                      child: const Text(
                         'Save',
                         style: TextStyle(
                           fontSize: 18, // Increase font size if desired
@@ -432,11 +432,11 @@ class _ProductFormState extends State<ProductForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
-                Text(
+                const SizedBox(height: 16),
+                const Text(
                   'Product Name*',
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     fillColor: Colors.white,
@@ -446,14 +446,14 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text('Category*',
+                const SizedBox(height: 16),
+                const Text('Category*',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -463,14 +463,14 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text('Sub Category',
+                const SizedBox(height: 16),
+                const Text('Sub Category',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -480,14 +480,14 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text('Tax*',
+                const SizedBox(height: 16),
+                const Text('Tax*',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -497,14 +497,14 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text('Unit*',
+                const SizedBox(height: 16),
+                const Text('Unit*',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -514,14 +514,14 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text('Price*',
+                const SizedBox(height: 16),
+                const Text('Price*',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -531,14 +531,14 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text('Discount*',
+                const SizedBox(height: 16),
+                const Text('Discount*',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -548,10 +548,10 @@ class _ProductFormState extends State<ProductForm> {
                       borderRadius: BorderRadius.circular(4),
                       borderSide: BorderSide(color: Colors.blue[100]!),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -568,7 +568,7 @@ class _ProductFormState extends State<ProductForm> {
                         ),
                         side: BorderSide.none, // No outline
                       ),
-                      child: Text(
+                      child: const Text(
                         'Cancel',
                         style: TextStyle(
                           fontSize: 18, // Increase font size if desired
@@ -577,7 +577,7 @@ class _ProductFormState extends State<ProductForm> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     OutlinedButton(
                       onPressed: () {
                         token = window.sessionStorage["token"] ?? " ";
@@ -612,7 +612,7 @@ class _ProductFormState extends State<ProductForm> {
                         ),
                         side: BorderSide.none, // No outline
                       ),
-                      child: Text(
+                      child: const Text(
                         'Save',
                         style: TextStyle(
                           fontSize: 18, // Increase font size if desired

@@ -12,8 +12,9 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import '../fourthpage/orderspage order.dart';
-import '../thirdpage/dashboard.dart';
+import '../Product Module/Product Screen.dart';
+import '../Return Module/return first page.dart';
+import '../dashboard.dart';
 import 'firstpage.dart';
 import 'fourthpage.dart';
 void main() {
@@ -418,14 +419,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
       // );
 
       // Redirect to the next page
-      context.go('/Order_List/Documents',extra: {
-        'selectedProducts': updatedOrder,
-      });
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SeventhPage(
-            selectedProducts: updatedOrder,product: null,)), // Replace with your next page
-      );
+
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -468,10 +462,14 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
 
     _updateOrder(updatedOrder);
-    context.go('/seventhPage', extra: {'selectedProducts': updatedOrder});
+  ///  context.go('/seventhPage', extra: {'selectedProducts': updatedOrder});
+    context.go('/Order_List/Documents',extra: {
+      'selectedProducts': updatedOrder,
+    });
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SeventhPage(selectedProducts: updatedOrder,product: null,)), // Replace with your next page
+      MaterialPageRoute(builder: (context) => SeventhPage(
+        selectedProducts: updatedOrder,product: null,)), // Replace with your next page
     );
 
   }
@@ -516,11 +514,11 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    TableRow row1 = TableRow(
+    TableRow row1 = const TableRow(
       children: [
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
             child: Text('Delivery Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 21),),
           ),
         ),
@@ -530,17 +528,17 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
       ],
     );
 
-    TableRow row2 = TableRow(
+    TableRow row2 = const TableRow(
       children: [
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
             child: Text('Address'),
           ),
         ),
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 10,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 10,top: 10,bottom: 10),
             child: Text('Comments'),
           ),
         ),
@@ -557,13 +555,13 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
+                    const Padding(
                       padding:  EdgeInsets.only(left: 30,top: 10),
                       child: Text('Select Delivery Location'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding:  EdgeInsets.only(left: 30),
+                      padding:  const EdgeInsets.only(left: 30),
                       child: SizedBox(
                         width: screenWidth * 0.35,
                         height: 40,
@@ -595,14 +593,14 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Padding(
+                    const SizedBox(height: 20),
+                    const Padding(
                       padding:  EdgeInsets.only(left: 30),
                       child: Text('Delivery Address'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding:  EdgeInsets.only(left: 30),
+                      padding:  const EdgeInsets.only(left: 30),
                       child: SizedBox(
                         width: screenWidth * 0.35,
                         child: TextField(
@@ -623,17 +621,17 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                   ],
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Expanded(
                 flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: const Text('Contact Person'),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text('Contact Person'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: SizedBox(
@@ -655,9 +653,9 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     const Text('Contact Number'),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: SizedBox(
@@ -795,13 +793,13 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                       },
                       itemBuilder: (BuildContext context) {
                         return [
-                          PopupMenuItem<String>(
+                          const PopupMenuItem<String>(
                             value: 'logout',
                             child: Text('Logout'),
                           ),
                         ];
                       },
-                      offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                      offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                     ),
                   ),
                 ),
@@ -964,7 +962,26 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                             ),
                             const SizedBox(height: 20),
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                context.go('/dashboard/return/:return');
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) =>
+                                    const Returnpage(),
+                                    transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
                               label: Text(
@@ -1034,9 +1051,9 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Padding(
-                                    padding: EdgeInsets.only(right: 100),
+                                    padding: const EdgeInsets.only(right: 100),
                                     child: OutlinedButton(
                                       onPressed: ()  {
                                         _onSaveChanges();
@@ -1085,10 +1102,10 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                   children: [
                                     Padding(
                                       padding:  EdgeInsets.only(top: 50,right: maxWidth * 0.085),
-                                      child: Text(('Order Date')),
+                                      child: const Text(('Order Date')),
                                     ),
                                     Padding(
-                                      padding:  EdgeInsets.only(top: 10,),
+                                      padding:  const EdgeInsets.only(top: 10,),
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -1161,15 +1178,15 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                               padding: const EdgeInsets.only(left: 150,right: 100,top: 100),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Color(0xFFB2C2D3)),
+                                  border: Border.all(color: const Color(0xFFB2C2D3)),
                                   borderRadius: BorderRadius.circular(3.5), // Set border radius here
                                 ),
                                 child: Table(
-                                  border: TableBorder.all(color: Color(0xFFB2C2D3)),
+                                  border: TableBorder.all(color: const Color(0xFFB2C2D3)),
 
                                   columnWidths: {
-                                    0: FlexColumnWidth(2),
-                                    1: FlexColumnWidth(1.4),
+                                    0: const FlexColumnWidth(2),
+                                    1: const FlexColumnWidth(1.4),
                                   },
                                   children: [
                                     row1,
@@ -1414,9 +1431,9 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                 width: maxWidth*0.785,
                                 child: Container(
                                   width: maxWidth,
-                                  padding: EdgeInsets.all(0.0),
+                                  padding: const EdgeInsets.all(0.0),
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: Color(0xFFB2C2D3),width:2),
+                                    border: Border.all(color: const Color(0xFFB2C2D3),width:2),
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                   child: Column(
@@ -1433,32 +1450,32 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       Container(
                                         width: maxWidth,
                                         decoration: BoxDecoration(
-                                          border: Border.all(color: Color(0xFFB2C2D3)),
+                                          border: Border.all(color: const Color(0xFFB2C2D3)),
                                         ),
                                         child: Padding(
-                                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                                          padding: const EdgeInsets.only(top: 5, bottom: 5),
                                           child: Table(
                                             columnWidths: {
-                                              0: FlexColumnWidth(1),
-                                              1: FlexColumnWidth(2.7),
-                                              2: FlexColumnWidth(2),
-                                              3: FlexColumnWidth(1.8),
-                                              4: FlexColumnWidth(2),
-                                              5: FlexColumnWidth(1),
-                                              6: FlexColumnWidth(2),
-                                              7: FlexColumnWidth(1),
+                                              0: const FlexColumnWidth(1),
+                                              1: const FlexColumnWidth(2.7),
+                                              2: const FlexColumnWidth(2),
+                                              3: const FlexColumnWidth(1.8),
+                                              4: const FlexColumnWidth(2),
+                                              5: const FlexColumnWidth(1),
+                                              6: const FlexColumnWidth(2),
+                                              7: const FlexColumnWidth(1),
 
                                             },
                                             children: [
-                                              TableRow(
+                                              const TableRow(
                                                 children: [
                                                   TableCell(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                                      padding: EdgeInsets.only(top: 10, bottom: 10),
                                                       child: Center(
                                                         child: Text(
                                                           'SN',
@@ -1557,15 +1574,15 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                         itemBuilder: (context, index) {
                                           Map<String, dynamic> item = widget.data['items']!= null? widget.data['items'][index] : items[index];
                                           return Table(
-                                            border: TableBorder.all(color: Color(0xFFB2C2D3)), columnWidths: {
-                                            0: FlexColumnWidth(1),
-                                            1: FlexColumnWidth(2.7),
-                                            2: FlexColumnWidth(2),
-                                            3: FlexColumnWidth(1.8),
-                                            4: FlexColumnWidth(2),
-                                            5: FlexColumnWidth(1),
-                                            6: FlexColumnWidth(2),
-                                            7: FlexColumnWidth(1),
+                                            border: TableBorder.all(color: const Color(0xFFB2C2D3)), columnWidths: {
+                                            0: const FlexColumnWidth(1),
+                                            1: const FlexColumnWidth(2.7),
+                                            2: const FlexColumnWidth(2),
+                                            3: const FlexColumnWidth(1.8),
+                                            4: const FlexColumnWidth(2),
+                                            5: const FlexColumnWidth(1),
+                                            6: const FlexColumnWidth(2),
+                                            7: const FlexColumnWidth(1),
 
                                           },
                                             children: [
@@ -1686,9 +1703,9 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
                                         },
                                       ),
-                                      SizedBox(height: 8.0),
+                                      const SizedBox(height: 8.0),
                                       Padding(
-                                        padding: EdgeInsets.only(left: 30),
+                                        padding: const EdgeInsets.only(left: 30),
                                         child: ElevatedButton(
                                           onPressed: () {
                                             // Navigator.push(
@@ -1818,7 +1835,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                             );
                                           },
                                           // icon: Icon(Icons.add,color: Colors.white,),
-                                          child: Text('+Add Products',style: TextStyle(color: Colors.white),),
+                                          child: const Text('+Add Products',style: TextStyle(color: Colors.white),),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.blue,
                                             shape: RoundedRectangleBorder(
@@ -1827,14 +1844,14 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                           ),
                                         ),
                                       ),
-                                      Divider(color: Color(0xFFB2C2D3),),
+                                      const Divider(color: Color(0xFFB2C2D3),),
                                       Padding(
                                         padding: const EdgeInsets.only(top:9,bottom: 9),
                                         child: Align(
-                                          alignment: Alignment(0.74,0.8),
+                                          alignment: const Alignment(0.74,0.8),
                                           child: Container(
                                             height: 40,
-                                            padding: EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
+                                            padding: const EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
                                             decoration: BoxDecoration(
                                               border: Border.all(color: Colors.blue),
                                               borderRadius: BorderRadius.circular(3),
@@ -1848,7 +1865,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                                   RichText(text:
                                                   TextSpan(
                                                     children: [
-                                                      TextSpan(
+                                                      const TextSpan(
                                                         text:  'Total',
                                                         style: TextStyle(
                                                             fontSize: 14,

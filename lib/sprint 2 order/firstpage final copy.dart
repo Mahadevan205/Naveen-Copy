@@ -70,7 +70,7 @@ class _OrderListPageState extends State<OrderListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order List'),
+        title: const Text('Order List'),
       ),
       body:
       FutureBuilder<List<Order>>(
@@ -80,7 +80,7 @@ class _OrderListPageState extends State<OrderListPage> {
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                columns: [
+                columns: const [
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Order ID')),
                   DataColumn(label: Text('Created Date')),
@@ -104,7 +104,7 @@ class _OrderListPageState extends State<OrderListPage> {
             return Center(child: Text("${snapshot.error}"));
           }
 
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );

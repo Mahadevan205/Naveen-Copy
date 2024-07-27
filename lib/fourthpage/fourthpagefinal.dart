@@ -99,7 +99,7 @@ class _ProductPage1State extends State<ProductPage1> {
     if (_searchDebounceTimer != null) {
       _searchDebounceTimer!.cancel(); // Cancel the previous timer
     }
-    _searchDebounceTimer = Timer(Duration(milliseconds: 500), () {
+    _searchDebounceTimer = Timer(const Duration(milliseconds: 500), () {
       setState(() {
         _searchText = text;
       });
@@ -169,14 +169,14 @@ class _ProductPage1State extends State<ProductPage1> {
     return Center(
       child: Container(
         height: double.infinity,
-        padding: EdgeInsets.only(top: 80),
+        padding: const EdgeInsets.only(top: 80),
         width: MediaQuery.of(context).size.width * 0.8,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 1),
+            const SizedBox(height: 1),
             buildSearchField(),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             buildDataTable(),
           ],
         ),
@@ -191,7 +191,7 @@ class _ProductPage1State extends State<ProductPage1> {
         height: 850,
         width: 1300,
         // padding: EdgeInsets.only(),
-        margin: EdgeInsets.only(left: 400, right: 100),
+        margin: const EdgeInsets.only(left: 400, right: 100),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(1),
@@ -200,7 +200,7 @@ class _ProductPage1State extends State<ProductPage1> {
                 color: Colors.grey.withOpacity(0.1),
                 spreadRadius: 5,
                 blurRadius: 7,
-                offset: Offset(0, 8),
+                offset: const Offset(0, 8),
               )
             ]),
         child: Column(
@@ -237,7 +237,7 @@ class _ProductPage1State extends State<ProductPage1> {
                     border: Border.all(color: Colors.blue[100]!),
                   ),
                   child: TextFormField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 8.0),
                       border: InputBorder.none,
@@ -269,7 +269,7 @@ class _ProductPage1State extends State<ProductPage1> {
                           border: Border.all(color: Colors.blue[100]!),
                         ),
                         child: DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 10),
                             border: InputBorder.none,
@@ -301,7 +301,7 @@ class _ProductPage1State extends State<ProductPage1> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -311,7 +311,7 @@ class _ProductPage1State extends State<ProductPage1> {
                           border: Border.all(color: Colors.black26),
                         ),
                         child: DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 10),
                             border: InputBorder.none,
@@ -452,7 +452,7 @@ class _ProductPage1State extends State<ProductPage1> {
             columns: [
               DataColumn(
                 label: Container(
-                  padding: EdgeInsets.only(left: 60),
+                  padding: const EdgeInsets.only(left: 60),
                   child: Text(
                     'Status',
                     style: TextStyle(color: Colors.blue[900]),
@@ -461,7 +461,7 @@ class _ProductPage1State extends State<ProductPage1> {
               ),
               DataColumn(
                 label: Container(
-                  padding: EdgeInsets.only(left: 68),
+                  padding: const EdgeInsets.only(left: 68),
                   child: Text(
                     'Order ID',
                     style: TextStyle(color: Colors.blue[900]),
@@ -470,7 +470,7 @@ class _ProductPage1State extends State<ProductPage1> {
               ),
               DataColumn(
                 label: Container(
-                  padding: EdgeInsets.only(left: 73),
+                  padding: const EdgeInsets.only(left: 73),
                   child: Text(
                     'Created Date',
                     style: TextStyle(color: Colors.blue[900]),
@@ -481,7 +481,7 @@ class _ProductPage1State extends State<ProductPage1> {
               ),
               DataColumn(
                 label: Container(
-                  padding: EdgeInsets.only(left: 83),
+                  padding: const EdgeInsets.only(left: 83),
                   child: Text(
                     'Reference Number',
                     style: TextStyle(color: Colors.blue[900]),
@@ -490,7 +490,7 @@ class _ProductPage1State extends State<ProductPage1> {
               ),
               DataColumn(
                 label: Container(
-                  padding: EdgeInsets.only(left: 68),
+                  padding: const EdgeInsets.only(left: 68),
                   child: Text(
                     'Total Amount',
                     style: TextStyle(color: Colors.blue[900]),
@@ -499,7 +499,7 @@ class _ProductPage1State extends State<ProductPage1> {
               ),
               DataColumn(
                 label: Container(
-                  padding: EdgeInsets.only(left: 83, right: 10),
+                  padding: const EdgeInsets.only(left: 83, right: 10),
                   child: Text(
                     'Delivery Status',
                     style: TextStyle(color: Colors.blue[900]),
@@ -512,7 +512,7 @@ class _ProductPage1State extends State<ProductPage1> {
                 cells: [
                   DataCell(
                     Container(
-                      padding: EdgeInsets.only(left: 60),
+                      padding: const EdgeInsets.only(left: 60),
                       child: Text(
                         Product
                             .productName, // Change this line to convert the int value to a String
@@ -522,7 +522,7 @@ class _ProductPage1State extends State<ProductPage1> {
                   ),
                   DataCell(
                     Container(
-                      padding: EdgeInsets.only(left: 75),
+                      padding: const EdgeInsets.only(left: 75),
                       child: Text(
                         Product.category,
                         style: TextStyle(color: Colors.blue[900]),
@@ -531,7 +531,7 @@ class _ProductPage1State extends State<ProductPage1> {
                   ),
                   DataCell(
                     Container(
-                      padding: EdgeInsets.only(left: 75),
+                      padding: const EdgeInsets.only(left: 75),
                       child: Text(
                         Product.subCategory,
                         style: TextStyle(color: Colors.blue[900]),
@@ -540,7 +540,7 @@ class _ProductPage1State extends State<ProductPage1> {
                   ),
                   DataCell(
                     Container(
-                      padding: EdgeInsets.only(left: 83),
+                      padding: const EdgeInsets.only(left: 83),
                       child: Text(
                         Product.price.toString(),
                         style: TextStyle(color: Colors.blue[900]),
@@ -549,7 +549,7 @@ class _ProductPage1State extends State<ProductPage1> {
                   ),
                   DataCell(
                     Container(
-                      padding: EdgeInsets.only(left: 90),
+                      padding: const EdgeInsets.only(left: 90),
                       child: Text(
                         Product
                             .tax, // Change this line to convert the double value to a String
@@ -559,7 +559,7 @@ class _ProductPage1State extends State<ProductPage1> {
                   ),
                   DataCell(
                     Container(
-                      padding: EdgeInsets.only(left: 90),
+                      padding: const EdgeInsets.only(left: 90),
                       child: Text(
                         Product.unit,
                         style: TextStyle(color: Colors.blue[900]),
@@ -582,16 +582,16 @@ class _ProductPage1State extends State<ProductPage1> {
       child: Container(
         width: 210,
         color: Colors.grey[100],
-        padding: EdgeInsets.only(left: 20, top: 30),
+        padding: const EdgeInsets.only(left: 20, top: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextButton.icon(
               onPressed: () {},
               icon: Icon(Icons.dashboard, color: Colors.blue[900]),
-              label: Text('Home'),
+              label: const Text('Home'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
                 // Navigator.push(
@@ -600,38 +600,38 @@ class _ProductPage1State extends State<ProductPage1> {
                 // );
               },
               icon: Icon(Icons.warehouse_outlined, color: Colors.blue[900]),
-              label: Text('Orders'),
+              label: const Text('Orders'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {},
               icon: Icon(Icons.fire_truck_outlined, color: Colors.blue[900]),
-              label: Text('Delivery'),
+              label: const Text('Delivery'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {},
               icon:
                   Icon(Icons.document_scanner_rounded, color: Colors.blue[900]),
-              label: Text('Invoice'),
+              label: const Text('Invoice'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {},
               icon: Icon(Icons.payment_outlined, color: Colors.blue[900]),
-              label: Text('Payment'),
+              label: const Text('Payment'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {},
               icon: Icon(Icons.backspace_sharp, color: Colors.blue[900]),
-              label: Text('Return'),
+              label: const Text('Return'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {},
               icon: Icon(Icons.insert_chart, color: Colors.blue[900]),
-              label: Text('Reports'),
+              label: const Text('Reports'),
             ),
           ],
         ),
@@ -646,7 +646,7 @@ class _ProductPage1State extends State<ProductPage1> {
       top: 1,
       height: kToolbarHeight,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -654,15 +654,15 @@ class _ProductPage1State extends State<ProductPage1> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        child: Row(
+        child: const Row(
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 30),
+                padding: EdgeInsets.only(left: 30),
                 child: Text(
                   'Product List',
                   style: TextStyle(

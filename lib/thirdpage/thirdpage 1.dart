@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'dart:html';
-import 'dart:math';
-// import 'dart:io' as io;
-
 import 'package:btb/fifthpage/Edit.dart';
-import 'package:btb/fourthpage/orderspage%20order.dart';
 import 'package:btb/screen/login.dart';
 import 'package:btb/sprint%202%20order/firstpage.dart';
-import 'package:btb/thirdpage/dashboard.dart';
+import 'package:btb/dashboard.dart';
 import 'package:btb/thirdpage/productclass.dart' as ord;
 import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 import 'package:flutter/material.dart';
@@ -17,10 +13,12 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
+import '../Product Module/Product Screen.dart';
+import '../Return Module/return first page.dart';
 import '../main.dart';
 
 void main(){
-  runApp(ProductForm1(product: null, prodId: '', priceText: '', productText: '', selectedvalue2: '', discountText: '', selectedValue: '', selectedValue1: '', selectedValue3: '', imagePath: null, displayData: {}));
+  runApp(const ProductForm1(product: null, prodId: '', priceText: '', productText: '', selectedvalue2: '', discountText: '', selectedValue: '', selectedValue1: '', selectedValue3: '', imagePath: null, displayData: {}));
 }
 
 class ProductForm1 extends StatefulWidget {
@@ -443,13 +441,13 @@ class _ProductForm1State extends State<ProductForm1> {
                     },
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem<String>(
+                        const PopupMenuItem<String>(
                           value: 'logout',
                           child: Text('Logout'),
                         ),
                       ];
                     },
-                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                    offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -483,7 +481,7 @@ class _ProductForm1State extends State<ProductForm1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Dashboard()),
+                                    builder: (context) => const Dashboard()),
                               );
                             },
                             icon: Icon(Icons.dashboard,
@@ -517,7 +515,7 @@ class _ProductForm1State extends State<ProductForm1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Orderspage()),
+                                    builder: (context) => const Orderspage()),
                               );
                               setState(() {
                                 isOrdersSelected = false;
@@ -565,7 +563,26 @@ class _ProductForm1State extends State<ProductForm1> {
                           ),
                           const SizedBox(height: 20),
                           TextButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.go('/dashboard/return/:return');
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) =>
+                                  const Returnpage(),
+                                  transitionDuration:
+                                  const Duration(milliseconds: 200),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                             icon: Icon(Icons.backspace_sharp,
                                 color: Colors.blue[900]),
                             label: Text(
@@ -628,7 +645,7 @@ class _ProductForm1State extends State<ProductForm1> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         Container(
@@ -782,7 +799,7 @@ class _ProductForm1State extends State<ProductForm1> {
                                 Navigator.of(context).push(PageRouteBuilder(
                                   pageBuilder: (context, animation,
                                       secondaryAnimation) =>
-                                      ProductPage(product: null),
+                                      const ProductPage(product: null),
                                 ));
                                 // Navigator.push(
                                 //   context,
@@ -803,7 +820,7 @@ class _ProductForm1State extends State<ProductForm1> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Padding(
                               padding: const EdgeInsets.only(right: 30),
                               child: OutlinedButton(
@@ -915,7 +932,7 @@ class _ProductForm1State extends State<ProductForm1> {
                     ),
                   ),
                   Padding(
-                    padding:  EdgeInsets.only(top: 0, left: 450),
+                    padding:  const EdgeInsets.only(top: 0, left: 450),
                     child: Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 10), // Space above/below the border
@@ -1024,7 +1041,7 @@ class _ProductForm1State extends State<ProductForm1> {
                 },
               ),
             ),
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             Align(
               alignment: Alignment.topLeft,
               child: Padding(
@@ -1055,13 +1072,13 @@ class _ProductForm1State extends State<ProductForm1> {
                   },
                   itemBuilder: (BuildContext context) {
                     return [
-                      PopupMenuItem<String>(
+                      const PopupMenuItem<String>(
                         value: 'logout',
                         child: Text('Logout'),
                       ),
                     ];
                   },
-                  offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                  offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                 ),
               ),
             ),

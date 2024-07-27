@@ -1,12 +1,7 @@
-//import 'package:btb/fifthpage/secondpage%20sprint2.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
-import 'package:btb/fifthpage/sample.dart';
-import 'package:btb/fourthpage/orderspage%20order.dart';
 import 'package:btb/sprint%202%20order/secondpage.dart';
-import 'package:btb/sprint%202%20order/seventhpage%20.dart';
-//import 'package:btb/sprint%202%20order/sixthpage%20final%20responsive.dart';
 import 'package:btb/sprint%202%20order/sixthpage.dart';
 import 'package:btb/thirdpage/productclass.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,10 +10,10 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:provider/single_child_widget.dart';
-
+import '../Product Module/Product Screen.dart';
+import '../Return Module/return first page.dart';
 import '../screen/login.dart';
-import '../thirdpage/dashboard.dart';
+import '../dashboard.dart';
 
 
 void main() {
@@ -26,6 +21,7 @@ void main() {
 }
 
 class Orderspage extends StatefulWidget {
+ // final Function(int) onOrderCountChangedZ;
   const Orderspage({super.key});
 
   @override
@@ -34,8 +30,10 @@ class Orderspage extends StatefulWidget {
 
 class _OrderspageState extends State<Orderspage> {
   Timer? _searchDebounceTimer;
+  final _numberNotifier = ValueNotifier<int>(0);
   String _searchText = '';
   final String _category = '';
+  int orderCount = 0;
   bool isOrdersSelected = false;
   // Order? _selectedProduct;
   // List<Order> _orders = [];
@@ -82,8 +80,23 @@ class _OrderspageState extends State<Orderspage> {
     super.initState();
     _dateController = TextEditingController();
     futureOrders = fetchOrders() as Future<List<detail>>;
+    print('this is the count the order whatever opended currentluy');
+    // fetchOrders().then((orders) {
+    //    setState(() {
+    //        orderCount = orders.length;
+    //        print('order count');
+    //        print(orderCount);
+    //        _numberNotifier.value = orderCount;
+    //      });
+    //   });
 
+
+    //
   }
+
+
+
+
 
   Future<List<detail>> fetchOrders() async {
     final response = await http.get(
@@ -107,6 +120,7 @@ class _OrderspageState extends State<Orderspage> {
         ?.cancel(); // Cancel the timer when the widget is disposed
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +151,7 @@ class _OrderspageState extends State<Orderspage> {
             ),
             const SizedBox(width: 10,),
             Padding(
-              padding: const EdgeInsets.only(top: 7),
+              padding: const EdgeInsets.only(top: 10),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
@@ -169,13 +183,13 @@ class _OrderspageState extends State<Orderspage> {
                     },
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem<String>(
+                        const PopupMenuItem<String>(
                           value: 'logout',
                           child: Text('Logout'),
                         ),
                       ];
                     },
-                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                    offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -345,7 +359,26 @@ class _OrderspageState extends State<Orderspage> {
                             ),
                             const SizedBox(height: 20),
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                context.go('/dashboard/return/:return');
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) =>
+                                    const Returnpage(),
+                                    transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
                               label: Text(
@@ -390,7 +423,7 @@ class _OrderspageState extends State<Orderspage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Align(
                                 alignment: Alignment.topRight,
                                 child: Padding(
@@ -506,16 +539,18 @@ class _OrderspageState extends State<Orderspage> {
     );
   }
 
+
+
   Widget buildSearchField() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             // maxWidth: constraints.maxWidth,
             // maxHeight: constraints.maxHeight,
           ),
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 20,
               right: 20, // changed from 800 to 20
             ),
@@ -525,9 +560,9 @@ class _OrderspageState extends State<Orderspage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: constraints.maxWidth * 0.27, // 80% of screen width
@@ -552,15 +587,15 @@ class _OrderspageState extends State<Orderspage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
@@ -580,8 +615,8 @@ class _OrderspageState extends State<Orderspage> {
                                     fillColor: Colors.white,
                                     hintText: 'Category',
                                   ),
-                                  icon: Padding(
-                                    padding: const EdgeInsets.only(right: 25),
+                                  icon: const Padding(
+                                    padding: EdgeInsets.only(right: 25),
                                     child: Icon(Icons.arrow_drop_down_outlined),
                                   ), // default icon
                                   iconSize: 24, // change the size of the icon
@@ -613,9 +648,9 @@ class _OrderspageState extends State<Orderspage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
@@ -627,7 +662,7 @@ class _OrderspageState extends State<Orderspage> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.only(right: 20),
+                                padding: const EdgeInsets.only(right: 20),
                                 child: DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -636,7 +671,7 @@ class _OrderspageState extends State<Orderspage> {
                                     fillColor: Colors.white,
                                     hintText: 'Sub Category',
                                   ),
-                                  icon: Icon(Icons.arrow_drop_down_outlined), // default icon
+                                  icon: const Icon(Icons.arrow_drop_down_outlined), // default icon
                                   iconSize: 24,
                                   value: dropdownValue2,
                                   onChanged: (String? newValue) {
@@ -826,8 +861,9 @@ class _OrderspageState extends State<Orderspage> {
                           fontSize: 15,
                           fontWeight: FontWeight.bold),))),
                     ],
-                    rows: snapshot.data!.map((detail) {
-                      final isSelected = false;
+                    rows: snapshot.data!.map((detail detail) {
+                      //final isSelected = false;
+                      bool isSelected = detail.isSelected;
                       return DataRow(
                           color: MaterialStateColor.resolveWith(
                                   (states) => isSelected ? Colors.grey[200]! : Colors.white),
@@ -866,9 +902,9 @@ class _OrderspageState extends State<Orderspage> {
                                         MaterialPageRoute(
                                             builder: (context) => SixthPage(
                                               product: detail,
-                                              item:  [],
-                                              body: {},
-                                              itemsList: [],
+                                              item:  const [],
+                                              body: const {},
+                                              itemsList: const [],
                                             )), // pass the selected product here
                                       );
                                       //for shortcut seventhpage
@@ -880,9 +916,7 @@ class _OrderspageState extends State<Orderspage> {
                                       //       )), // pass the selected product here
                                       // );
                                     },
-                                    child: Container(
-                                      // padding: EdgeInsets.only(left: 40),
-                                        child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                                    child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),),
                                   ),
                                 )),
                             DataCell(
@@ -909,9 +943,9 @@ class _OrderspageState extends State<Orderspage> {
                                         MaterialPageRoute(
                                             builder: (context) => SixthPage(
                                               product: detail,
-                                              item:  [],
-                                              body: {},
-                                              itemsList: [],
+                                              item:  const [],
+                                              body: const {},
+                                              itemsList: const [],
                                             )), // pass the selected product here
                                       );
                                     },
@@ -942,13 +976,13 @@ class _OrderspageState extends State<Orderspage> {
                                         MaterialPageRoute(
                                             builder: (context) => SixthPage(
                                               product: detail,
-                                              item:  [],
-                                              body: {},
-                                              itemsList: [],
+                                              item:  const [],
+                                              body: const {},
+                                              itemsList: const [],
                                             )), // pass the selected product here
                                       );
                                     },
-                                    child: Container(child: Text(detail.orderDate)),
+                                    child: Text(detail.orderDate),
                                   ),
                                 )),
                             DataCell(
@@ -975,13 +1009,13 @@ class _OrderspageState extends State<Orderspage> {
                                         MaterialPageRoute(
                                             builder: (context) => SixthPage(
                                               product: detail,
-                                              item:  [],
-                                              body: {},
-                                              itemsList: [],
+                                              item:  const [],
+                                              body: const {},
+                                              itemsList: const [],
                                             )), // pass the selected product here
                                       );
                                     },
-                                    child: Container(child: Text(detail.referenceNumber)),
+                                    child: Text(detail.referenceNumber),
                                   ),
                                 )),
                             DataCell(
@@ -1008,13 +1042,13 @@ class _OrderspageState extends State<Orderspage> {
                                         MaterialPageRoute(
                                             builder: (context) => SixthPage(
                                               product: detail,
-                                              item:  [],
-                                              body: {},
-                                              itemsList: [],
+                                              item:  const [],
+                                              body: const {},
+                                              itemsList: const [],
                                             )), // pass the selected product here
                                       );
                                     },
-                                    child: Container(child: Text(detail.total.toString())),
+                                    child: Text(detail.total.toString()),
                                   ),
                                 )),
                             DataCell(
@@ -1041,13 +1075,13 @@ class _OrderspageState extends State<Orderspage> {
                                         MaterialPageRoute(
                                             builder: (context) => SixthPage(
                                               product: detail,
-                                              item:  [],
-                                              body: {},
-                                              itemsList: [],
+                                              item:  const [],
+                                              body: const {},
+                                              itemsList: const [],
                                             )), // pass the selected product here
                                       );
                                     },
-                                    child: Container(child: Text(detail.deliveryStatus)),
+                                    child: Text(detail.deliveryStatus),
                                   ),
                                 )),
 
@@ -1062,7 +1096,7 @@ class _OrderspageState extends State<Orderspage> {
             return Center(child: Text("${snapshot.error}"));
           }
 
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       );
     });
@@ -1097,6 +1131,10 @@ class _OrderspageState extends State<Orderspage> {
 //     });
 //   }
 // }
+
+
+
+
 
 
 class detail {

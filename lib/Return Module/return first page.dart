@@ -3,8 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'package:btb/Return%20Module/return%20module%20design.dart';
-import 'package:btb/fifthpage/sample.dart';
-import 'package:btb/fourthpage/orderspage%20order.dart';
 import 'package:btb/sprint%202%20order/secondpage.dart';
 import 'package:btb/sprint%202%20order/seventhpage%20.dart';
 //import 'package:btb/sprint%202%20order/sixthpage%20final%20responsive.dart';
@@ -18,8 +16,10 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../Product Module/Product Screen.dart';
+import '../screen/login.dart';
 import '../sprint 2 order/firstpage.dart';
-import '../thirdpage/dashboard.dart';
+import '../dashboard.dart';
 
 
 void main() {
@@ -66,6 +66,8 @@ class _ReturnpageState extends State<Returnpage> {
   //  });
   //  }
 
+
+
   void _onSearchTextChanged(String text) {
     if (_searchDebounceTimer != null) {
       _searchDebounceTimer!.cancel(); // Cancel the previous timer
@@ -82,14 +84,15 @@ class _ReturnpageState extends State<Returnpage> {
   void initState() {
     super.initState();
     _dateController = TextEditingController();
-    futureOrders = fetchOrders() as Future<List<detail>>;
+    futureOrders = fetchOrders();
 
   }
 
   Future<List<detail>> fetchOrders() async {
     final response = await http.get(
-      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
+      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/return_master/get_all_returnmaster'),
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer $token', // Add the token to the Authorization header
       },
     );
@@ -101,6 +104,8 @@ class _ReturnpageState extends State<Returnpage> {
       throw Exception('Failed to load orders');
     }
   }
+
+
 
   @override
   void dispose() {
@@ -145,11 +150,42 @@ class _ReturnpageState extends State<Returnpage> {
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 35),
-                  child: IconButton(
+                  child:
+                  PopupMenuButton<String>(
                     icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // Handle user icon press
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        window.sessionStorage.remove('token');
+                        context.go('/');
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                            const LoginScr(
+                            ),
+                            transitionDuration:
+                            const Duration(milliseconds: 200),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        const PopupMenuItem<String>(
+                          value: 'logout',
+                          child: Text('Logout'),
+                        ),
+                      ];
+                    },
+                    offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -322,7 +358,7 @@ class _ReturnpageState extends State<Returnpage> {
                                   color: isOrdersSelected
                                       ? Colors.blueAccent
                                       : Colors.blueAccent),
-                              label: Text(
+                              label: const Text(
                                 'Return',
                                 style: TextStyle(color: Colors.blueAccent),
                               ),
@@ -364,7 +400,7 @@ class _ReturnpageState extends State<Returnpage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Align(
                                 alignment: Alignment.topRight,
                                 child: Padding(
@@ -381,7 +417,7 @@ class _ReturnpageState extends State<Returnpage> {
                                         PageRouteBuilder(
                                           pageBuilder: (context, animation,
                                               secondaryAnimation) =>
-                                              CreateReturn(storeImage: 'even', imageSizeString: [],imageSizeStrings: [],storeImages: [],orderDetails: [],orderDetailsMap: {},),
+                                              CreateReturn(storeImage: 'even', imageSizeString: const [],imageSizeStrings: const [],storeImages: const [],orderDetails: const [],orderDetailsMap: const {},),
                                           transitionDuration:
                                           const Duration(milliseconds: 200),
                                           transitionsBuilder: (context, animation,
@@ -484,12 +520,12 @@ class _ReturnpageState extends State<Returnpage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             // maxWidth: constraints.maxWidth,
             // maxHeight: constraints.maxHeight,
           ),
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 20,
               right: 20, // changed from 800 to 20
             ),
@@ -499,9 +535,9 @@ class _ReturnpageState extends State<Returnpage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: constraints.maxWidth * 0.27, // 80% of screen width
@@ -526,15 +562,15 @@ class _ReturnpageState extends State<Returnpage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
@@ -554,8 +590,8 @@ class _ReturnpageState extends State<Returnpage> {
                                     fillColor: Colors.white,
                                     hintText: 'Category',
                                   ),
-                                  icon: Padding(
-                                    padding: const EdgeInsets.only(right: 25),
+                                  icon: const Padding(
+                                    padding: EdgeInsets.only(right: 25),
                                     child: Icon(Icons.arrow_drop_down_outlined),
                                   ), // default icon
                                   iconSize: 24, // change the size of the icon
@@ -587,9 +623,9 @@ class _ReturnpageState extends State<Returnpage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
@@ -601,7 +637,7 @@ class _ReturnpageState extends State<Returnpage> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.only(right: 20),
+                                padding: const EdgeInsets.only(right: 20),
                                 child: DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -610,7 +646,7 @@ class _ReturnpageState extends State<Returnpage> {
                                     fillColor: Colors.white,
                                     hintText: 'Sub Category',
                                   ),
-                                  icon: Icon(Icons.arrow_drop_down_outlined), // default icon
+                                  icon: const Icon(Icons.arrow_drop_down_outlined), // default icon
                                   iconSize: 24,
                                   value: dropdownValue2,
                                   onChanged: (String? newValue) {
@@ -784,38 +820,35 @@ class _ReturnpageState extends State<Returnpage> {
                   child: DataTable(
                     headingRowHeight: 50,
                     columns: [
-                      DataColumn(label: Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25),
-                            child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
-                              fontWeight: FontWeight.bold,),),
-                          ))),
-                      DataColumn(label: Container(child: Padding(
+                      DataColumn(label: Padding(
+                        padding: const EdgeInsets.only(left: 25),
+                        child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+                          fontWeight: FontWeight.bold,),),
+                      )),
+                      DataColumn(label: Padding(
                         padding: const EdgeInsets.only(left: 5),
                         child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
                             fontWeight: FontWeight.bold),),
-                      ))),
-                      DataColumn(label: Container(child: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Delivery Status',style:  TextStyle(
+                      )),
+                      DataColumn(label: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                          fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                          fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                          fontWeight: FontWeight.bold),)),
+                      DataColumn(label: Text('Delivery Status',style:  TextStyle(
                           color: Colors.indigo[900],
                           fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
+                          fontWeight: FontWeight.bold),)),
                     ],
-                    rows: snapshot.data!.map((detail) {
-                      final isSelected = false;
+                    rows: snapshot.data!.map((detail detail) {
+                      const isSelected = false;
                       return DataRow(
                           color: MaterialStateColor.resolveWith(
                                   (states) => isSelected ? Colors.grey[200]! : Colors.white),
                           cells: [
                             DataCell(
-                                Container(
-                                  // padding: EdgeInsets.only(left: 40),
-                                    child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),))),
+                                Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
                             // DataCell(
                             //     MouseRegion(
                             //       cursor: SystemMouseCursors.click,
@@ -858,20 +891,20 @@ class _ReturnpageState extends State<Returnpage> {
                             //             child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
                             //       ),
                             //     )),
-                            DataCell(Container( child: Text(detail.orderId!))),
-                            DataCell(Container( child: Padding(
+                            DataCell(Text(detail.orderId!)),
+                            DataCell(Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: Text(detail.orderDate),
-                            ))),
-                            DataCell(Container(child: Text(detail.referenceNumber))),
-                            DataCell(Container(child: Padding(
+                            )),
+                            DataCell(Text(detail.referenceNumber)),
+                            DataCell(Padding(
                               padding: const EdgeInsets.only(left: 20),
                               child: Text(detail.total.toString()),
-                            ))),
-                            DataCell(Container(child: Padding(
+                            )),
+                            DataCell(Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: Text(detail.deliveryStatus),
-                            ))),
+                            )),
 
                           ]);
                     }).toList(),
@@ -884,7 +917,7 @@ class _ReturnpageState extends State<Returnpage> {
             return Center(child: Text("${snapshot.error}"));
           }
 
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       );
     });

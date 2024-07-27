@@ -810,9 +810,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../fourthpage/orderspage order.dart';
+import '../Product Module/Product Screen.dart';
+import '../Return Module/return first page.dart';
 import '../sprint 2 order/thirdpage.dart';
-import '../thirdpage/dashboard.dart';
+import '../dashboard.dart';
 
 
 void main() {
@@ -823,7 +824,7 @@ class OrdersSecond extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(1920, 984),
+      designSize: const Size(1920, 984),
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -881,11 +882,11 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    TableRow row1 = TableRow(
+    TableRow row1 = const TableRow(
       children: [
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
             child: Text('Delivery Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 21),),
           ),
         ),
@@ -895,17 +896,17 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
       ],
     );
 
-    TableRow row2 = TableRow(
+    TableRow row2 = const TableRow(
       children: [
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
             child: Text('Address'),
           ),
         ),
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 10,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 10,top: 10,bottom: 10),
             child: Text('Comments'),
           ),
         ),
@@ -923,13 +924,13 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
+                    const Padding(
                       padding:  EdgeInsets.only(left: 30,top: 10),
                       child: Text('Select Delivery Location'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding:  EdgeInsets.only(left: 30),
+                      padding:  const EdgeInsets.only(left: 30),
                       child: SizedBox(
                         width:  screenWidth * 0.35,
                         height: 40,
@@ -961,14 +962,14 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Padding(
+                    const SizedBox(height: 20),
+                    const Padding(
                       padding:  EdgeInsets.only(left: 30),
                       child: Text('Delivery Address'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding:  EdgeInsets.only(left: 30),
+                      padding:  const EdgeInsets.only(left: 30),
                       child: SizedBox(
                         width: screenWidth * 0.35,
                         child: TextField(
@@ -989,17 +990,17 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                   ],
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Expanded(
                 flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: const Text('Contact Person'),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text('Contact Person'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: SizedBox(
@@ -1022,9 +1023,9 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     const Text('Contact Number'),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: SizedBox(
@@ -1120,7 +1121,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
             // Set shadow color to black
             actions: [
               Padding(
-                padding:  EdgeInsets.only(top: 10),
+                padding:  const EdgeInsets.only(top: 10),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: IconButton(
@@ -1131,7 +1132,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                   ),
                 ),
               ),
-              SizedBox(width: 10,),
+              const SizedBox(width: 10,),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Align(
@@ -1165,13 +1166,13 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                       },
                       itemBuilder: (BuildContext context) {
                         return [
-                          PopupMenuItem<String>(
+                          const PopupMenuItem<String>(
                             value: 'logout',
                             child: Text('Logout'),
                           ),
                         ];
                       },
-                      offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                      offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                     ),
                   ),
                 ),
@@ -1289,7 +1290,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                               //   // Handle button press19
                               // });
                             },
-                            icon: Icon(Icons.warehouse,
+                            icon: const Icon(Icons.warehouse,
                                 color: Colors.blueAccent),
                             label: const Text(
                               'Orders',
@@ -1330,7 +1331,26 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                           const SizedBox(height: 20),
                           TextButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.go('/dashboard/return/:return');
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) =>
+                                  const Returnpage(),
+                                  transitionDuration:
+                                  const Duration(milliseconds: 200),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                             icon: Icon(Icons.backspace_sharp,
                                 color: Colors.blue[900]),
                             label: Text(
@@ -1587,7 +1607,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         // ),
                         Padding(
                           padding: const EdgeInsets.only(right:100),
-                          child: Container(
+                          child: SizedBox(
                             width: screenWidth,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -1595,7 +1615,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                               children: [
                                 Padding(
                                   padding:  EdgeInsets.only(right: maxWidth * 0.085,top: 50),
-                                  child: Text((' Order Date')),
+                                  child: const Text((' Order Date')),
                                 ),
 
 
@@ -1614,7 +1634,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     //   ),
                                     // ],
                                   ),
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 39,
                                     width: maxWidth *0.13,
                                     // decoration: BoxDecoration(
@@ -1671,13 +1691,13 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           padding: const EdgeInsets.only(left: 50,right: 100,top: 50),
                           child: Container(
                             decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xFFB2C2D3)),
+                              border: Border.all(color: const Color(0xFFB2C2D3)),
                               borderRadius: BorderRadius.circular(5), // Set border radius here
                             ),
                             child: Table(
-                              border: TableBorder.all(color: Color(0xFFB2C2D3)),
+                              border: TableBorder.all(color: const Color(0xFFB2C2D3)),
 
-                              columnWidths: {
+                              columnWidths: const {
                                 0: FlexColumnWidth(2),
                                 1: FlexColumnWidth(1.4),
                               },
@@ -1690,28 +1710,28 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 60,left: 50,right: 100 ),
+                          padding: const EdgeInsets.only(top: 60,left: 50,right: 100 ),
                           child: Container(
                             //width: screenWidth * 0.8,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                              border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
+                                const Padding(
                                   padding: EdgeInsets.only(top: 10, left: 30),
                                   child: Text(
                                     'Add Products',
                                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: DataTable(
-                                    border: TableBorder.all(color: Color(0xFFB2C2D3)),
+                                    border: TableBorder.all(color: const Color(0xFFB2C2D3)),
                                     columnSpacing: screenWidth * 0.066,
                                     headingRowHeight: 40,
                                     columns: const [
@@ -1725,7 +1745,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                       DataColumn(label: Text('Discount')),
                                       DataColumn(label: Text('Total Amount')),
                                     ],
-                                    rows: [],
+                                    rows: const [],
                                   ),
                                 ),
                                 //maha copy
@@ -1855,9 +1875,9 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                             ),
                                             side: BorderSide.none,
                                           ),
-                                          child: Padding(
+                                          child: const Padding(
                                             padding: EdgeInsets.only(right: 30),
-                                            child: const Text(
+                                            child: Text(
                                               '+ Add Products',
                                               style: TextStyle(color: Colors.white),
                                             ),
@@ -1915,14 +1935,14 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
 
 
   Widget _buildTextField(String label, {bool isDate = false, int maxLines = 1, double width = double.infinity}) {
-    return Container(
+    return SizedBox(
       width: width,
       child: TextField(
         maxLines: maxLines,
         readOnly: isDate,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         onTap: isDate ? () => _selectDate(context as BuildContext) : null,
       ),
@@ -1933,7 +1953,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
 
   Widget _buildDropdownField(String label) {
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         border: OutlineInputBorder(),
       ),
       items: ['Customer 1', 'Customer 2']

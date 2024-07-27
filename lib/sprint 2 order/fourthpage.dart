@@ -4,13 +4,12 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:btb/sprint%202%20order/thirdpage.dart';
 import 'package:btb/thirdpage/productclass.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import '../fourthpage/orderspage order.dart';
-import '../thirdpage/dashboard.dart';
+import '../Product Module/Product Screen.dart';
+import '../Return Module/return first page.dart';
+import '../dashboard.dart';
 import 'add productmaster sample.dart';
 import 'fifthpage.dart';
 import 'firstpage.dart';
@@ -430,7 +429,7 @@ class _NextPageState extends State<NextPage> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Align(
                                 alignment: Alignment.topLeft,
                                 child: Padding(
@@ -481,6 +480,11 @@ class _NextPageState extends State<NextPage> {
                                                 '-------order data'
                                             );
                                             data2['total'] = _total.toString();
+
+                                            context.go('/Edit_Order/Add_Product_Item',extra:{
+                                              'selectedProducts': products,
+                                              'data': data2,
+                                            });
 
                                             print(orders);
                                             Navigator.push(
@@ -603,7 +607,7 @@ class _NextPageState extends State<NextPage> {
             width: 1.0,
           ),
         ),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // buildSearchField(),
@@ -638,7 +642,7 @@ class _NextPageState extends State<NextPage> {
                     padding: const EdgeInsets.only(top: 5,bottom: 5),
                     child: Table(
                       // border: TableBorder.all(color: Colors.grey),
-                      columnWidths: {
+                      columnWidths: const {
                         0: FlexColumnWidth(1),
                         1: FlexColumnWidth(2.7),
                         2: FlexColumnWidth(2),
@@ -650,12 +654,12 @@ class _NextPageState extends State<NextPage> {
                         // 8:FlexColumnWidth(2),
 
                       },
-                      children: [
+                      children: const [
                         TableRow(
                           children: [
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   //   right: 10,
                                   top: 15,
@@ -666,7 +670,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -677,7 +681,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -688,7 +692,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -699,7 +703,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -710,7 +714,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -721,7 +725,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -732,7 +736,7 @@ class _NextPageState extends State<NextPage> {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   // left: 10,
                                   // right: 10,
                                   top: 15,
@@ -757,7 +761,7 @@ class _NextPageState extends State<NextPage> {
                     Product product = products[index];
                     return Table(
                       border: TableBorder.all(color: Colors.grey),
-                      columnWidths: {
+                      columnWidths: const {
                         0: FlexColumnWidth(1),
                         1: FlexColumnWidth(2.7),
                         2: FlexColumnWidth(2),
@@ -976,7 +980,7 @@ class _NextPageState extends State<NextPage> {
               ),
             ),
           ),
-          SizedBox(height: 80,),
+          const SizedBox(height: 80,),
           Container(
          //   width: maxWidth,
            // color: Colors.grey,
@@ -1092,7 +1096,7 @@ class _NextPageState extends State<NextPage> {
                   width: 350,
                   child:  TextFormField(
                     //controller: ,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
 
                       prefixIcon: Icon(Icons.search
 
@@ -1132,7 +1136,7 @@ class _NextPageState extends State<NextPage> {
                 padding: const EdgeInsets.only(top: 5,bottom: 5),
                 child: Table(
                   // border: TableBorder.all(color: Colors.grey),
-                  columnWidths: {
+                  columnWidths: const {
                     0: FlexColumnWidth(2.3),
                     1: FlexColumnWidth(2),
                     2: FlexColumnWidth(1.8),
@@ -1143,12 +1147,12 @@ class _NextPageState extends State<NextPage> {
                     // 8:FlexColumnWidth(2),
 
                   },
-                  children: [
+                  children: const [
                     TableRow(
                       children: [
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1159,7 +1163,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1170,7 +1174,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1181,7 +1185,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1192,7 +1196,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1203,7 +1207,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1214,7 +1218,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               // left: 10,
                               // right: 10,
                               top: 15,
@@ -1241,7 +1245,7 @@ class _NextPageState extends State<NextPage> {
                   border: TableBorder.all(
                       color: Colors.grey),
                   // Add this line
-                  columnWidths: {
+                  columnWidths: const {
                     0: FlexColumnWidth(2.3),
                     1: FlexColumnWidth(2),
                     2: FlexColumnWidth(1.8),
@@ -1255,7 +1259,7 @@ class _NextPageState extends State<NextPage> {
                       children: [
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 left: 10,
                                 right: 10,
                                 top: 5,
@@ -1276,7 +1280,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 left: 10,
                                 right: 10,
                                 top: 5,
@@ -1299,7 +1303,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 left: 10,
                                 right: 10,
                                 top: 5,
@@ -1322,7 +1326,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 left: 10,
                                 right: 10,
                                 top: 5,
@@ -1345,7 +1349,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 left: 10,
                                 right: 10,
                                 top: 5,
@@ -1382,7 +1386,7 @@ class _NextPageState extends State<NextPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 left: 10,
                                 right: 10,
                                 top: 5,
@@ -1443,17 +1447,17 @@ class _NextPageState extends State<NextPage> {
                 );
               },
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: _prevPage,
                 ),
                 Text('Page $_currentPage of $_totalPages'),
                 IconButton(
-                  icon: Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.arrow_forward),
                   onPressed: _nextPage,
                 ),
               ],
@@ -1572,7 +1576,7 @@ class _NextPageState extends State<NextPage> {
                   //   // Handle button press19
                   // });
                 },
-                icon: Icon(Icons.warehouse,
+                icon: const Icon(Icons.warehouse,
                     color: Colors.blueAccent),
                 label: const Text(
                   'Orders',
@@ -1613,7 +1617,26 @@ class _NextPageState extends State<NextPage> {
               ),
               const SizedBox(height: 20),
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/dashboard/return/:return');
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder:
+                          (context, animation, secondaryAnimation) =>
+                      const Returnpage(),
+                      transitionDuration:
+                      const Duration(milliseconds: 200),
+                      transitionsBuilder: (context, animation,
+                          secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
                 icon: Icon(Icons.backspace_sharp,
                     color: Colors.blue[900]),
                 label: Text(

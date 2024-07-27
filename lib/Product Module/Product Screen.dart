@@ -9,9 +9,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import '../seconpage/secondfinal.dart';
+import '../Return Module/return first page.dart';
+import 'Create Product.dart';
 import '../sprint 2 order/firstpage.dart';
-import '../thirdpage/dashboard.dart';
+import '../dashboard.dart';
 import '../thirdpage/productdata.dart';
 
 class ProductPage extends StatefulWidget {
@@ -195,13 +196,13 @@ class _ProductPageState extends State<ProductPage> {
                       },
                       itemBuilder: (BuildContext context) {
                         return [
-                          PopupMenuItem<String>(
+                          const PopupMenuItem<String>(
                             value: 'logout',
                             child: Text('Logout'),
                           ),
                         ];
                       },
-                      offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                      offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                     ),
                   ),
                 ),
@@ -337,7 +338,26 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         const SizedBox(height: 20),
                         TextButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.go('/dashboard/return/:return');
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                const Returnpage(),
+                                transitionDuration:
+                                const Duration(milliseconds: 200),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
                           icon: Icon(Icons.backspace_sharp,
                               color: Colors.blue[900]),
                           label: Text(
@@ -382,7 +402,7 @@ class _ProductPageState extends State<ProductPage> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Padding(
                             padding: const EdgeInsets.only(right: 30),
                             child: OutlinedButton(
@@ -391,7 +411,7 @@ class _ProductPageState extends State<ProductPage> {
                                 Navigator.of(context).push(PageRouteBuilder(
                                   pageBuilder: (context, animation,
                                       secondaryAnimation) =>
-                                      SecondPage(),
+                                      const SecondPage(),
                                 ));
                               },
                               style: OutlinedButton.styleFrom(
@@ -481,7 +501,7 @@ class _ProductPageState extends State<ProductPage> {
             maxHeight: constraints.maxHeight,
           ),
           child: Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 20,
               right: 20, // changed from 800 to 20
             ),
@@ -491,9 +511,9 @@ class _ProductPageState extends State<ProductPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: constraints.maxWidth * 0.415, // 80% of screen width
@@ -518,15 +538,15 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.2, // 40% of screen width
@@ -546,8 +566,8 @@ class _ProductPageState extends State<ProductPage> {
                                     fillColor: Colors.white,
                                     hintText: 'Category',
                                   ),
-                                  icon: Padding(
-                                    padding: const EdgeInsets.only(right: 20),
+                                  icon: const Padding(
+                                    padding: EdgeInsets.only(right: 20),
                                     child: Icon(Icons.arrow_drop_down_outlined),
                                   ), // default icon
                                   iconSize: 24, // change the size of the icon
@@ -580,9 +600,9 @@ class _ProductPageState extends State<ProductPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.2, // 40% of screen width
@@ -594,7 +614,7 @@ class _ProductPageState extends State<ProductPage> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.only(right: 20),
+                                padding: const EdgeInsets.only(right: 20),
                                 child: DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -603,7 +623,7 @@ class _ProductPageState extends State<ProductPage> {
                                     fillColor: Colors.white,
                                     hintText: 'Sub Category',
                                   ),
-                                  icon: Icon(Icons.arrow_drop_down_outlined), // default icon
+                                  icon: const Icon(Icons.arrow_drop_down_outlined), // default icon
                                   iconSize: 24,
                                   value: dropdownValue2,
                                   onChanged: (String? newValue) {

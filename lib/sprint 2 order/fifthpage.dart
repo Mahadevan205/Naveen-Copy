@@ -1412,7 +1412,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
-import 'package:btb/fourthpage/orderspage%20order.dart';
 import 'package:btb/screen/login.dart';
 import 'package:btb/sprint%202%20order/add%20productmaster%20sample.dart';
 import 'package:btb/sprint%202%20order/firstpage.dart';
@@ -1427,11 +1426,13 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import '../thirdpage/dashboard.dart';
+import '../Product Module/Product Screen.dart';
+import '../Return Module/return first page.dart';
+import '../dashboard.dart';
 
 
 void main(){
-  runApp(FifthPage(selectedProducts: [], data: {}, select: '', ));
+  runApp(const FifthPage(selectedProducts: [], data: {}, select: '', ));
 }
 
 
@@ -1703,13 +1704,13 @@ class _FifthPageState extends State<FifthPage> {
                       },
                       itemBuilder: (BuildContext context) {
                         return [
-                          PopupMenuItem<String>(
+                          const PopupMenuItem<String>(
                             value: 'logout',
                             child: Text('Logout'),
                           ),
                         ];
                       },
-                      offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                      offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                     ),
                   ),
                 ),
@@ -1722,11 +1723,11 @@ class _FifthPageState extends State<FifthPage> {
                 double maxHeight = constraints.maxHeight;
                 double maxWidth = constraints.maxWidth;
 
-                TableRow row1 = TableRow(
+                TableRow row1 = const TableRow(
                   children: [
                     TableCell(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+                        padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
                         child: Text('Delivery Location',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 21),),
                       ),
                     ),
@@ -1736,17 +1737,17 @@ class _FifthPageState extends State<FifthPage> {
                   ],
                 );
 
-                TableRow row2 = TableRow(
+                TableRow row2 = const TableRow(
                   children: [
                     TableCell(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+                        padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
                         child: Text('Address'),
                       ),
                     ),
                     TableCell(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 10,top: 10,bottom: 10),
+                        padding: EdgeInsets.only(left: 10,top: 10,bottom: 10),
                         child: Text('Comments'),
                       ),
                     ),
@@ -1763,13 +1764,13 @@ class _FifthPageState extends State<FifthPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
+                                const Padding(
                                   padding:  EdgeInsets.only(left: 30,top: 10),
                                   child: Text('Select Delivery Location'),
                                 ),
-                                SizedBox(height: 10,),
+                                const SizedBox(height: 10,),
                                 Padding(
-                                  padding:  EdgeInsets.only(left: 30),
+                                  padding:  const EdgeInsets.only(left: 30),
                                   child: SizedBox(
                                     width: maxWidth * 0.35,
                                     height: 40,
@@ -1801,14 +1802,14 @@ class _FifthPageState extends State<FifthPage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
-                                Padding(
+                                const SizedBox(height: 20),
+                                const Padding(
                                   padding:  EdgeInsets.only(left: 30),
                                   child: Text('Delivery Address'),
                                 ),
-                                SizedBox(height: 10,),
+                                const SizedBox(height: 10,),
                                 Padding(
-                                  padding:  EdgeInsets.only(left: 30),
+                                  padding:  const EdgeInsets.only(left: 30),
                                   child: SizedBox(
                                     width: maxWidth * 0.35,
                                     child: TextField(
@@ -1829,17 +1830,17 @@ class _FifthPageState extends State<FifthPage> {
                               ],
                             ),
                           ),
-                          SizedBox(width: 30),
+                          const SizedBox(width: 30),
                           Expanded(
                             flex: 3,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: const Text('Contact Person'),
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: Text('Contact Person'),
                                 ),
-                                SizedBox(height: 10,),
+                                const SizedBox(height: 10,),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 20),
                                   child: SizedBox(
@@ -1861,9 +1862,9 @@ class _FifthPageState extends State<FifthPage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 const Text('Contact Number'),
-                                SizedBox(height: 10,),
+                                const SizedBox(height: 10,),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 20),
                                   child: SizedBox(
@@ -2048,7 +2049,7 @@ class _FifthPageState extends State<FifthPage> {
                                 //   // Handle button press19
                                 // });
                               },
-                              icon: Icon(Icons.warehouse,
+                              icon: const Icon(Icons.warehouse,
                                   color: Colors.blueAccent),
                               label: const Text(
                                 'Orders',
@@ -2089,7 +2090,26 @@ class _FifthPageState extends State<FifthPage> {
                             ),
                             const SizedBox(height: 20),
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                context.go('/dashboard/return/:return');
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) =>
+                                    const Returnpage(),
+                                    transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
                               label: Text(
@@ -2137,7 +2157,7 @@ class _FifthPageState extends State<FifthPage> {
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
-                                    Spacer(),
+                                    const Spacer(),
                                     Padding(
                                       padding: const EdgeInsets.only(right: 100,top: 10),
                                       child: OutlinedButton(
@@ -2185,7 +2205,7 @@ class _FifthPageState extends State<FifthPage> {
                                       child: const Text((' Order Date')),
                                     ),
                                     Padding(
-                                      padding:  EdgeInsets.only( top:10),
+                                      padding:  const EdgeInsets.only( top:10),
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -2245,15 +2265,15 @@ class _FifthPageState extends State<FifthPage> {
                               padding: const EdgeInsets.only(left: 150,right: 100,top: 50),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Color(0xFFB2C2D3)),
+                                  border: Border.all(color: const Color(0xFFB2C2D3)),
                                   borderRadius: BorderRadius.circular(3.5), // Set border radius here
                                 ),
                                 child: Table(
-                                  border: TableBorder.all(color: Color(0xFFB2C2D3)),
+                                  border: TableBorder.all(color: const Color(0xFFB2C2D3)),
 
                                   columnWidths: {
-                                    0: FlexColumnWidth(2),
-                                    1: FlexColumnWidth(1.4),
+                                    0: const FlexColumnWidth(2),
+                                    1: const FlexColumnWidth(1.4),
                                   },
                                   children: [
                                     row1,
@@ -2524,28 +2544,28 @@ class _FifthPageState extends State<FifthPage> {
                                     Container(
                                       width: maxWidth,
                                       decoration: BoxDecoration(
-                                        border: Border.all(color: Color(0xFFB2C2D3)),
+                                        border: Border.all(color: const Color(0xFFB2C2D3)),
                                       ),
                                       child: Padding(
-                                        padding: EdgeInsets.only(top: 5, bottom: 5),
+                                        padding: const EdgeInsets.only(top: 5, bottom: 5),
                                         child: Table(
                                           columnWidths: {
-                                            0: FlexColumnWidth(1),
-                                            1: FlexColumnWidth(2.7),
-                                            2: FlexColumnWidth(2),
-                                            3: FlexColumnWidth(1.8),
-                                            4: FlexColumnWidth(2),
-                                            5: FlexColumnWidth(1),
-                                            6: FlexColumnWidth(2),
-                                            7: FlexColumnWidth(1),
+                                            0: const FlexColumnWidth(1),
+                                            1: const FlexColumnWidth(2.7),
+                                            2: const FlexColumnWidth(2),
+                                            3: const FlexColumnWidth(1.8),
+                                            4: const FlexColumnWidth(2),
+                                            5: const FlexColumnWidth(1),
+                                            6: const FlexColumnWidth(2),
+                                            7: const FlexColumnWidth(1),
 
                                           },
                                           children: [
-                                            TableRow(
+                                            const TableRow(
                                               children: [
                                                 TableCell(
                                                   child: Padding(
-                                                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                                    padding: EdgeInsets.only(top: 10, bottom: 10),
                                                     child: Center(
                                                       child: Text(
                                                         'SN',
@@ -2751,16 +2771,16 @@ class _FifthPageState extends State<FifthPage> {
                                       itemBuilder: (context, index) {
                                         Product product = widget.selectedProducts[index];
                                         return Table(
-                                          border: TableBorder.all(color: Color(0xFFB2C2D3)),
+                                          border: TableBorder.all(color: const Color(0xFFB2C2D3)),
                                           columnWidths: {
-                                            0: FlexColumnWidth(1),
-                                            1: FlexColumnWidth(2.7),
-                                            2: FlexColumnWidth(2),
-                                            3: FlexColumnWidth(1.8),
-                                            4: FlexColumnWidth(2),
-                                            5: FlexColumnWidth(1),
-                                            6: FlexColumnWidth(2),
-                                            7: FlexColumnWidth(1),
+                                            0: const FlexColumnWidth(1),
+                                            1: const FlexColumnWidth(2.7),
+                                            2: const FlexColumnWidth(2),
+                                            3: const FlexColumnWidth(1.8),
+                                            4: const FlexColumnWidth(2),
+                                            5: const FlexColumnWidth(1),
+                                            6: const FlexColumnWidth(2),
+                                            7: const FlexColumnWidth(1),
 
                                           },
                                           children: [
@@ -3012,15 +3032,15 @@ class _FifthPageState extends State<FifthPage> {
                                       child: Container(
                                         // Space above/below the border
                                         height: 1, // Border height
-                                        color: Color(0xFFB2C2D3), // Border color
+                                        color: const Color(0xFFB2C2D3), // Border color
                                       ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top:9,bottom: 9),
                                       child: Align(
-                                        alignment: Alignment(0.74,0.8),
+                                        alignment: const Alignment(0.74,0.8),
                                         child: Container(
-                                          padding: EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
+                                          padding: const EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
                                           decoration: BoxDecoration(
                                             border: Border.all(color: Colors.blue),
                                             borderRadius: BorderRadius.circular(3),
@@ -3034,7 +3054,7 @@ class _FifthPageState extends State<FifthPage> {
                                                 RichText(text:
                                                 TextSpan(
                                                   children: [
-                                                    TextSpan(
+                                                    const TextSpan(
                                                       text:  'Total',
                                                       style: TextStyle(
                                                           fontSize: 14,

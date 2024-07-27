@@ -1,22 +1,16 @@
 import 'dart:convert';
 import 'dart:html';
-
-import 'package:btb/sprint%202%20order/seventhpage%20.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart'as http;
-
-import '../fourthpage/orderspage order.dart';
+import '../Product Module/Product Screen.dart';
 import '../screen/login.dart';
-import '../thirdpage/dashboard.dart';
-import 'add productmaster sample.dart';
+import '../dashboard.dart';
 import 'firstpage.dart';
 
 void main(){
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: EighthPage(),
   ));
@@ -68,6 +62,7 @@ class _EighthPageState extends State<EighthPage> {
   @override
   void initState() {
     super.initState();
+    _fetchOrders();
     _orderIdController.addListener(_fetchOrders);
     _dateController = TextEditingController();
 
@@ -83,60 +78,114 @@ class _EighthPageState extends State<EighthPage> {
   }
 
   Future<void> _fetchOrders() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _loading = true;
-        _orders = []; // clear the orders list
-        _errorMessage = ''; // clear the error message
-      });
-      final orderId = _orderIdController.text.trim(); // trim to remove whitespace
-      if (orderId.isEmpty) {
-        setState(() {
-          _loading = false;
-          _errorMessage = 'No product found'; // show no product found message
-        });
-        return; // exit the function early
-      }
-      try {
-        final response = await http.get(
-          Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId'),
-          headers: {
-            'Authorization': 'Bearer $token', // Replace with your API key
-            'Content-Type': 'application/json',
-          },
-        );
-        if (response.statusCode == 200) {
-          final responseBody = response.body;
-          if (responseBody!= null) {
-            final jsonData = jsonDecode(responseBody).cast<Map<dynamic, dynamic>>();
-            setState(() {
-              _orders = jsonData;
-              _errorMessage = ''; // clear the error message
-            });
-          } else {
-            setState(() {
-              _orders = []; // clear the orders list
-              _errorMessage = 'Failed to load orders';
-            });
-          }
+    setState(() {
+      _loading = true;
+      _orders = []; // clear the orders list
+      _errorMessage = ''; // clear the error message
+    });
+    try {
+      final orderId = _orderIdController.text
+          .trim(); // trim to remove whitespace
+      final url = orderId.isEmpty
+          ? 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'
+          : 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token', // Replace with your API key
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        if (responseBody != null) {
+          final jsonData = jsonDecode(responseBody).cast<
+              Map<dynamic, dynamic>>();
+          setState(() {
+            _orders =
+                jsonData; // update _orders with all orders or search results
+            _errorMessage = ''; // clear the error message
+          });
         } else {
           setState(() {
             _orders = []; // clear the orders list
             _errorMessage = 'Failed to load orders';
           });
         }
-      } catch (e) {
+      } else {
         setState(() {
           _orders = []; // clear the orders list
-          _errorMessage = 'Error: $e';
-        });
-      } finally {
-        setState(() {
-          _loading = false;
+          _errorMessage = 'Failed to load orders';
         });
       }
+    } catch (e) {
+      setState(() {
+        _orders = []; // clear the orders list
+        _errorMessage = 'Error: $e';
+      });
+    } finally {
+      setState(() {
+        _loading = false;
+      });
     }
   }
+
+  // Future<void> _fetchOrders() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _loading = true;
+  //       _orders = []; // clear the orders list
+  //       _errorMessage = ''; // clear the error message
+  //     });
+  //     final orderId = _orderIdController.text.trim(); // trim to remove whitespace
+  //     if (orderId.isEmpty) {
+  //       setState(() {
+  //         _loading = false;
+  //         _errorMessage = 'No product found'; // show no product found message
+  //       });
+  //       return; // exit the function early
+  //     }
+  //     try {
+  //       final response = await http.get(
+  //         Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId'),
+  //         headers: {
+  //           'Authorization': 'Bearer $token', // Replace with your API key
+  //           'Content-Type': 'application/json',
+  //         },
+  //       );
+  //       if (response.statusCode == 200) {
+  //         final responseBody = response.body;
+  //         if (responseBody!= null) {
+  //           final jsonData = jsonDecode(responseBody).cast<Map<dynamic, dynamic>>();
+  //           setState(() {
+  //             _orders = jsonData;
+  //             _errorMessage = ''; // clear the error message
+  //           });
+  //         } else {
+  //           setState(() {
+  //             _orders = []; // clear the orders list
+  //             _errorMessage = 'Failed to load orders';
+  //           });
+  //         }
+  //       } else {
+  //         setState(() {
+  //           _orders = []; // clear the orders list
+  //           _errorMessage = 'Failed to load orders';
+  //         });
+  //       }
+  //     } catch (e) {
+  //       setState(() {
+  //         _orders = []; // clear the orders list
+  //         _errorMessage = 'Error: $e';
+  //       });
+  //     } finally {
+  //       setState(() {
+  //         _loading = false;
+  //       });
+  //     }
+  //   }
+  // }
 
 
 
@@ -196,13 +245,13 @@ class _EighthPageState extends State<EighthPage> {
                   },
                   itemBuilder: (BuildContext context) {
                     return [
-                      PopupMenuItem<String>(
+                      const PopupMenuItem<String>(
                         value: 'logout',
                         child: Text('Logout'),
                       ),
                     ];
                   },
-                  offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                  offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                 ),
               ),
             ),
@@ -399,6 +448,7 @@ class _EighthPageState extends State<EighthPage> {
                                icon:
                                const Icon(Icons.arrow_back), // Back button icon
                                onPressed: () {
+                                 context.go('/Order_List');
                                  Navigator.push(
                                    context,
                                    PageRouteBuilder(
@@ -472,7 +522,7 @@ class _EighthPageState extends State<EighthPage> {
                      width: 300,
                      height: 984,
                      decoration: BoxDecoration(
-                       color: Color(0xFFFFFFFF),
+                       color: const Color(0xFFFFFFFF),
                        borderRadius: BorderRadius.circular(4),
                      ),
                      child: Form(
@@ -482,14 +532,14 @@ class _EighthPageState extends State<EighthPage> {
                            crossAxisAlignment: CrossAxisAlignment.stretch,
                            children: [
                              SizedBox(
-                               height: 100,
+                               height: 50,
                                width: 60,
                                child: Padding(
                                  padding: const EdgeInsets.only(
-                                     left: 15, right: 15, bottom: 1,top: 10),
+                                     left: 15, right: 15, bottom: 5,top: 10 ),
                                  child: TextFormField(
                                    controller: _orderIdController, // Assign the controller to the TextFormField
-                                   decoration: InputDecoration(
+                                   decoration: const InputDecoration(
                                      // labelText: 'Order ID',
                                      hintText: 'Search Order',
                                      contentPadding: EdgeInsets.all(8),
@@ -499,14 +549,14 @@ class _EighthPageState extends State<EighthPage> {
                                  ),
                                ),
                              ),
-                             SizedBox(height: 5),
+                             //const SizedBox(height: 2),
                              _loading
-                                 ? Center(child: CircularProgressIndicator())
+                                 ? const Center(child: CircularProgressIndicator())
                                  : _errorMessage.isNotEmpty
                                  ? Center(child: Text(_errorMessage))
                                  : _orders.isEmpty
-                                 ? Center(child: Text('No product found'))
-                                 : ListView.builder(
+                                 ? const Center(child: Text('No product found'))
+                                 : ListView.separated(
                                shrinkWrap: true,
                                itemCount: _orders.length,
                                itemBuilder: (context, index) {
@@ -519,11 +569,11 @@ class _EighthPageState extends State<EighthPage> {
                                      });
                                    },
                                    child: Container(
-                                     margin: const EdgeInsets.all(5),
+                                    // margin: const EdgeInsets.all(5),
                                      decoration: BoxDecoration(
                                        color: Colors.white,
-                                       border: Border.all(color: Colors.grey),
-                                       borderRadius: BorderRadius.circular(5),
+                                       // border: Border.all(color: Colors.grey),
+                                       // borderRadius: BorderRadius.circular(5),
                                      ),
                                      child: ListTile(
                                        title: Text('Order #${_orders[index]['orderId']}'),
@@ -531,6 +581,9 @@ class _EighthPageState extends State<EighthPage> {
                                      ),
                                    ),
                                  );
+                               },
+                               separatorBuilder: (context, index) {
+                                 return const Divider();
                                },
                              ),
                            ],
@@ -545,7 +598,7 @@ class _EighthPageState extends State<EighthPage> {
                       height: 100,
                       width: maxWidth,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Padding(
@@ -632,24 +685,24 @@ class _EighthPageState extends State<EighthPage> {
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10,bottom: 6),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10,bottom: 6),
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 30),
+                                  padding: EdgeInsets.only(left: 30),
                                   child: Text('Order',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
                                 Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Icon(Icons.download_for_offline,color: Colors.green,),
                                 ),
                               ],
@@ -661,8 +714,8 @@ class _EighthPageState extends State<EighthPage> {
                             width: double.infinity, // match parent width
                             color: Colors.grey, // adjust the color to your liking
                           ),
-                          SizedBox(height: 20,),
-                          Row(
+                          const SizedBox(height: 20,),
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Expanded(
@@ -713,24 +766,24 @@ class _EighthPageState extends State<EighthPage> {
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10,bottom: 6),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10,bottom: 6),
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 30),
+                                  padding: EdgeInsets.only(left: 30),
                                   child: Text('Invoice',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
                                 Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Icon(Icons.download_for_offline,color: Colors.grey,),
                                 ),
                               ],
@@ -742,8 +795,8 @@ class _EighthPageState extends State<EighthPage> {
                             width: double.infinity, // match parent width
                             color: Colors.grey, // adjust the color to your liking
                           ),
-                          SizedBox(height: 20,),
-                          Row(
+                          const SizedBox(height: 20,),
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Expanded(
@@ -794,24 +847,24 @@ class _EighthPageState extends State<EighthPage> {
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10,bottom: 6),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10,bottom: 6),
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 30),
+                                  padding: EdgeInsets.only(left: 30),
                                   child: Text('Payments',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
                                 Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Icon(Icons.download_for_offline,color: Colors.grey,),
                                 ),
                               ],
@@ -823,8 +876,8 @@ class _EighthPageState extends State<EighthPage> {
                             width: double.infinity, // match parent width
                             color: Colors.grey, // adjust the color to your liking
                           ),
-                          SizedBox(height: 20,),
-                          Row(
+                          const SizedBox(height: 20,),
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Expanded(
@@ -875,24 +928,24 @@ class _EighthPageState extends State<EighthPage> {
                       height: 115,
                       width: constraints.maxWidth * 0.7,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                        border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10,bottom: 6),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10,bottom: 6),
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 30),
+                                  padding: EdgeInsets.only(left: 30),
                                   child: Text('Delivery',style: TextStyle(fontWeight: FontWeight.bold),),
                                 ),
                                 Spacer(),
                                 Text('Available for Download'),
                                 SizedBox(width: 5,),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Icon(Icons.download_for_offline,color: Colors.grey,),
                                 ),
                               ],
@@ -904,8 +957,8 @@ class _EighthPageState extends State<EighthPage> {
                             width: double.infinity, // match parent width
                             color: Colors.grey, // adjust the color to your liking
                           ),
-                          SizedBox(height: 20,),
-                          Row(
+                          const SizedBox(height: 20,),
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Expanded(

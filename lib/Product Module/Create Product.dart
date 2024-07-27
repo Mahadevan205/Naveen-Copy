@@ -4,16 +4,14 @@ import 'dart:io' as io;
 import 'dart:math';
 import 'package:btb/screen/login.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-
-import '../fourthpage/orderspage order.dart';
+import '../Return Module/return first page.dart';
+import 'Product Screen.dart';
 import '../sprint 2 order/firstpage.dart';
-import '../thirdpage/dashboard.dart';
+import '../dashboard.dart';
 
 void main() {
   runApp(const SecondPage(
@@ -390,13 +388,13 @@ class _SecondPageState extends State<SecondPage> {
                     },
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem<String>(
+                        const PopupMenuItem<String>(
                           value: 'logout',
                           child: Text('Logout'),
                         ),
                       ];
                     },
-                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                    offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -591,7 +589,26 @@ class _SecondPageState extends State<SecondPage> {
                           ),
                           const SizedBox(height: 20),
                           TextButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.go('/dashboard/return/:return');
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) =>
+                                  const Returnpage(),
+                                  transitionDuration:
+                                  const Duration(milliseconds: 200),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                             icon: Icon(Icons.backspace_sharp,
                                 color: Colors.blue[900]),
                             label: Text(
@@ -693,7 +710,7 @@ class _SecondPageState extends State<SecondPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
                                   child: Align(
-                                    alignment: Alignment(-1.0,-0.3),
+                                    alignment: const Alignment(-1.0,-0.3),
                                     child: RichText(
                                       text: const TextSpan(
                                         children: [
@@ -799,7 +816,7 @@ class _SecondPageState extends State<SecondPage> {
                                               padding: const EdgeInsets.symmetric(horizontal: 10),
                                               child: DropdownButton<String>(
                                                 value: dropdownValue,
-                                                icon: Icon(Icons.arrow_drop_down),
+                                                icon: const Icon(Icons.arrow_drop_down),
                                                 iconSize: 24, // Size of the icon
                                                 elevation: 16,
                                                 style: const TextStyle(color: Colors.black),
@@ -873,7 +890,7 @@ class _SecondPageState extends State<SecondPage> {
                                                   horizontal: 10),
                                               child: DropdownButton<String>(
                                                 value: dropdownValue3,
-                                                icon: Icon(
+                                                icon: const Icon(
                                                     Icons.arrow_drop_down),
                                                 iconSize: 24,
                                                 // Size of the icon
@@ -964,7 +981,7 @@ class _SecondPageState extends State<SecondPage> {
                                                width: constraints.maxWidth * 0.5,
                                                 child: DropdownButton<String>(
                                                   value: dropdownValue1,
-                                                  icon: Icon(
+                                                  icon: const Icon(
                                                       Icons.arrow_drop_down),
                                                   iconSize: 24,
                                                   // Size of the icon
@@ -1053,7 +1070,7 @@ class _SecondPageState extends State<SecondPage> {
                                               width: constraints.maxWidth * 0.5,
                                                 child: DropdownButton<String>(
                                                   value: dropdownValue2,
-                                                  icon: Icon(
+                                                  icon: const Icon(
                                                       Icons.arrow_drop_down),
                                                   iconSize: 24,
                                                   // Size of the icon
@@ -1312,14 +1329,14 @@ class _SecondPageState extends State<SecondPage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 40,),
+                            const SizedBox(height: 40,),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Align(
-                                    alignment: Alignment(0.8,0.7),
+                                    alignment: const Alignment(0.8,0.7),
                                     child: OutlinedButton(
                                       onPressed: () {
                                         dropdownValue = 'Select';

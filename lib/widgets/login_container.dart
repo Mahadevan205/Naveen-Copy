@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:btb/main.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
-import '../thirdpage/dashboard.dart';
+import '../dashboard.dart';
 class LoginContainer1 extends StatefulWidget {
   const LoginContainer1({super.key});
   @override
@@ -35,7 +32,7 @@ class _LoginContainerState extends State<LoginContainer1> {
         }
       } else {
         window.sessionStorage["token"] = tempData['token'];
-        context.go('${PageName.dashboardRoute}');
+        context.go(PageName.dashboardRoute);
       }
     }
   }
@@ -67,8 +64,8 @@ class _LoginContainerState extends State<LoginContainer1> {
                   children: [
                     SizedBox(height: constraints.maxHeight * 0.04),
                     const Align(
-                        alignment: const Alignment(-0.4, 0.0),
-                        child: const Text('Username',style: TextStyle(fontWeight: FontWeight.bold),)),
+                        alignment: Alignment(-0.4, 0.0),
+                        child: Text('Username',style: TextStyle(fontWeight: FontWeight.bold),)),
                     const SizedBox(height: 10),
                     Align(
                       alignment: const Alignment(0.1, 0.0),
@@ -89,7 +86,7 @@ class _LoginContainerState extends State<LoginContainer1> {
                             if (checkLogin(userName.text, password.text)) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Dashboard()),
+                                MaterialPageRoute(builder: (context) => const Dashboard()),
                               );
                             }
                           },
@@ -119,7 +116,7 @@ class _LoginContainerState extends State<LoginContainer1> {
                             if (checkLogin(userName.text, password.text)) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Dashboard()),
+                                MaterialPageRoute(builder: (context) => const Dashboard()),
                               );
                             }
                           },
@@ -182,6 +179,39 @@ class _LoginContainerState extends State<LoginContainer1> {
           ),
         );
       },
+    );
+  }
+}
+
+
+class ImageContainer extends StatelessWidget {
+  const ImageContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity, // Take full width
+      color: Colors.grey[100],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 40, left: 25),
+            child: Image.asset('images/Final-Ikyam-Logo.png'),
+          ),
+          const SizedBox(height: 50), // You can adjust this value
+          Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4, // Take 70% of screen width
+              height: MediaQuery.of(context).size.width * 0.3, // Take 70% of screen width
+              child: Image.asset(
+                'images/ikyam1.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

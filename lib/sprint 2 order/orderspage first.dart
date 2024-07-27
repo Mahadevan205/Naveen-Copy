@@ -108,7 +108,7 @@ class _OrdersTableState extends State<OrdersTable> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orders Table'),
+        title: const Text('Orders Table'),
       ),
       body: Center(
         child: FutureBuilder<List<Order>>(
@@ -117,7 +117,7 @@ class _OrdersTableState extends State<OrdersTable> {
             if (snapshot.hasData) {
               List<Order> orders = snapshot.data!;
               return DataTable(
-                columns: [
+                columns: const [
                   DataColumn(label: Text('Product Name')),
                   DataColumn(label: Text('Order ID')),
                   DataColumn(label: Text('Status')),
@@ -128,16 +128,16 @@ class _OrdersTableState extends State<OrdersTable> {
                   return DataRow(cells: [
                     DataCell(Text(order.productName)),
                     DataCell(Text(order.prodId)),
-                    DataCell(Text('Pending')), // Dummy status
+                    const DataCell(Text('Pending')), // Dummy status
                     DataCell(Text(order.date)), // Actual date
-                    DataCell(Text('In Transit')), // Dummy delivery status
+                    const DataCell(Text('In Transit')), // Dummy delivery status
                   ]);
                 }).toList(),
               );
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}");
             }
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ),
       ),

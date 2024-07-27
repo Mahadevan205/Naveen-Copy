@@ -2,24 +2,18 @@ import 'dart:html';
 
 import 'package:btb/sprint%202%20order/add%20productmaster%20sample.dart';
 import 'package:btb/sprint%202%20order/eighthpage.dart';
-import 'package:btb/sprint%202%20order/seventhpage%20.dart';
-import 'package:flutter/cupertino.dart';
-//import 'package:btb/sprint%202%20order/seventh%20page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
+import '../Product Module/Product Screen.dart';
 
-import '../fifthpage/sample.dart';
-import '../fourthpage/orderspage order.dart';
+import '../Return Module/return first page.dart';
 import '../screen/login.dart';
-import '../thirdpage/dashboard.dart';
-import '../thirdpage/productclass.dart';
+import '../dashboard.dart';
 import 'firstpage.dart';
 import 'orderspage first.dart' as ord;
 
@@ -391,9 +385,9 @@ class _SixthPageState extends State<SixthPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     TableRow row1 = TableRow(
       children: [
-        TableCell(
+        const TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
             child: Text('Delivery Location'),
           ),
         ),
@@ -401,14 +395,14 @@ class _SixthPageState extends State<SixthPage> {
         TableCell(
           child: Row(
             children: [
-              Spacer(),
+              const Spacer(),
               const Text(
                 'Order Date',
                 style: TextStyle(
                   //    fontSize: 16,// fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xFFEBF3FF), width: 1),
@@ -454,17 +448,17 @@ class _SixthPageState extends State<SixthPage> {
       ],
     );
 
-    TableRow row2 = TableRow(
+    TableRow row2 = const TableRow(
       children: [
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 30,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 30,top: 10,bottom: 10),
             child: Text('Address'),
           ),
         ),
         TableCell(
           child: Padding(
-            padding: const EdgeInsets.only(left: 10,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 10,top: 10,bottom: 10),
             child: Text('Comments'),
           ),
         ),
@@ -481,13 +475,13 @@ class _SixthPageState extends State<SixthPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
+                    const Padding(
                       padding:  EdgeInsets.only(left: 30,top: 10),
                       child: Text('Select Delivery Location'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding:  EdgeInsets.only(left: 30),
+                      padding:  const EdgeInsets.only(left: 30),
                       child: SizedBox(
                         width: screenWidth * 0.35,
                         height: 40,
@@ -524,14 +518,14 @@ class _SixthPageState extends State<SixthPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Padding(
+                    const SizedBox(height: 20),
+                    const Padding(
                       padding:  EdgeInsets.only(left: 30),
                       child: Text('Delivery Address'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
-                      padding:  EdgeInsets.only(left: 30),
+                      padding:  const EdgeInsets.only(left: 30),
                       child: SizedBox(
                         width: screenWidth * 0.35,
                         child: TextField(
@@ -553,17 +547,17 @@ class _SixthPageState extends State<SixthPage> {
                   ],
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Expanded(
                 flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: const Text('Contact Person'),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text('Contact Person'),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: SizedBox(
@@ -586,9 +580,9 @@ class _SixthPageState extends State<SixthPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     const Text('Contact Number'),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: SizedBox(
@@ -720,13 +714,13 @@ class _SixthPageState extends State<SixthPage> {
                     },
                     itemBuilder: (BuildContext context) {
                       return [
-                        PopupMenuItem<String>(
+                        const PopupMenuItem<String>(
                           value: 'logout',
                           child: Text('Logout'),
                         ),
                       ];
                     },
-                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
+                    offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -846,7 +840,7 @@ class _SixthPageState extends State<SixthPage> {
                                 //   // Handle button press19
                                 // });
                               },
-                              icon: Icon(Icons.warehouse,
+                              icon: const Icon(Icons.warehouse,
                                   color: Colors.blueAccent),
                               label: const Text(
                                 'Orders',
@@ -887,7 +881,26 @@ class _SixthPageState extends State<SixthPage> {
                             ),
                             const SizedBox(height: 20),
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                context.go('/dashboard/return/:return');
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) =>
+                                    const Returnpage(),
+                                    transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
                               label: Text(
@@ -926,12 +939,12 @@ class _SixthPageState extends State<SixthPage> {
                                 icon:
                                 const Icon(Icons.arrow_back), // Back button icon
                                 onPressed: () {
-                                  context.go('/Documents/Orderspage');
+                                  context.go('/Order_List');
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            Orderspage()),
+                                            const Orderspage()),
                                   );
                                 },
                               ),
@@ -946,7 +959,7 @@ class _SixthPageState extends State<SixthPage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Padding(
                                 padding: const EdgeInsets.only(right: 30),
                                 child: OutlinedButton(
@@ -981,7 +994,7 @@ class _SixthPageState extends State<SixthPage> {
                                         pageBuilder: (context, animation,
                                             secondaryAnimation) =>
                                             SelectedProductPage(
-                                              data: data, selectedProducts: [],),
+                                              data: data, selectedProducts: const [],),
                                         transitionDuration:
                                         const Duration(milliseconds: 200),
                                         transitionsBuilder: (context, animation,
@@ -1019,11 +1032,12 @@ class _SixthPageState extends State<SixthPage> {
                                 padding: const EdgeInsets.only(right: 100),
                                 child: OutlinedButton(
                                   onPressed: () {
+                                    context.go('/Download');
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              EighthPage()),
+                                              const EighthPage()),
                                     );
                                   },
                                   style: OutlinedButton.styleFrom(
@@ -1080,7 +1094,7 @@ class _SixthPageState extends State<SixthPage> {
                       width: 300,
                       height: 1100,
                       decoration: BoxDecoration(
-                        color: Color(0xFFFFFFFF),
+                        color: const Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Form(
@@ -1108,7 +1122,7 @@ class _SixthPageState extends State<SixthPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 1),
+                              const SizedBox(height: 1),
                               Column(
                                 children: [
                                   _loading
@@ -1117,7 +1131,7 @@ class _SixthPageState extends State<SixthPage> {
                                       : _errorMessage.isNotEmpty
                                       ? Center(child: Text(_errorMessage))
                                       : _orders.isEmpty
-                                      ? Center(child: Text('No product found'))
+                                      ? const Center(child: Text('No product found'))
                                       : ListView.separated(
                                     shrinkWrap: true,
                                     itemCount: _orders.length,
@@ -1211,7 +1225,7 @@ class _SixthPageState extends State<SixthPage> {
                         height: 100,
                         width: maxWidth,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFFB2C2D3), width: 2),
+                          border: Border.all(color: const Color(0xFFB2C2D3), width: 2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Padding(
@@ -1296,13 +1310,13 @@ class _SixthPageState extends State<SixthPage> {
                       padding: const EdgeInsets.only(left: 550,right: 120,top: 250),
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFFB2C2D3)),
+                          border: Border.all(color: const Color(0xFFB2C2D3)),
                           borderRadius: BorderRadius.circular(3.5), // Set border radius here
                         ),
                         child: Table(
-                          border: TableBorder.all(color: Color(0xFFB2C2D3)),
+                          border: TableBorder.all(color: const Color(0xFFB2C2D3)),
 
-                          columnWidths: {
+                          columnWidths: const {
                             0: FlexColumnWidth(2),
                             1: FlexColumnWidth(1.4),
                           },
@@ -1830,13 +1844,13 @@ class _SixthPageState extends State<SixthPage> {
                     //   ),
                     // ),
                     Padding(
-                      padding:  EdgeInsets.only(left: 550, top: 700,right: 120),
+                      padding:  const EdgeInsets.only(left: 550, top: 700,right: 120),
                       child: Container(
                         // height: 150,
                         width: maxWidth,
                         //   padding: const EdgeInsets.all(0.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFFB2C2D3), width:
+                          border: Border.all(color: const Color(0xFFB2C2D3), width:
                           2),
                           borderRadius: BorderRadius.circular(5.0),
                         ),
@@ -1857,12 +1871,12 @@ class _SixthPageState extends State<SixthPage> {
                             Container(
                               width: maxWidth,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xFFB2C2D3)),
+                                border: Border.all(color: const Color(0xFFB2C2D3)),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.only(top: 5, bottom: 5),
+                                padding: const EdgeInsets.only(top: 5, bottom: 5),
                                 child: Table(
-                                  columnWidths: {
+                                  columnWidths: const {
                                     0: FlexColumnWidth(1),
                                     1: FlexColumnWidth(2.7),
                                     2: FlexColumnWidth(2),
@@ -1871,12 +1885,12 @@ class _SixthPageState extends State<SixthPage> {
                                     5: FlexColumnWidth(1),
                                     6: FlexColumnWidth(2),
                                   },
-                                  children: [
+                                  children: const [
                                     TableRow(
                                       children: [
                                         TableCell(
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                            padding: EdgeInsets.only(top: 10, bottom: 10),
                                             child: Center(
                                               child: Text(
                                                 'SN',
@@ -1966,9 +1980,9 @@ class _SixthPageState extends State<SixthPage> {
                                 // int index = selectedItems.indexOf(item) + 1;
                                 return Table(
                                   border: TableBorder.all(
-                                      color: Color(0xFFB2C2D3)),
+                                      color: const Color(0xFFB2C2D3)),
                                   // Add this line
-                                  columnWidths: {
+                                  columnWidths: const {
                                     0: FlexColumnWidth(1),
                                     1: FlexColumnWidth(2.7),
                                     2: FlexColumnWidth(2),
@@ -1983,7 +1997,7 @@ class _SixthPageState extends State<SixthPage> {
                                       children: [
                                         TableCell(
                                           child: Padding(
-                                            padding: EdgeInsets.only(
+                                            padding: const EdgeInsets.only(
                                                 left: 10,
                                                 right: 10,
                                                 top: 10,
@@ -2149,10 +2163,10 @@ class _SixthPageState extends State<SixthPage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 9,bottom: 9),
                               child: Align(
-                                alignment: Alignment(0.9,0.8),
+                                alignment: const Alignment(0.9,0.8),
                                 child: Container(
                                   height: 40,
-                                  padding: EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
+                                  padding: const EdgeInsets.only(left: 15,right: 10,top: 2,bottom: 2),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.blue),
                                     borderRadius: BorderRadius.circular(2.0),
@@ -2166,7 +2180,7 @@ class _SixthPageState extends State<SixthPage> {
                                         RichText(text:
                                         TextSpan(
                                           children: [
-                                            TextSpan(
+                                            const TextSpan(
                                               text:  'Total',
                                               style: TextStyle(
                                                 fontSize: 14,
@@ -2433,11 +2447,11 @@ class _SixthPageState extends State<SixthPage> {
     return TableCell(
       child: Container(
         color: Colors.grey[300],
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -2452,7 +2466,7 @@ class _SixthPageState extends State<SixthPage> {
             6, 2, 6, 2),
         child: Container(
           height: 35,
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Center(child: Text(text)),
         ),
       ),
