@@ -166,15 +166,18 @@ class Order {
 // }
 
 
+
+
 class SelectedProductPage extends StatefulWidget {
   // final  List<Order> selectedProducts;
   final List<Product> selectedProducts;
   final Map<String, dynamic> data;
+  final Map<String, dynamic>? orderDetails;
 
 
   SelectedProductPage({
     required this.selectedProducts,
-    required this.data});
+    required this.data,this.orderDetails});
 
   @override
   State<SelectedProductPage> createState() => _SelectedProductPageState();
@@ -184,6 +187,8 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
   bool isOrdersSelected = false;
   double _total = 0.0;
   late List<Map<String, dynamic>> items;
+  late Future<List<detail>> futureOrders;
+
   final TextEditingController deliveryAddressController = TextEditingController();
   final TextEditingController contactPersonController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
@@ -199,6 +204,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
   List<Map<String, dynamic>> selectedItems = [];
   List<Order> selectedProducts = [];
   Map<String, dynamic> data2 = {};
+  List<detail>filteredData= [];
   List<Order> itemdetails = [];
   List<Product> productList = []; //updated details
   //List<Map<String, dynamic>> selectedItems = [];
@@ -208,6 +214,13 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
   final TextEditingController  _deliveryaddressController = TextEditingController();
   final TextEditingController  _createdDateController = TextEditingController();
   late TextEditingController _dateController;
+  List<dynamic> detailJson =[];
+  String _searchText = '';
+  String searchQuery = '';
+  final String _category = '';
+  String status= '';
+  String selectDate ='';
+  //String orderId = '';
   String token = window.sessionStorage["token"]?? " ";
   final List<String> list = ['  Name 1', '  Name 2', '  Name3'];
   final TextEditingController ContactPersonController = TextEditingController();
@@ -218,7 +231,10 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
   void initState() {
     super.initState();
+    print('--addproductmaster');
+    futureOrders = fetchOrders() as Future<List<detail>>;
     if(widget.selectedProducts.isEmpty)
+
     {
       print('---selectedproducts');
       print(widget.data['total']);
@@ -401,6 +417,105 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
     // widget.data['items'] = widget.selectedProducts;
   }
 
+  Widget buildDataTable() {
+    return LayoutBuilder(builder: (context, constraints){
+      double right = constraints.maxWidth;
+
+      return FutureBuilder<List<detail>>(
+        future: futureOrders,
+        builder: (context, snapshot) {
+
+          if (snapshot.hasData) {
+            filteredData = snapshot.data!.where((element) {
+              final matchesSearchText= element.orderId!.toLowerCase().contains(searchQuery.toLowerCase());
+              print('-----');
+              print(element.orderDate);
+              String orderYear = '';
+              if (element.orderDate.contains('/')) {
+                final dateParts = element.orderDate.split('/');
+                if (dateParts.length == 3) {
+                  orderYear = dateParts[2]; // Extract the year
+                }
+              }
+              // final orderYear = element.orderDate.substring(5,9);
+              if (status.isEmpty && selectDate.isEmpty) {
+                return matchesSearchText; // Include all products that match the search text
+              }
+              if(status == 'Status' && selectDate == 'SelectYear'){
+                return matchesSearchText;
+              }
+              if(status == 'Status' &&  selectDate.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if(selectDate == 'SelectYear' &&  status.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if (status == 'Status' && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+              if (status.isNotEmpty && selectDate == 'SelectYear') {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              if (status.isEmpty && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+
+              if (status.isNotEmpty && selectDate.isEmpty) {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              return matchesSearchText &&
+                  (element.status == _category && element.orderDate == selectDate);
+              //  return false;
+            }).toList();
+
+            // Print the details in the console
+            filteredData.forEach((detail) {
+              print('Status: ${detail.status}');
+              print('Order ID: ${detail.orderId}');
+              print('Created Date: ${detail.orderDate}');
+              print('Reference Number: ${detail.referenceNumber}');
+              print('Total Amount: ${detail.total}');
+              print('Delivery Status: ${detail.deliveryStatus}');
+              print('------------------------');
+            });
+
+            // Return an empty Container to not show anything in the UI
+            return Container();
+          } else if (snapshot.hasError) {
+            return Center(child: Text("${snapshot.error}"));
+          }
+
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+    });
+  }
+
+
+  Future<List<detail>> fetchOrders() async {
+    final response = await http.get(
+      Uri.parse(
+          'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        // Add the token to the Authorization header
+      },
+    );
+    if (response.statusCode == 200) {
+      detailJson = json.decode(response.body);
+      List<detail> filteredData = detailJson.map((json) => detail.fromJson(json)).toList();
+      if (_searchText.isNotEmpty) {
+        print(_searchText);
+        filteredData = filteredData.where((detail) => detail.orderId!.toLowerCase().contains(_searchText.toLowerCase())).toList();
+      }
+      return filteredData;
+    } else {
+      throw Exception('Failed to load orders');
+    }
+  }
+
 
   void _updateOrder(Map<String, dynamic> updatedOrder) async {
     final response = await http.put(
@@ -414,6 +529,48 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
+
+      String orderId;
+
+      try {
+        orderId = responseData['id'];
+
+      }catch(e){
+        print('Error parsing orderId: $e');
+        orderId = ''; // or some default value
+      }
+
+      print('from the api response');
+      print(orderId);
+
+      context.go('/Order_List/Documents',extra: {
+        'selectedProducts': updatedOrder,
+        'orderId': orderId,
+        'orderDetails':  filteredData.map((detail) => OrderDetail(
+          orderId: detail.orderId,
+          orderDate: detail.orderDate,
+          items: [],
+          // Add other fields as needed
+        )).toList(),
+
+      });
+
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SeventhPage(
+          selectedProducts: updatedOrder,
+          orderId: orderId,
+          orderDetails:  filteredData.map((detail) => OrderDetail(
+            orderId: detail.orderId,
+            orderDate: detail.orderDate,
+            items: [],
+            // Add other fields as needed
+          )).toList(),
+          product: null,
+        )), // Replace with your next page
+      );
+
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(content: Text(responseData['message'])),
       // );
@@ -463,14 +620,75 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
 
     _updateOrder(updatedOrder);
   ///  context.go('/seventhPage', extra: {'selectedProducts': updatedOrder});
-    context.go('/Order_List/Documents',extra: {
-      'selectedProducts': updatedOrder,
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SeventhPage(
-        selectedProducts: updatedOrder,product: null,)), // Replace with your next page
-    );
+
+
+    // Future<void> navigateToNextPage() async {
+    //   // Call the API to fetch the orders
+    //   final orders = await fetchOrders();
+    //
+    //   // Update filteredData with the latest data
+    //   setState(() {
+    //     filteredData = orders.where((element) {
+    //       final matchesSearchText= element.orderId!.toLowerCase().contains(searchQuery.toLowerCase());
+    //       print('-----');
+    //       print(element.orderDate);
+    //       String orderYear = '';
+    //       if (element.orderDate.contains('/')) {
+    //         final dateParts = element.orderDate.split('/');
+    //         if (dateParts.length == 3) {
+    //           orderYear = dateParts[2]; // Extract the year
+    //         }
+    //       }
+    //       // final orderYear = element.orderDate.substring(5,9);
+    //       if (status.isEmpty && selectDate.isEmpty) {
+    //         return matchesSearchText; // Include all products that match the search text
+    //       }
+    //       if(status == 'Status' && selectDate == 'SelectYear'){
+    //         return matchesSearchText;
+    //       }
+    //       if(status == 'Status' &&  selectDate.isEmpty)
+    //       {
+    //         return matchesSearchText;
+    //       }
+    //       if(selectDate == 'SelectYear' &&  status.isEmpty)
+    //       {
+    //         return matchesSearchText;
+    //       }
+    //       if (status == 'Status' && selectDate.isNotEmpty) {
+    //         return matchesSearchText && orderYear == selectDate; // Include all products
+    //       }
+    //       if (status.isNotEmpty && selectDate == 'SelectYear') {
+    //         return matchesSearchText && element.status == status;// Include all products
+    //       }
+    //       if (status.isEmpty && selectDate.isNotEmpty) {
+    //         return matchesSearchText && orderYear == selectDate; // Include all products
+    //       }
+    //
+    //       if (status.isNotEmpty && selectDate.isEmpty) {
+    //         return matchesSearchText && element.status == status;// Include all products
+    //       }
+    //       return matchesSearchText &&
+    //           (element.status == _category && element.orderDate == selectDate);
+    //       //  return false;
+    //     }).toList();
+    //   });
+    //
+    //   // Navigate to the next page
+    //
+    // }
+    // navigateToNextPage();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => SeventhPage(
+    //     selectedProducts: updatedOrder,
+    //     orderDetails:  filteredData.map((detail) => OrderDetail(
+    //       orderId: detail.orderId,
+    //       orderDate: detail.orderDate, items: [],
+    //       // Add other fields as needed
+    //     )).toList(),
+    //     product: null,
+    //   )), // Replace with your next page
+    // );
 
   }
 
@@ -834,7 +1052,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                   PageRouteBuilder(
                                     pageBuilder:
                                         (context, animation, secondaryAnimation) =>
-                                    const Dashboard(
+                                    const DashboardPage(
 
                                     ),
                                     transitionDuration:
@@ -1196,6 +1414,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                 ),
                               ),
                             ),
+                            buildDataTable(),
                             // Padding(
                             //   padding: const EdgeInsets.only(left: 150,top: 100,right: 100),
                             //   child: Container(
@@ -2320,6 +2539,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
     );
   }
 }
+
 
 
 double calculateTotalAmount(Map<String, dynamic> item) {

@@ -86,7 +86,7 @@ class _LoginContainerState extends State<LoginContainer1> {
                             if (checkLogin(userName.text, password.text)) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const Dashboard()),
+                                MaterialPageRoute(builder: (context) => const DashboardPage()),
                               );
                             }
                           },
@@ -116,7 +116,7 @@ class _LoginContainerState extends State<LoginContainer1> {
                             if (checkLogin(userName.text, password.text)) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const Dashboard()),
+                                MaterialPageRoute(builder: (context) => const DashboardPage()),
                               );
                             }
                           },

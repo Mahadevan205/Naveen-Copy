@@ -26,7 +26,10 @@ class SeventhPage extends StatefulWidget {
 
   final Map<String, dynamic> selectedProducts;
   final detail? product;
-  SeventhPage({super.key,required this.selectedProducts,required this.product});
+  final String? orderId;
+  final List<dynamic>? orderDetails;
+
+  SeventhPage({super.key,required this.selectedProducts,required this.product,this.orderDetails,required this.orderId});
 
   @override
   State<SeventhPage> createState() => _SeventhPageState();
@@ -54,9 +57,11 @@ class _SeventhPageState extends State<SeventhPage> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController qtyController = TextEditingController();
   bool? _isChecked1 = true;
+  bool _isFirstLoad = true;
   bool? _isChecked2 = true;
   String token = window.sessionStorage["token"]?? " ";
   List<Map> _orders = [];
+  String _searchText = '';
   bool _loading = false;
   bool isEditing = false;
   late TextEditingController _dateController;
@@ -65,6 +70,7 @@ class _SeventhPageState extends State<SeventhPage> {
   final TextEditingController totalAmountController = TextEditingController();
   bool isOrdersSelected = false;
   String _errorMessage = '';
+  List<bool> _isSelected = [];
   final _orderIdController = TextEditingController();
 //
 //   @override
@@ -210,21 +216,79 @@ class _SeventhPageState extends State<SeventhPage> {
 //     // }
 //   }
 
+  //
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   if (_isFirstLoad) {
+  //     print('didichange');
+  //     _isFirstLoad = false;
+  //     for (int i = 0; i < widget.orderDetails!.length; i++) {
+  //       if (orderIdController.text == widget.orderDetails![i].orderId) {
+  //         setState(() {
+  //           var selectedItem = widget.orderDetails![i];
+  //           widget.orderDetails!.removeAt(i);
+  //           widget.orderDetails!.insert(0, selectedItem);
+  //           for (int j = 0; j < _isSelected.length; j++) {
+  //             _isSelected[j] = j == 0;
+  //           }
+  //         });
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isFirstLoad) {
+      print('didichange');
+      _isFirstLoad = false;
+      for (int i = 0; i < widget.orderDetails!.length; i++) {
+        if (orderIdController.text == widget.orderDetails![i].orderId) {
+          setState(() {
+            var selectedItem = widget.orderDetails![i];
+            widget.orderDetails!.removeAt(i);
+            widget.orderDetails!.insert(0, selectedItem);
+            for (int j = 0; j < _isSelected.length; j++) {
+              _isSelected[j] = j == 0;
+            }
+          });
+          break;
+        }
+      }
+    }
+  }
 
 
   @override
   void initState() {
     super.initState();
-    _fetchOrders();
+
+    //_fetchOrders();
+
+
+    print('sevetnhpage');
+   // widget.orderId;
+    print(widget.orderId);
+    orderIdController.text = widget.orderId!;
+    _isSelected = List<bool>.filled(widget.orderDetails!.length, false);
+    print(widget.orderDetails);
+    //_isSelected = List<bool>.filled(widget.orderDetails!.length, false);
     widget.selectedProducts;
-    _orderIdController.addListener((){
-      _fetchOrders();
-    });
+  //  orderIdController.text = widget.product!.orderId ?? '';
+    // _orderIdController.addListener((){
+    //   _fetchOrders();
+    // });
 
     print('--updated details');
     if (widget.selectedProducts['total']!= null) {
       totalController.text = widget.selectedProducts['total'].toString();
     }
+    // if (widget.selectedProducts['orderId']!= null) {
+    //   orderIdController.text = widget.selectedProducts['orderId'].toString();
+    // }
     if (widget.selectedProducts['orderDate']!= null) {
       CreatedDateController.text = widget.selectedProducts['orderDate'].toString();
     }
@@ -266,7 +330,7 @@ class _SeventhPageState extends State<SeventhPage> {
     //   }
 
     print(widget.selectedProducts);
-    _orderIdController.addListener(_fetchOrders);
+    //_orderIdController.addListener(_fetchOrders);
     _dateController = TextEditingController();
 
     _selectedDate = DateTime.now();
@@ -296,23 +360,68 @@ class _SeventhPageState extends State<SeventhPage> {
 
   @override
   void dispose() {
-    _orderIdController.removeListener(_fetchOrders);
+    //_orderIdController.removeListener(_fetchOrders);
     _dateController.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchOrders() async {
-    setState(() {
-      _loading = true;
-      _orders = []; // clear the orders list
-      _errorMessage = ''; // clear the error message
-    });
+  // Future<void> _fetchOrders() async {
+  //   setState(() {
+  //     _loading = true;
+  //     _orders = []; // clear the orders list
+  //     _errorMessage = ''; // clear the error message
+  //   });
+  //   try {
+  //     final orderId = _orderIdController.text
+  //         .trim(); // trim to remove whitespace
+  //     final url = orderId.isEmpty
+  //         ? 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'
+  //         : 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId';
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: {
+  //         'Authorization': 'Bearer $token', // Replace with your API key
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final responseBody = response.body;
+  //       if (responseBody != null) {
+  //         final jsonData = jsonDecode(responseBody).cast<
+  //             Map<dynamic, dynamic>>();
+  //         setState(() {
+  //           _orders =
+  //               jsonData; // update _orders with all orders or search results
+  //           _errorMessage = ''; // clear the error message
+  //         });
+  //       } else {
+  //         setState(() {
+  //           _orders = []; // clear the orders list
+  //           _errorMessage = 'Failed to load orders';
+  //         });
+  //       }
+  //     } else {
+  //       setState(() {
+  //         _orders = []; // clear the orders list
+  //         _errorMessage = 'Failed to load orders';
+  //       });
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       _orders = []; // clear the orders list
+  //       _errorMessage = 'Error: $e';
+  //     });
+  //   } finally {
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //   }
+  // }
+
+  Future<void> _fetchOrderDetails(String orderId) async {
     try {
-      final orderId = _orderIdController.text
-          .trim(); // trim to remove whitespace
-      final url = orderId.isEmpty
-          ? 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'
-          : 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId';
+      final url = 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId';
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -324,34 +433,22 @@ class _SeventhPageState extends State<SeventhPage> {
       if (response.statusCode == 200) {
         final responseBody = response.body;
         if (responseBody != null) {
-          final jsonData = jsonDecode(responseBody).cast<
-              Map<dynamic, dynamic>>();
-          setState(() {
-            _orders =
-                jsonData; // update _orders with all orders or search results
-            _errorMessage = ''; // clear the error message
-          });
+          final jsonData = jsonDecode(responseBody);
+          if (jsonData is List<dynamic>) {
+            final jsonObject = jsonData.first;
+            final orderDetails = OrderDetail.fromJson(jsonObject);
+            _showProductDetails(orderDetails as int);
+          } else {
+            print('Failed to load order details');
+          }
         } else {
-          setState(() {
-            _orders = []; // clear the orders list
-            _errorMessage = 'Failed to load orders';
-          });
+          print('Failed to load order details');
         }
       } else {
-        setState(() {
-          _orders = []; // clear the orders list
-          _errorMessage = 'Failed to load orders';
-        });
+        print('Failed to load order details');
       }
     } catch (e) {
-      setState(() {
-        _orders = []; // clear the orders list
-        _errorMessage = 'Error: $e';
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+      print('Error: $e');
     }
   }
 
@@ -788,7 +885,7 @@ class _SeventhPageState extends State<SeventhPage> {
                                   PageRouteBuilder(
                                     pageBuilder:
                                         (context, animation, secondaryAnimation) =>
-                                    const Dashboard(
+                                    const DashboardPage(
                                     ),
                                     transitionDuration:
                                     const Duration(milliseconds: 200),
@@ -982,6 +1079,14 @@ class _SeventhPageState extends State<SeventhPage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 150),
+                                child: Text('Order ID :',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                              ),
+                              SizedBox(width:8),
+                              Text((orderIdController.text),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                              //  Text(orderIdController.text),
+                              SizedBox(width: 10,),
                               const Spacer(),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 5,right: 100),
@@ -1065,7 +1170,7 @@ class _SeventhPageState extends State<SeventhPage> {
                                   padding: const EdgeInsets.only(
                                       left: 15, right: 15, bottom: 2),
                                   child: TextFormField(
-                                    controller: _orderIdController, // Assign the controller to the TextFormField
+                                  //  controller: _orderIdController, // Assign the controller to the TextFormField
                                     decoration: const InputDecoration(
                                       // labelText: 'Order ID',
                                       hintText: 'Search Order',
@@ -1080,34 +1185,52 @@ class _SeventhPageState extends State<SeventhPage> {
                               Column(
                                 children: [
                                   _loading
-                                      ? const Center(child: CircularProgressIndicator())
+                                      ? Center(child: CircularProgressIndicator(strokeWidth: 4))
                                       : _errorMessage.isNotEmpty
                                       ? Center(child: Text(_errorMessage))
-                                      : _orders.isEmpty
+                                      : widget.orderDetails!.isEmpty
                                       ? const Center(child: Text('No product found'))
                                       : ListView.separated(
                                     shrinkWrap: true,
-                                    itemCount: _orders.length,
+                                    itemCount: _searchText.isNotEmpty
+                                        ? widget.orderDetails!.where((orderDetail) =>
+                                    orderDetail.orderId.toLowerCase().contains(_searchText.toLowerCase()) ||
+                                        orderDetail.orderDate.toLowerCase().contains(_searchText.toLowerCase())
+                                    ).length
+                                        : widget.orderDetails!.length,
                                     itemBuilder: (context, index) {
+                                      final isSelected = _isSelected[index];
+                                      final orderDetail = _searchText.isNotEmpty
+                                          ? widget.orderDetails!.where((orderDetail) =>
+                                      orderDetail.orderId.toLowerCase().contains(_searchText.toLowerCase()) ||
+                                          orderDetail.orderDate.toLowerCase().contains(_searchText.toLowerCase())
+                                      ).elementAt(index)
+                                          : widget.orderDetails![index];
+
                                       return GestureDetector(
-                                        onTap: (){
+                                        onTap: () async {
                                           setState(() {
-                                            _selectedIndex = index;
-                                            _showProductDetails(index);
-                                            //  Text('Order # ${_orders[index]['contactPerson']}');
-                                            //  contactPersonController.text = ${_orders[index]['contactPerson']
+                                            for (int i = 0; i < _isSelected.length; i++) {
+                                              _isSelected[i] = i == index;
+                                            }
+                                            orderIdController.text = orderDetail.orderId;
                                           });
+                                          await _fetchOrderDetails(orderDetail.orderId);
+                                          //in this place write api to fetch datas?? _showProductDetails(orderDetail);
                                         },
-                                        child: Container(
-                                          //  margin: const EdgeInsets.all(5),
+                                        child: AnimatedContainer(
+                                          duration: Duration(milliseconds: 200),
                                           decoration: BoxDecoration(
-                                            color: _selectedIndex == index ? Colors.blue[100] : Colors.white,
-                                            // border: Border.all(color: Colors.grey),
-                                            // borderRadius: BorderRadius.circular(5),
+                                            color: isSelected ? Colors.lightBlue : Colors.white,
                                           ),
                                           child: ListTile(
-                                            title: Text('Order #${_orders[index]['orderId']}'),
-                                            subtitle: Text('Order Date: ${_orders[index]['orderDate']}'),
+                                            title: Text('Order ID: ${orderDetail.orderId}'),
+                                            subtitle: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Order Date: ${orderDetail.orderDate}'),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       );
@@ -1118,6 +1241,96 @@ class _SeventhPageState extends State<SeventhPage> {
                                   ),
                                 ],
                               )
+                              //original
+                              // Column(
+                              //   children: [
+                              //     _loading
+                              //         ? const Center(child: CircularProgressIndicator())
+                              //         : _errorMessage.isNotEmpty
+                              //         ? Center(child: Text(_errorMessage))
+                              //         : _orders.isEmpty
+                              //         ? const Center(child: Text('No product found'))
+                              //         : ListView.separated(
+                              //       shrinkWrap: true,
+                              //       itemCount: _orders.length,
+                              //       itemBuilder: (context, index) {
+                              //         return GestureDetector(
+                              //           onTap: (){
+                              //             setState(() {
+                              //               _selectedIndex = index;
+                              //               _showProductDetails(index);
+                              //               //  Text('Order # ${_orders[index]['contactPerson']}');
+                              //               //  contactPersonController.text = ${_orders[index]['contactPerson']
+                              //             });
+                              //             orderIdController.text = _orders[index]['orderId'];
+                              //           },
+                              //           child: Container(
+                              //             //  margin: const EdgeInsets.all(5),
+                              //             decoration: BoxDecoration(
+                              //               color: _selectedIndex == index ? Colors.blue[100] : Colors.white,
+                              //               // border: Border.all(color: Colors.grey),
+                              //               // borderRadius: BorderRadius.circular(5),
+                              //             ),
+                              //             child: ListTile(
+                              //               title: Text('Order #${_orders[index]['orderId']}'),
+                              //               subtitle: Text('Order Date: ${_orders[index]['orderDate']}'),
+                              //             ),
+                              //           ),
+                              //         );
+                              //       },
+                              //       separatorBuilder: (context, index) {
+                              //         return const Divider();
+                              //       },
+                              //     ),
+                              //   ],
+                              // )
+                              // Column(
+                              //   children: [
+                              //     _loading
+                              //         ? Center(child: CircularProgressIndicator(strokeWidth: 4))
+                              //         : _errorMessage.isNotEmpty
+                              //         ? Center(child: Text(_errorMessage))
+                              //         : widget.orderDetails!.isEmpty
+                              //         ? const Center(child: Text('No product found'))
+                              //         : ListView.separated(
+                              //       shrinkWrap: true,
+                              //       itemCount: widget.orderDetails!.length,
+                              //       itemBuilder: (context, index) {
+                              //         final isSelected = _isSelected[index];
+                              //         return GestureDetector(
+                              //           onTap: () async {
+                              //             setState(() {
+                              //               for (int i = 0; i < _isSelected.length; i++) {
+                              //                 _isSelected[i] = i == index;
+                              //               }
+                              //               orderIdController.text = widget.orderDetails![index].orderId;
+                              //             });
+                              //             await _fetchOrderDetails(widget.orderDetails![index].orderId);
+                              //             //in this place write api to fetch datas ?? _showProductDetails(widget.orderDetails![index]);
+                              //           },
+                              //           child: AnimatedContainer(
+                              //             duration: Duration(milliseconds: 200),
+                              //             decoration: BoxDecoration(
+                              //               color: isSelected ? Colors.lightBlue : Colors.white,
+                              //             ),
+                              //             child: ListTile(
+                              //               title: Text('Order ID: ${widget.orderDetails![index].orderId}'),
+                              //               subtitle: Column(
+                              //                 crossAxisAlignment: CrossAxisAlignment.start,
+                              //                 children: [
+                              //                   Text('Order Date: ${widget.orderDetails![index].orderDate}'),
+                              //                 ],
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         );
+                              //       },
+                              //       separatorBuilder: (context, index) {
+                              //         return const Divider();
+                              //       },
+                              //     ),
+                              //   ],
+                              // )
 
                             ],
                           ),

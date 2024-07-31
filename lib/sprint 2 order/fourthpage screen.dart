@@ -192,7 +192,7 @@ class _OrdersSecondState extends State<OrdersSecond> {
                                     PageRouteBuilder(
                                       pageBuilder:
                                           (context, animation, secondaryAnimation) =>
-                                      const Dashboard(
+                                      const DashboardPage(
                                       ),
                                       transitionDuration:
                                       const Duration(milliseconds: 200),

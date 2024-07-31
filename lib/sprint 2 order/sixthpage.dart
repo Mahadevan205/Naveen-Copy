@@ -30,13 +30,15 @@ void main(){
 
 class SixthPage extends StatefulWidget {
   final detail? product;
+  final List<dynamic>? orderDetails;
+  final Map<String, dynamic>? storeStaticData;
   final List<Map<String, dynamic>>? item;
   final Map<String, dynamic>? body;
   final List<Map<String, dynamic>>? itemsList;
 // final detail product;
 // final List<Map<String, dynamic>> item;
 
-  const SixthPage({super.key, required this.product, this.item, this.body, this.itemsList});
+  const SixthPage({super.key, required this.product, this.item, this.body, this.itemsList,this.storeStaticData,this.orderDetails});
 
   // final detail product;
   //
@@ -52,15 +54,19 @@ class SixthPage extends StatefulWidget {
 class _SixthPageState extends State<SixthPage> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
+
   String token = window.sessionStorage["token"] ?? " ";
   final _orderIdController = TextEditingController();
   final List<String> list = ['  Name 1', '  Name 2', '  Name3'];
   Map<String, dynamic> data2 = {};
   List<Map> _orders = [];
+  String _searchText = '';
+  bool _isFirstLoad = true;
   bool _loading = false;
   bool isEditing = false;
   final TextEditingController deliveryLocationController = TextEditingController();
   List<Map<String, dynamic>> selectedItems = [];
+  //List<dynamic> selectedItems = [];
   final TextEditingController deliveryAddressController = TextEditingController();
   final TextEditingController contactPersonController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
@@ -82,15 +88,23 @@ class _SixthPageState extends State<SixthPage> {
       referenceNumber: '',
       items: []);
   bool? _isChecked2 = false;
-  int selectedIndex = -1;
   int _selectedIndex = -1;
-
+  //List<Map<String, dynamic>> _orders = [];
+  List<bool> _isSelected = [];
+  List<OrderDetails> _searchResults = [];
+  bool _firstTimeSort = true;
+  // List<bool> _isSelected = [];
+  List<bool> _isBlinked = [];
+  List<Map<String, dynamic>> _sortedOrders = [];
+  // String _selectedIndex = '';
   late TextEditingController _dateController;
   bool? _isChecked3 = false;
   bool? _isChecked4 = false;
   final TextEditingController totalAmountController = TextEditingController();
   bool isOrdersSelected = false;
   String _errorMessage = '';
+  //String sam = 'ORD_02112';
+  bool _isFirstMove = true;
 
   // @override
   // void initState() {
@@ -114,22 +128,176 @@ class _SixthPageState extends State<SixthPage> {
   //   _selectedDate = DateTime.now();
   //   _dateController.text = DateFormat.yMd().format(_selectedDate!);
   // }
+  //night set
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   if (_isFirstLoad && widget.orderDetails != null) {
+  //     print('didichange');
+  //     _isFirstLoad = false;
+  //     for (int i = 0; i < widget.orderDetails!.length; i++) {
+  //       if (orderIdController.text == widget.orderDetails![i].orderId) {
+  //         setState(() {
+  //           var selectedItem = widget.orderDetails![i];
+  //           widget.orderDetails!.removeAt(i);
+  //           widget.orderDetails!.insert(0, selectedItem);
+  //           for (int j = 0; j < _isSelected.length; j++) {
+  //             _isSelected[j] = j == 0;
+  //           }
+  //         });
+  //         break;
+  //       }
+  //     }
+  //   }else{
+  //     print('didichane null');
+  //   }
+  // }
 
+  //original
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isFirstLoad) {
+      print('didichange');
+      _isFirstLoad = false;
+      for (int i = 0; i < widget.orderDetails!.length; i++) {
+        if (orderIdController.text == widget.orderDetails![i].orderId) {
+          setState(() {
+            var selectedItem = widget.orderDetails![i];
+            widget.orderDetails!.removeAt(i);
+            widget.orderDetails!.insert(0, selectedItem);
+            for (int j = 0; j < _isSelected.length; j++) {
+              _isSelected[j] = j == 0;
+            }
+          });
+          break;
+        }
+      }
+    }
+  }
 
+  //night set
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   if (widget.product != null) {
+  //     _selectedOrder = widget.product!;
+  //     _initializeControllers();
+  //   } else {
+  //     print('Product is null');
+  //   }
+  //
+  //   if (widget.body != null) {
+  //     _initializeBody();
+  //   } else {
+  //     print('Body is null');
+  //   }
+  //
+  //   if (widget.itemsList != null) {
+  //     // access widget.itemsList here
+  //   } else {
+  //     print('ItemsList is null');
+  //   }
+  //
+  //   if (widget.orderDetails != null) {
+  //     _isSelected = List<bool>.filled(widget.orderDetails!.length, false);
+  //   } else {
+  //     print('OrderDetails is null');
+  //   }
+  //
+  //   _dateController = TextEditingController();
+  //   _selectedDate = DateTime.now();
+  //   _dateController.text = DateFormat.yMd().format(_selectedDate!) ?? '';
+  //
+  //   _orderIdController.addListener(() {
+  //     _fetchOrders();
+  //   });
+  // }
+
+  void _initializeControllers() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        orderIdController.text = _selectedOrder.orderId ?? '';
+        totalController.text = _selectedOrder.total.toString() ?? '';
+        deliveryAddressController.text = _selectedOrder.deliveryAddress! ?? '';
+        contactPersonController.text = _selectedOrder.contactPerson! ?? '';
+        contactNumberController.text = _selectedOrder.contactNumber! ?? '';
+        commentsController.text = _selectedOrder.comments! ?? '';
+        data2['deliveryLocation'] = _selectedOrder.deliveryLocation! ?? '';
+        displayItemDetails();
+      });
+    });
+  }
+
+  void _initializeBody() {
+    print('Body: ${widget.body}');
+    print('Items List: ${widget.itemsList}');
+    print('Order Date: ${widget.body?['orderDate']}');
+    print('Delivery Location: ${widget.body?['deliveryLocation']}');
+    print('Delivery Address: ${widget.body?['deliveryAddress']}');
+    print('Contact Person: ${widget.body?['contactPerson']}');
+    print('Contact Number: ${widget.body?['contactNumber']}');
+    print('Comments: ${widget.body?['comments']}');
+    print('Total: ${widget.body?['total']}');
+    print('id: ${widget.body?['id']}');
+
+    List<dynamic> items = widget.product!.items;
+
+    for (var item in items) {
+      if (item['orderId'] == orderIdController.text) {
+        print('Order Master Id: ${item['orderMasterItemId']}');
+      }
+    }
+
+    if (widget.body?['items'] != null) {
+      for (var item in widget.body?['items']) {
+        print('  Product Name: ${item['productName']}');
+        print(' OrderMasterId: ${item['orderMasterItemId']}');
+        print('  Category: ${item['category']}');
+        print('  Sub Category: ${item['subCategory']}');
+        print('  Price: ${item['price'].toString()}');
+        print('  Qty: ${item['qty'].toString()}');
+        print('  Total Amount: ${item['totalAmount'].toString()}');
+        print(''); // empty line for separation
+        selectedItems = List.from(widget.body?['items'] ?? []);
+      }
+    } else {
+      print('No items');
+    }
+
+    deliveryAddressController.text = widget.body?['deliveryAddress'] ?? '';
+    data2['deliveryLocation'] = widget.body?['deliveryLocation'] ?? [];
+    contactPersonController.text = widget.body?['contactPerson'] ?? '';
+    contactNumberController.text = widget.body?['contactNumber'] ?? '';
+    commentsController.text = widget.body?['comments'] ?? '';
+    CreatedDateController.text = widget.body?['orderDate'] ?? '';
+    totalController.text = widget.body?['total'] ?? '';
+    widget.body?['orderId'] ?? '';
+  }
+
+//original code
   @override
   void initState() {
     super.initState();
+    print('from firstpage');
+    print(widget.orderDetails);
+    //orderIdController.text = _isSelected as String;
+    // _isSelected = List<bool>.filled(widget.orderDetails!.length, false);
+//original
+    _isSelected = List<bool>.filled(widget.orderDetails!.length, false);
+
 
     _orderIdController.addListener(() {
       _fetchOrders();
-    });
+      });
     // loadData();
     //  init();
     print('--ordermodule data sixthpage');
 
     // _orderModel.loadData();
     // Provider.of<OrderProvider>(context, listen: false).init();
-    _fetchOrders();
+    //_fetchOrders();
 
 
     // Consumer<OrderProvider>(
@@ -145,6 +313,7 @@ class _SixthPageState extends State<SixthPage> {
     //   },
     // );
 
+   // original
     orderIdController.text = widget.product!.orderId ?? '';
 
 // Assuming widget.product!.items is a list of items
@@ -166,19 +335,45 @@ class _SixthPageState extends State<SixthPage> {
           contactNumberController.text = widget.product!.contactNumber! ?? '';
           commentsController.text = widget.product!.comments! ?? '';
           data2['deliveryLocation'] = widget.product!.deliveryLocation! ?? '';
-         // widget.product!.items = widget.body[it];
+          // widget.product!.items = widget.body[it];
 
           displayItemDetails();
         });
       });
 
 
+
+
+
+
+      //_selectedIndex = int.parse(orderIdController.text);
+
+
       _selectedOrder = widget.product!;
-      print(_selectedOrder);
-      print('-----selectorder');
+      print('-----orderId');
+      //List<bool> orderId = (_selectedOrder.orderId ?? '') as List<bool>;
+
+      //print(orderId);
+
+
+      //List<bool> _isSelected = List<bool>.filled(orderId.length, false);
+      // print(_isSelected);
+      print('selectinde');
+      print(_selectedIndex);
+
+
+
+      //  _isSelected = orderId;
+
+      print(_isSelected);
+      //_selectedIndex = _selectedOrder.orderId;
+      // print(_selectedOrder.orderId);
+      // _selectedIndex = int.tryParse(_selectedOrder.orderId ?? '') ?? 0;
+      // print('-----selectorder');
+      // print(_selectedIndex);
     } else {
       print('Product is null');
-    //  deliveryAddressController.text = widget.product!.deliveryAddress! ?? '';
+      //  deliveryAddressController.text = widget.product!.deliveryAddress! ?? '';
 
 //
 //    _selectedOrder = widget.product!;
@@ -262,12 +457,12 @@ class _SixthPageState extends State<SixthPage> {
 
   @override
   void dispose() {
-    _orderIdController.removeListener(_fetchOrders);
+    //   _orderIdController.removeListener(_fetchOrders);
     _dateController.dispose();
 
     super.dispose();
   }
-
+//this is the original
   Future<void> _fetchOrders() async {
     setState(() {
       _loading = true;
@@ -275,7 +470,7 @@ class _SixthPageState extends State<SixthPage> {
       _errorMessage = ''; // clear the error message
     });
     try {
-      final orderId = _orderIdController.text
+      final orderId = orderIdController.text
           .trim(); // trim to remove whitespace
       final url = orderId.isEmpty
           ? 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'
@@ -290,6 +485,8 @@ class _SixthPageState extends State<SixthPage> {
 
       if (response.statusCode == 200) {
         final responseBody = response.body;
+        print('-res--');
+        print(responseBody);
         if (responseBody != null) {
           final jsonData = jsonDecode(responseBody).cast<
               Map<dynamic, dynamic>>();
@@ -321,6 +518,40 @@ class _SixthPageState extends State<SixthPage> {
       });
     }
   }
+
+  Future<void> _fetchOrderDetails(String orderId) async {
+    try {
+      final url = 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/search_by_orderid/$orderId';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token', // Replace with your API key
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        if (responseBody != null) {
+          final jsonData = jsonDecode(responseBody);
+          if (jsonData is List<dynamic>) {
+            final jsonObject = jsonData.first;
+            final orderDetails = OrderDetail.fromJson(jsonObject);
+            _showProductDetails(orderDetails);
+          } else {
+            print('Failed to load order details');
+          }
+        } else {
+          print('Failed to load order details');
+        }
+      } else {
+        print('Failed to load order details');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
 
   // Future<void> _fetchOrders() async {
   //   if (_formKey.currentState!.validate()) {
@@ -755,8 +986,8 @@ class _SixthPageState extends State<SixthPage> {
                                   PageRouteBuilder(
                                     pageBuilder:
                                         (context, animation, secondaryAnimation) =>
-                                    const Dashboard(
-                
+                                    const DashboardPage(
+
                                     ),
                                     transitionDuration:
                                     const Duration(milliseconds: 200),
@@ -769,7 +1000,7 @@ class _SixthPageState extends State<SixthPage> {
                                     },
                                   ),
                                 );
-                
+
                                 // Navigator.pushReplacementNamed(
                                 //     context, PageName.dashboardRoute);
                                 // context
@@ -944,7 +1175,7 @@ class _SixthPageState extends State<SixthPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const Orderspage()),
+                                        const Orderspage()),
                                   );
                                 },
                               ),
@@ -959,6 +1190,46 @@ class _SixthPageState extends State<SixthPage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
+             //              TextFormField(
+             //                 decoration: InputDecoration(
+             //                   labelText: 'Order ID',
+             //                   border: OutlineInputBorder(),
+             //             ),
+             //               ),
+             //     SizedBox(height: 10), // add some space between the text fields
+             // TextFormField(
+             //   controller: orderIdController,
+             //   decoration: InputDecoration(
+             //     labelText: 'Enter Order ID',
+             //     border: OutlineInputBorder(),
+             //   ),
+             // ),
+             //                  TextField(
+             //                    controller: orderIdController,
+             //                    decoration: InputDecoration(
+             //                      labelText: 'Order ID',
+             //                      border: OutlineInputBorder(),
+             //                    ),
+             //                  ),
+             //                  TextField(
+             //                    controller: contactPersonController,
+             //                    decoration: InputDecoration(
+             //                      labelText: 'Enter some text',
+             //                      border: OutlineInputBorder(),
+             //                    ),
+             //                  ),
+                              // TextField(
+                              //   c
+                              //     (orderIdController.text)),
+                              // SizedBox(width: 30,),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 150),
+                                child: Text('Order ID :',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                              ),
+                            SizedBox(width:8),
+                          Text((orderIdController.text),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                            //  Text(orderIdController.text),
+                              SizedBox(width: 10,),
                               const Spacer(),
                               Padding(
                                 padding: const EdgeInsets.only(right: 30),
@@ -988,13 +1259,18 @@ class _SixthPageState extends State<SixthPage> {
                                     print('sixthpage from');
                                     print(data);
                                     context.go('/Edit_Order', extra: data);
+                                    Map<String, dynamic> orderDetailsMap = widget.orderDetails!.map((e) => e.toJson()).toList().asMap().cast<String, String>();
+
                                     Navigator.push(
                                       context,
                                       PageRouteBuilder(
                                         pageBuilder: (context, animation,
                                             secondaryAnimation) =>
                                             SelectedProductPage(
-                                              data: data, selectedProducts: const [],),
+                                              data: data,
+                                              selectedProducts: const [],
+                                              orderDetails: orderDetailsMap,
+                                            ),
                                         transitionDuration:
                                         const Duration(milliseconds: 200),
                                         transitionsBuilder: (context, animation,
@@ -1037,7 +1313,7 @@ class _SixthPageState extends State<SixthPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const EighthPage()),
+                                          const EighthPage()),
                                     );
                                   },
                                   style: OutlinedButton.styleFrom(
@@ -1110,7 +1386,7 @@ class _SixthPageState extends State<SixthPage> {
                                   padding: const EdgeInsets.only(
                                       left: 15, right: 15, bottom: 5),
                                   child: TextFormField(
-                                    controller: _orderIdController,
+                                    //controller: _orderIdController,
                                     // Assign the controller to the TextFormField
                                     decoration: const InputDecoration(
                                       // labelText: 'Order ID',
@@ -1119,6 +1395,11 @@ class _SixthPageState extends State<SixthPage> {
                                       border: OutlineInputBorder(),
                                       prefixIcon: Icon(Icons.search_outlined),
                                     ),
+                                    onChanged: (value) {
+                                         setState(() {
+                                            _searchText = value.toLowerCase();
+                                          });
+                                       },
                                   ),
                                 ),
                               ),
@@ -1126,32 +1407,52 @@ class _SixthPageState extends State<SixthPage> {
                               Column(
                                 children: [
                                   _loading
-                                      ? Center(child: CircularProgressIndicator(
-                                      value: _loading ? null : 0, strokeWidth: 4))
+                                      ? Center(child: CircularProgressIndicator(strokeWidth: 4))
                                       : _errorMessage.isNotEmpty
                                       ? Center(child: Text(_errorMessage))
-                                      : _orders.isEmpty
+                                      : widget.orderDetails!.isEmpty
                                       ? const Center(child: Text('No product found'))
                                       : ListView.separated(
                                     shrinkWrap: true,
-                                    itemCount: _orders.length,
+                                    itemCount: _searchText.isNotEmpty
+                                        ? widget.orderDetails!.where((orderDetail) =>
+                                    orderDetail.orderId.toLowerCase().contains(_searchText.toLowerCase()) ||
+                                        orderDetail.orderDate.toLowerCase().contains(_searchText.toLowerCase())
+                                    ).length
+                                        : widget.orderDetails!.length,
                                     itemBuilder: (context, index) {
-                                      final order = _orders[index];
+                                      final isSelected = _isSelected[index];
+                                      final orderDetail = _searchText.isNotEmpty
+                                          ? widget.orderDetails!.where((orderDetail) =>
+                                      orderDetail.orderId.toLowerCase().contains(_searchText.toLowerCase()) ||
+                                          orderDetail.orderDate.toLowerCase().contains(_searchText.toLowerCase())
+                                      ).elementAt(index)
+                                          : widget.orderDetails![index];
+
                                       return GestureDetector(
-                                        onTap: () {
-                                          _showProductDetails(index);
+                                        onTap: () async {
+                                          setState(() {
+                                            for (int i = 0; i < _isSelected.length; i++) {
+                                              _isSelected[i] = i == index;
+                                            }
+                                            orderIdController.text = orderDetail.orderId;
+                                          });
+                                          await _fetchOrderDetails(orderDetail.orderId);
+                                          //in this place write api to fetch datas?? _showProductDetails(orderDetail);
                                         },
-                                        child: Container(
+                                        child: AnimatedContainer(
+                                          duration: Duration(milliseconds: 200),
                                           decoration: BoxDecoration(
-                                            color: _selectedOrder?.orderId ==
-                                                order['orderId']
-                                                ? Colors.lightBlue[200]
-                                                : Colors.white,
+                                            color: isSelected ? Colors.lightBlue : Colors.white,
                                           ),
                                           child: ListTile(
-                                            title: Text('Order #${order['orderId']}'),
-                                            subtitle: Text(
-                                                'Order Date: ${order['orderDate']}'),
+                                            title: Text('Order ID: ${orderDetail.orderId}'),
+                                            subtitle: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Order Date: ${orderDetail.orderDate}'),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       );
@@ -1160,55 +1461,15 @@ class _SixthPageState extends State<SixthPage> {
                                       return const Divider();
                                     },
                                   ),
-                                  //corrected code for coming in the first place
-                                  // _loading
-                                  //     ? Center(child: CircularProgressIndicator(
-                                  //     value: _loading? null : 0, strokeWidth: 4))
-                                  //     : _errorMessage.isNotEmpty
-                                  //     ? Center(child: Text(_errorMessage))
-                                  //     : _orders.isEmpty
-                                  //     ? Center(child: Text('No product found'))
-                                  //     : ListView.separated(
-                                  //   shrinkWrap: true,
-                                  //   itemCount: _orders.length,
-                                  //   itemBuilder: (context, index) {
-                                  //     final order = _orders[index];
-                                  //     bool isSelected = _selectedOrder.orderId == order['orderId'];
-                                  //     return GestureDetector(
-                                  //       onTap: () {
-                                  //         setState(() {
-                                  //           _orders.remove(order);
-                                  //           _orders.insert(0, order);
-                                  //           _selectedOrder = order as detail;
-                                  //         });
-                                  //         _showProductDetails(index);
-                                  //       },
-                                  //       child: AnimatedContainer(
-                                  //         duration: Duration(milliseconds: 500),
-                                  //         decoration: BoxDecoration(
-                                  //           color: isSelected
-                                  //               ? Colors.lightBlue[200]
-                                  //               : Colors.white,
-                                  //         ),
-                                  //         child: ListTile(
-                                  //           title: Text('Order #${order['orderId']}'),
-                                  //           subtitle: Text('Order Date: ${order['orderDate']}'),
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  //   separatorBuilder: (context, index) {
-                                  //     return const Divider();
-                                  //   },
-                                  // ),
                                 ],
-                              ),
+                              )
+
                             ],
-                    
+
                           ),
                         ),
                       ),
-                    
+
                     ),
                     // Padding(
                     //   padding: const EdgeInsets.only(top: 43, left: 200),
@@ -2183,19 +2444,19 @@ class _SixthPageState extends State<SixthPage> {
                                             const TextSpan(
                                               text:  'Total',
                                               style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blue
+                                                  fontSize: 14,
+                                                  color: Colors.blue
                                                 // fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                    const TextSpan(
-                                            text: '  ₹',
-                                            style: TextStyle(
-                                              color: Colors.black,
+                                            const TextSpan(
+                                              text: '  ₹',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
                                             ),
-                                          ),
-                                             TextSpan(
-                                               text:
+                                            TextSpan(
+                                              text:
                                               totalController.text,
                                               style: const TextStyle(
                                                 color: Colors.black,
@@ -2259,14 +2520,14 @@ class _SixthPageState extends State<SixthPage> {
                             //     ],
                             //   ),
                             // ),
-                    
-                    
+
+
                           ],
                         ),
                       ),
                     )
-                
-                
+
+
                   ],
                 ),
               );
@@ -2277,16 +2538,17 @@ class _SixthPageState extends State<SixthPage> {
     );
   }
 
-  void _showProductDetails(int index) {
-    final selectedOrderDetails = _orders[index];
+  void _showProductDetails(OrderDetail selectedOrderDetails) {
+    //final selectedOrderDetails = widget.orderDetails![selectedOrderDetails];
+    //final selectedOrderDetails = _orders[index];
     print('Selected Order:');
-    print('Order ID: ${selectedOrderDetails['orderId']}');
-    print('Order Date: ${selectedOrderDetails['orderDate']}');
-    print('Contact Person: ${selectedOrderDetails['contactPerson']}');
-    print('Delivery Location: ${selectedOrderDetails['deliveryLocation']}');
-    print('total: ${selectedOrderDetails['total']}');
+    print('Order ID: ${selectedOrderDetails.orderId}');
+    print('Order Date: ${selectedOrderDetails.orderDate}');
+    print('Contact Person: ${selectedOrderDetails.contactPerson}');
+    print('Delivery Location: ${selectedOrderDetails.deliveryLocation}');
+    print('total: ${selectedOrderDetails.total}');
 
-    data2['deliveryLocation'] = selectedOrderDetails['deliveryLocation'];
+    data2['deliveryLocation'] = selectedOrderDetails.deliveryLocation;
     print('--------deliver');
     print(data2['deliveryLocation']);
 
@@ -2338,29 +2600,29 @@ class _SixthPageState extends State<SixthPage> {
     // }
     //
     print(productNameController.text);
-    CreatedDateController.text = _orders[index]['orderDate'];
-    orderIdController.text = _orders[index]['orderId'];
-    deliveryLocationController.text = _orders[index]['deliveryLocation'];
-    contactPersonController.text = _orders[index]['contactPerson'];
-    deliveryAddressController.text = _orders[index]['deliveryAddress'];
-    contactNumberController.text = _orders[index]['contactNumber'];
-    commentsController.text = _orders[index]['comments'];
-    totalController.text = _orders[index]['total'].toString();
+    CreatedDateController.text = selectedOrderDetails.orderDate!;
+    orderIdController.text = selectedOrderDetails.orderId!;
+    deliveryLocationController.text = selectedOrderDetails.deliveryLocation!;
+    contactPersonController.text = selectedOrderDetails.contactPerson!;
+    deliveryAddressController.text = selectedOrderDetails.deliveryAddress!;
+    contactNumberController.text = selectedOrderDetails.contactNumber!;
+    commentsController.text = selectedOrderDetails.comments!;
+    totalController.text = selectedOrderDetails.total.toString()!;
     // contactPersonController.text = _orders[index]['orderDate'];
-    deliveryLocationController.text = _orders[index]['deliveryLocation'];
+    // deliveryLocationController.text = _orders[selectedOrderDetails]['deliveryLocation'];
     print('------------devli');
     print(data2['deliveryLocation']);
-    final selectedOrder = _orders[index];
+    final selectedOrder = selectedOrderDetails;
     setState(() {
-      selectedItems = List<Map<String, dynamic>>.from(selectedOrder['items']);
+      selectedItems = List<Map<String, dynamic>>.from(selectedOrder.items);
     });
 
     print('Selected Order:');
-    print('Order ID: ${selectedOrder['orderId']}');
-    print('Order Date: ${selectedOrder['orderDate']}');
-    print('Contact Person: ${selectedOrder['contactPerson']}');
-    print('Delivery Location: ${selectedOrder['deliveryLocation']}');
-    print('total: ${selectedOrder['total']}');
+    print('Order ID: ${selectedOrder.orderId}');
+    print('Order Date: ${selectedOrder.orderDate}');
+    print('Contact Person: ${selectedOrder.contactPerson}');
+    print('Delivery Location: ${selectedOrder.deliveryLocation}');
+    print('total: ${selectedOrder.total}');
 
     for (var item in selectedItems) {
       print('Product Name: ${item['productName']}');
@@ -2375,6 +2637,8 @@ class _SixthPageState extends State<SixthPage> {
       // Add more fields to print as needed
     }
   }
+
+
 
   void _showDatePicker(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -2496,3 +2760,42 @@ class _SixthPageState extends State<SixthPage> {
   }
 
 }
+
+class OrderDetails {
+  String orderId;
+  String orderDate;
+  String contactPerson;
+  String deliveryLocation;
+  double total;
+  List<OrderItem> items;
+
+  OrderDetails({
+    required this.orderId,
+    required this.orderDate,
+    required this.contactPerson,
+    required this.deliveryLocation,
+    required this.total,
+    required this.items,
+  });
+}
+
+class OrderItem {
+  String productName;
+  double price;
+  int qty;
+  String category;
+  String subCategory;
+  double totalAmount;
+  String orderMasterItemId;
+
+  OrderItem({
+    required this.productName,
+    required this.price,
+    required this.qty,
+    required this.category,
+    required this.subCategory,
+    required this.totalAmount,
+    required this.orderMasterItemId,
+  });
+}
+

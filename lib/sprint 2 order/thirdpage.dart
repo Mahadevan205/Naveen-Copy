@@ -812,7 +812,7 @@ class OrderPage3State extends State<OrderPage3> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                    const Dashboard(
+                    const DashboardPage(
 
                     ),
                     transitionDuration: const Duration(milliseconds: 200),

@@ -1458,6 +1458,8 @@ class _FifthPageState extends State<FifthPage> {
   Timer? _searchDebounceTimer;
   double _total = 0.0;
   String _searchText = '';
+  late Future<List<detail>> futureOrders;
+  String searchQuery = '';
   final String _category = '';
   final List<String> list = ['  Name 1', '  Name 2', '  Name3'];
   bool isOrdersSelected = false;
@@ -1465,6 +1467,7 @@ class _FifthPageState extends State<FifthPage> {
   final TextEditingController commentsController = TextEditingController();
 
   final TextEditingController totalAmountController = TextEditingController();
+  List<detail>filteredData= [];
 
   final TextEditingController totalController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
@@ -1482,10 +1485,13 @@ class _FifthPageState extends State<FifthPage> {
   int startIndex = 0;
   List<Product> filteredProducts = [];
   int currentPage = 1;
+  List<dynamic> detailJson =[];
   String? dropdownValue1 = 'Filter I';
   List<Product> productList = [];
   String token = window.sessionStorage["token"] ?? " ";
   String? dropdownValue2 = 'Filter II';
+  String status= '';
+  String selectDate ='';
 
   void onSearchTextChanged(String text) {
     if (_searchDebounceTimer != null) {
@@ -1502,11 +1508,12 @@ class _FifthPageState extends State<FifthPage> {
   void initState() {
     super.initState();
     _dateController = TextEditingController();
+    futureOrders = fetchOrders() as Future<List<detail>>;
 
-    commentsController.text = widget.data?['Comments'] ?? '';
-    deliveryAddressController.text = widget.data?['Address'] ?? '';
-    contactNumberController.text = widget.data?['ContactNumber'] ?? '';
-    contactPersonController.text = widget.data?['ContactName'] ?? '';
+    commentsController.text = widget.data['Comments'] ?? '';
+    deliveryAddressController.text = widget.data['Address'] ?? '';
+    contactNumberController.text = widget.data['ContactNumber'] ?? '';
+    contactPersonController.text = widget.data['ContactName'] ?? '';
     print('------------dadf');
 
     _calculateTotal();
@@ -1518,6 +1525,29 @@ class _FifthPageState extends State<FifthPage> {
     // totalAmountController.text = data2['totalAmount'];
     print(widget.selectedProducts);
     // print(showProducts);
+  }
+
+
+  Future<List<detail>> fetchOrders() async {
+    final response = await http.get(
+      Uri.parse(
+          'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        // Add the token to the Authorization header
+      },
+    );
+    if (response.statusCode == 200) {
+      detailJson = json.decode(response.body);
+      List<detail> filteredData = detailJson.map((json) => detail.fromJson(json)).toList();
+      if (_searchText.isNotEmpty) {
+        print(_searchText);
+        filteredData = filteredData.where((detail) => detail.orderId!.toLowerCase().contains(_searchText.toLowerCase())).toList();
+      }
+      return filteredData;
+    } else {
+      throw Exception('Failed to load orders');
+    }
   }
 
 
@@ -1601,6 +1631,11 @@ class _FifthPageState extends State<FifthPage> {
            'item': items,
            'body': body,
            'itemsList': items,
+           'orderDetails': filteredData.map((detail) => OrderDetail(
+             orderId: detail.orderId,
+             orderDate: detail.orderDate, items: [],
+             // Add other fields as needed
+           )).toList(),
          });
         // context.go('/Place_Order/Order_List', extra: {
         //   'product': details,
@@ -1608,17 +1643,77 @@ class _FifthPageState extends State<FifthPage> {
         //   'body': body,
         //   'itemsList': items,
         // });
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => SixthPage(
-              product: details,
-              item: items,
-              body: body,
-              itemsList: items,
+
+        Future<void> navigateToNextPage() async {
+          // Call the API to fetch the orders
+          final orders = await fetchOrders();
+
+          // Update filteredData with the latest data
+          setState(() {
+            filteredData = orders.where((element) {
+              final matchesSearchText= element.orderId!.toLowerCase().contains(searchQuery.toLowerCase());
+              print('-----');
+              print(element.orderDate);
+              String orderYear = '';
+              if (element.orderDate.contains('/')) {
+                final dateParts = element.orderDate.split('/');
+                if (dateParts.length == 3) {
+                  orderYear = dateParts[2]; // Extract the year
+                }
+              }
+              // final orderYear = element.orderDate.substring(5,9);
+              if (status.isEmpty && selectDate.isEmpty) {
+                return matchesSearchText; // Include all products that match the search text
+              }
+              if(status == 'Status' && selectDate == 'SelectYear'){
+                return matchesSearchText;
+              }
+              if(status == 'Status' &&  selectDate.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if(selectDate == 'SelectYear' &&  status.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if (status == 'Status' && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+              if (status.isNotEmpty && selectDate == 'SelectYear') {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              if (status.isEmpty && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+
+              if (status.isNotEmpty && selectDate.isEmpty) {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              return matchesSearchText &&
+                  (element.status == _category && element.orderDate == selectDate);
+              //  return false;
+            }).toList();
+          });
+
+          // Navigate to the next page
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => SixthPage(
+                product: details,
+                item: items,
+                body: body,
+                itemsList: items,
+                orderDetails: filteredData.map((detail) => OrderDetail(
+                  orderId: detail.orderId,
+                  orderDate: detail.orderDate, items: [],
+                  // Add other fields as needed
+                )).toList(),
+              ),
             ),
-          ),
-        );
+          );
+        }
+        navigateToNextPage();
       } else {
         print('Failed to create detail object, not navigating to SixthPage');
       }
@@ -1964,7 +2059,7 @@ class _FifthPageState extends State<FifthPage> {
                                   PageRouteBuilder(
                                     pageBuilder:
                                         (context, animation, secondaryAnimation) =>
-                                    const Dashboard(
+                                    const DashboardPage(
 
                                     ),
                                     transitionDuration:
@@ -3077,7 +3172,7 @@ class _FifthPageState extends State<FifthPage> {
                                                     ),
                                                   ],
                                                 ),
-                                                )
+                                                ),
                                                 // Text(
                                                 //   'Total',
                                                 //   style: TextStyle(
@@ -3092,6 +3187,7 @@ class _FifthPageState extends State<FifthPage> {
                                                 //     color: Colors.black,
                                                 //   ),
                                                 // ),
+                                                buildDataTable(),
                                               ],
                                             ),
                                           ),
@@ -3171,9 +3267,6 @@ class _FifthPageState extends State<FifthPage> {
                       ),
                     )
 
-
-
-
                   ],
                 );
 
@@ -3183,6 +3276,82 @@ class _FifthPageState extends State<FifthPage> {
 
       ),
     );
+  }
+
+  Widget buildDataTable() {
+    return LayoutBuilder(builder: (context, constraints){
+      double right = constraints.maxWidth;
+
+      return FutureBuilder<List<detail>>(
+        future: futureOrders,
+        builder: (context, snapshot) {
+
+          if (snapshot.hasData) {
+            filteredData = snapshot.data!.where((element) {
+              final matchesSearchText= element.orderId!.toLowerCase().contains(searchQuery.toLowerCase());
+              print('-----');
+              print(element.orderDate);
+              String orderYear = '';
+              if (element.orderDate.contains('/')) {
+                final dateParts = element.orderDate.split('/');
+                if (dateParts.length == 3) {
+                  orderYear = dateParts[2]; // Extract the year
+                }
+              }
+              // final orderYear = element.orderDate.substring(5,9);
+              if (status.isEmpty && selectDate.isEmpty) {
+                return matchesSearchText; // Include all products that match the search text
+              }
+              if(status == 'Status' && selectDate == 'SelectYear'){
+                return matchesSearchText;
+              }
+              if(status == 'Status' &&  selectDate.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if(selectDate == 'SelectYear' &&  status.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if (status == 'Status' && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+              if (status.isNotEmpty && selectDate == 'SelectYear') {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              if (status.isEmpty && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+
+              if (status.isNotEmpty && selectDate.isEmpty) {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              return matchesSearchText &&
+                  (element.status == _category && element.orderDate == selectDate);
+              //  return false;
+            }).toList();
+
+            // Print the details in the console
+            filteredData.forEach((detail) {
+              print('Status: ${detail.status}');
+              print('Order ID: ${detail.orderId}');
+              print('Created Date: ${detail.orderDate}');
+              print('Reference Number: ${detail.referenceNumber}');
+              print('Total Amount: ${detail.total}');
+              print('Delivery Status: ${detail.deliveryStatus}');
+              print('------------------------');
+            });
+
+            // Return an empty Container to not show anything in the UI
+            return Container();
+          } else if (snapshot.hasError) {
+            return Center(child: Text("${snapshot.error}"));
+          }
+
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -3197,3 +3366,4 @@ class _FifthPageState extends State<FifthPage> {
     }
   }
 }
+

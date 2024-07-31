@@ -12,36 +12,31 @@ import '../screen/login.dart';
 import '../sprint 2 order/firstpage.dart';
 import 'package:http/http.dart' as http;
 
-// void main() {
-//   runApp(
-//       MaterialApp(
-//         home: CreateReturn(storeImage: '', imageSizeString: '',),)
-//   );
-// }
 
 
 
-class CreateReturn extends StatefulWidget {
-  final String storeImage;
-  //List<String>? imageSizeString;
-   String? imageSizeString;
+class ReturnView extends StatefulWidget {
+  final ReturnMaster? returnMaster;
+  // final String storeImage;
+  // List<String>? imageSizeString;
+  // String? imageSizeString;
   //Color myColor = Color(0xFF428DFC);
-  final List<dynamic> orderDetails;
-  final List<String> storeImages;
-  final Map<String, dynamic> orderDetailsMap;
-  final List<String> imageSizeStrings;
+  // final List<dynamic> orderDetails;
+  // final List<String> storeImages;
+  // final Map<String, dynamic> orderDetailsMap;
+  // final List<String> imageSizeStrings;
 
-  CreateReturn({super.key, required this.orderDetailsMap,required this.storeImage,this.imageSizeString,required this.imageSizeStrings,required this.storeImages,required this.orderDetails
-  });
+  ReturnView({super.key,required this.returnMaster});
   @override
-  State<CreateReturn> createState() {
-    return _CreateReturnState();
+  State<ReturnView> createState() {
+    return _ReturnViewState();
   }
 }
 
-class _CreateReturnState extends State<CreateReturn> {
+class _ReturnViewState extends State<ReturnView> {
 
   String? _selectedReason;
+  bool isEditing = false;
   final _controller = TextEditingController();
   List<dynamic> _orderDetails = [];
   String _enteredValues = '';
@@ -69,108 +64,6 @@ class _CreateReturnState extends State<CreateReturn> {
 
 
 
-  Future<void> addReturnMaster() async {
-    final apiUrl = 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/return_master/add_return_master';
-    // final token = ''; // Replace with your actual token
-
-    final headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json'
-    };
-
-    List<Map<String, dynamic>> items = [];
-
-    for (var item in _orderDetails) {
-      if(item['enteredQty'] != null ){
-        items.add({
-          "category": item['category'],
-          "creditRequest": item['totalAmount2'],
-          "imageId": widget.imageSizeString,
-          "invoiceAmount": item['totalAmount'],
-          "price": item['price'],
-          "productName": item['productName'],
-          "qty": item['qty'],
-          "returnQty": item['enteredQty'],
-          "subCategory": item['subCategory'],
-        });
-      }
-
-
-
-    }
-
-    final requestBody = {
-      "contactPerson": ContactpersonController.text,
-      "email": EmailAddressController.text,
-      "invoiceNumber": _controller.text,
-      "notes": NotesController.text,
-      "reason": _selectedReason,
-      "totalCredit": totalController.text,
-      "items": items,
-    };
-
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: headers,
-      body: jsonEncode(requestBody),
-    );
-
-    if (response.statusCode == 200) {
-      print('Return Master added successfully');
-      final responseBody = jsonDecode(response.body);
-          final returnId = responseBody['id'];
-
-      await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-            return AlertDialog(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-
-              ),
-             icon:  const Icon(
-               Icons.check_circle_rounded,
-               color: Colors.green,
-               size: 25,
-             ),
-             title: Padding(
-               padding: const EdgeInsets.only(left: 12),
-               child: Text('Return Created Successfully',style: TextStyle(fontSize:15 ),),
-             ),
-           content: Padding(
-             padding: const EdgeInsets.only(left: 25),
-             child: Text('Your return ID is: $returnId'),
-           ),
-           actions: <Widget>[
-             ElevatedButton(
-               child: Text('OK'),
-               onPressed: () {
-                // Navigator.of(context).pop(); // close the alert dialog
-                 Navigator.push(
-                   context,
-                   PageRouteBuilder(
-                     pageBuilder: (context, animation, secondaryAnimation) =>
-                     const Returnpage(),
-                     transitionDuration: const Duration(milliseconds: 200),
-                     transitionsBuilder:
-                         (context, animation, secondaryAnimation, child) {
-                       return FadeTransition(
-                         opacity: animation,
-                         child: child,
-                       );
-                     },
-                   ),
-                 );
-               },
-             ),
-           ],
-         );
-       },
-     );
-    } else {
-      print('Error: ${response.statusCode}');
-    }
-  }
 
   Future<void> _fetchOrderDetails() async {
     final orderId = _controller.text.trim();
@@ -219,37 +112,18 @@ class _CreateReturnState extends State<CreateReturn> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print('ontap');
+    print(widget.returnMaster!.status);
 
-    print('----design');
-    print(widget.orderDetailsMap);
-    print(widget.orderDetailsMap['emailAddress']);
-    print(widget.orderDetailsMap['reason']);
+    //widget.returnMaster!.invoiceNumber =
 
-    if(_reasonController.text.isEmpty){
-      _reasonController.text.isEmpty ? 'Reason for return' : _reasonController.text;
-    }
-
-
-    if(widget.storeImage == 'hi'){
-      EmailAddressController.text = widget.orderDetailsMap['emailAddress'];
-      ContactpersonController.text = widget.orderDetailsMap['contactPerson'];
-      _selectedReason = widget.orderDetailsMap['reason'];
-      _controller.text =widget.orderDetailsMap['otherField'];
-      _orderDetails = widget.orderDetailsMap['orderDetails'];
-      totalController.text = widget.orderDetailsMap['totalAmount2'];
-      NotesController.text = widget.orderDetailsMap['notes'];
-
-      // =;
-
-      //print(orderDetailsMap);
-      print('--dropdown value');
-      print(widget.imageSizeString);
-      print(widget.imageSizeStrings);
-      print(widget.storeImages);
-
-      //calculateTotal();
-
-    }
+        _controller.text = widget.returnMaster!.invoiceNumber!;
+        _selectedReason = widget.returnMaster!.reason!;
+        ContactpersonController.text = widget.returnMaster!.contactPerson!;
+        EmailAddressController.text = widget.returnMaster!.email!;
+        NotesController.text = widget.returnMaster!.notes!;
+        _orderDetails = widget.returnMaster!.items;
+        totalController.text = widget.returnMaster!.totalCredit.toString();
 
   }
 
@@ -536,21 +410,9 @@ class _CreateReturnState extends State<CreateReturn> {
                                     context.go('/dashboard/return/:return');
                                     Navigator.push(
                                       context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                            secondaryAnimation) =>
-                                        const Returnpage(
-                                        ),
-                                        transitionDuration:
-                                        const Duration(milliseconds: 200),
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                          const Returnpage()),
                                     );
                                   },
                                 ),
@@ -563,38 +425,6 @@ class _CreateReturnState extends State<CreateReturn> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Spacer(),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, right: 90),
-                                    child: OutlinedButton(
-                                      onPressed: () async {
-                                        await addReturnMaster();
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        backgroundColor:
-                                        Colors.blueAccent,
-                                        // Button background color
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              5), // Rounded corners
-                                        ),
-                                        side: BorderSide.none, // No outline
-                                      ),
-                                      child: const Text(
-                                        'Create Return',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w100,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
@@ -641,6 +471,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                               SizedBox(
                                                 height: 40,
                                                 child: TextFormField(
+                                                  enabled: isEditing,
                                                   controller: _controller,
                                                   onEditingComplete: _fetchOrderDetails,
                                                   decoration: InputDecoration(
@@ -686,10 +517,12 @@ class _CreateReturnState extends State<CreateReturn> {
                                                       _selectedReason = value!;
                                                       _reasonController.text = value;
                                                     });
+
                                                   },
                                                   items: list.map<DropdownMenuItem<String>>((String value) {
                                                     return DropdownMenuItem<String>(
                                                       value: value,
+                                                      enabled: isEditing,
                                                       child: Text(value),
                                                     );
                                                   }).toList(),
@@ -779,6 +612,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                               SizedBox(
                                                 height: 40,
                                                 child: TextFormField(
+                                                  enabled: isEditing,
                                                   controller: ContactpersonController,
                                                   decoration:  InputDecoration(
                                                       filled: true,
@@ -807,6 +641,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                               SizedBox(
                                                 height: 40,
                                                 child: TextFormField(
+                                                  enabled: isEditing,
                                                   controller: EmailAddressController,
                                                   decoration:  InputDecoration(
                                                       filled: true,
@@ -1142,16 +977,17 @@ class _CreateReturnState extends State<CreateReturn> {
                                     physics: const NeverScrollableScrollPhysics(),
                                     itemCount: _orderDetails.length,
                                     itemBuilder: (context, index) {
-                                      Map<String, dynamic> item = _orderDetails[index];
+                                      // if (widget.returnMaster == null) return Container(); // or some other placeholder
+                                      //     Map<String, dynamic> item = widget.returnMaster!.items[index] as Map<String, dynamic>;
                                       return Table(
                                         border: TableBorder.all(color: Colors.blue),
                                         //  Color(0xFFFFFFFF)
                                         columnWidths: {
                                           0: FlexColumnWidth(1),
                                           1: FlexColumnWidth(3),
-                                          2: FlexColumnWidth(2),
-                                          3: FlexColumnWidth(2),
-                                          4: FlexColumnWidth(2),
+                                           2: FlexColumnWidth(2),
+                                           3: FlexColumnWidth(2),
+                                           4: FlexColumnWidth(2),
                                           5: FlexColumnWidth(1),
                                           6: FlexColumnWidth(1.2),
                                           7: FlexColumnWidth(2),
@@ -1180,7 +1016,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['productName'],textAlign: TextAlign.center,)),
+                                                      child: Center(child: Text(_orderDetails[index].productName,textAlign: TextAlign.center,)),
                                                     ),
                                                   ),
                                                 ),
@@ -1194,7 +1030,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['category'],textAlign: TextAlign.center,)),
+                                                      child: Center(child: Text(_orderDetails[index].category,textAlign: TextAlign.center,)),
                                                     ),
                                                   ),
                                                 ),
@@ -1208,7 +1044,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['subCategory'])),
+                                                      child: Center(child: Text(_orderDetails[index].subCategory)),
                                                     ),
                                                   ),
                                                 ),
@@ -1222,7 +1058,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['price'].toString())),
+                                                      child: Center(child: Text(_orderDetails[index].price.toString())),
                                                     ),
                                                   ),
                                                 ),
@@ -1236,7 +1072,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['qty'].toString())),
+                                                      child: Center(child: Text(_orderDetails[index].qty.toString())),
                                                     ),
                                                   ),
                                                 ),
@@ -1252,76 +1088,77 @@ class _CreateReturnState extends State<CreateReturn> {
                                                       ),
                                                       child: Center(
                                                         child: TextFormField(
-                                                          initialValue: (item['enteredQty']?? '').toString(),
+                                                          initialValue: (_orderDetails[index].returnQty.toString()),
+                                                          enabled: isEditing,
                                                           textAlign: TextAlign.center, // Center alignment
-                                                          decoration: InputDecoration(
+                                                          decoration: const InputDecoration(
                                                               border: InputBorder.none, // Remove underline
-                                                              contentPadding: EdgeInsets.only(
-                                                                  bottom: 12
-                                                              )
-                                                              //contentPadding: EdgeInsets.symmetric(vertical: 5,horizontal: 8) // Set content padding
+                                      contentPadding: EdgeInsets.only(
+                                                                 bottom: 12
+                                                             )
+                                                              //contentPadding: EdgeInsets.symmetric(vertical: 5,horizontal: 2) // Set content padding
                                                           ),
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              if (value.isEmpty) {
-                                                                item['enteredQty'] = 0;
-                                                                item['totalAmount2'] = 0;
-                                                              } else {
-                                                                item['enteredQty'] = int.parse(value);
-                                                                if (item['enteredQty'] > (item['qty']?? 0)) {
-                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                    SnackBar(content: Text('Please enter a valid quantity')),
-                                                                  );
-                                                                } else {
-                                                                  item['totalAmount2'] = item['price'] * item['enteredQty'];
-                                                                }
-                                                              }
-                                                              // calculate the total amount
-                                                              totalAmount = _orderDetails.fold(0.0, (sum, item) => sum + (item['totalAmount2']?? 0));
-                                                              totalController.text = totalAmount.toStringAsFixed(2); // update the totalController
-                                                            });
-                                                          },
+                                                          // onChanged: (value) {
+                                                          //   setState(() {
+                                                          //     if (value.isEmpty) {
+                                                          //       item['enteredQty'] = 0;
+                                                          //       item['totalAmount2'] = 0;
+                                                          //     } else {
+                                                          //       item['enteredQty'] = int.parse(value);
+                                                          //       if (item['enteredQty'] > (item['qty']?? 0)) {
+                                                          //         ScaffoldMessenger.of(context).showSnackBar(
+                                                          //           SnackBar(content: Text('Please enter a valid quantity')),
+                                                          //         );
+                                                          //       } else {
+                                                          //         item['totalAmount2'] = item['price'] * item['enteredQty'];
+                                                          //       }
+                                                          //     }
+                                                          //     // calculate the total amount
+                                                          //     totalAmount = _orderDetails.fold(0.0, (sum, item) => sum + (item['totalAmount2']?? 0));
+                                                          //     totalController.text = totalAmount.toStringAsFixed(2); // update the totalController
+                                                          //   });
+                                                          // },
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                                // TableCell(
-                                                //   child: Padding(
-                                                //     padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                                //     child: Container(
-                                                //       height: 35,
-                                                //       width: 50,
-                                                //       decoration: BoxDecoration(
-                                                //         color: Colors.grey[300],
-                                                //         borderRadius: BorderRadius.circular(4.0),
-                                                //       ),
-                                                //       child:TextFormField(
-                                                //         initialValue: (item['enteredQty']?? '').toString(),
-                                                //         onChanged: (value) {
-                                                //           setState(() {
-                                                //             if (value.isEmpty) {
-                                                //               item['enteredQty'] = 0;
-                                                //               item['totalAmount2'] = 0;
-                                                //             } else {
-                                                //               item['enteredQty'] = int.parse(value);
-                                                //               if (item['enteredQty'] > (item['qty']?? 0)) {
-                                                //                 ScaffoldMessenger.of(context).showSnackBar(
-                                                //                   SnackBar(content: Text('Please enter a valid quantity')),
-                                                //                 );
-                                                //               } else {
-                                                //                 item['totalAmount2'] = item['price'] * item['enteredQty'];
-                                                //               }
-                                                //             }
-                                                //             // calculate the total amount
-                                                //             totalAmount = _orderDetails.fold(0.0, (sum, item) => sum + (item['totalAmount2']?? 0));
-                                                //             totalController.text = totalAmount.toStringAsFixed(2); // update the totalController
-                                                //           });
-                                                //         },
-                                                //       ),
-                                                //     ),
-                                                //   ),
-                                                // ),
+                                                // // TableCell(
+                                                // //   child: Padding(
+                                                // //     padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                                // //     child: Container(
+                                                // //       height: 35,
+                                                // //       width: 50,
+                                                // //       decoration: BoxDecoration(
+                                                // //         color: Colors.grey[300],
+                                                // //         borderRadius: BorderRadius.circular(4.0),
+                                                // //       ),
+                                                // //       child:TextFormField(
+                                                // //         initialValue: (item['enteredQty']?? '').toString(),
+                                                // //         onChanged: (value) {
+                                                // //           setState(() {
+                                                // //             if (value.isEmpty) {
+                                                // //               item['enteredQty'] = 0;
+                                                // //               item['totalAmount2'] = 0;
+                                                // //             } else {
+                                                // //               item['enteredQty'] = int.parse(value);
+                                                // //               if (item['enteredQty'] > (item['qty']?? 0)) {
+                                                // //                 ScaffoldMessenger.of(context).showSnackBar(
+                                                // //                   SnackBar(content: Text('Please enter a valid quantity')),
+                                                // //                 );
+                                                // //               } else {
+                                                // //                 item['totalAmount2'] = item['price'] * item['enteredQty'];
+                                                // //               }
+                                                // //             }
+                                                // //             // calculate the total amount
+                                                // //             totalAmount = _orderDetails.fold(0.0, (sum, item) => sum + (item['totalAmount2']?? 0));
+                                                // //             totalController.text = totalAmount.toStringAsFixed(2); // update the totalController
+                                                // //           });
+                                                // //         },
+                                                // //       ),
+                                                // //     ),
+                                                // //   ),
+                                                // // ),
                                                 TableCell(
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
@@ -1332,7 +1169,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['totalAmount'].toString())),
+                                                      child: Center(child: Text(_orderDetails[index].invoiceAmount.toString())),
                                                     ),
                                                   ),
                                                 ),
@@ -1346,7 +1183,7 @@ class _CreateReturnState extends State<CreateReturn> {
                                                         color: Colors.grey[300],
                                                         borderRadius: BorderRadius.circular(4.0),
                                                       ),
-                                                      child: Center(child: Text(item['totalAmount2']!= null? item['totalAmount2'].toString() : '0'),
+                                                      child: Center(child: Text(_orderDetails[index].creditRequest.toString() != null?_orderDetails[index].creditRequest.toString() : '0'),
                                                       ),
                                                     ),
                                                   ),
@@ -1448,72 +1285,8 @@ class _CreateReturnState extends State<CreateReturn> {
                                         ),
                                       ),
                                       Spacer(),
-                                      Padding(
-                                        padding:  EdgeInsets.only(right: 30),
-                                        child: Padding(
-                                          padding:  EdgeInsets.only(left: maxWidth * 0.15),
-                                          child: OutlinedButton.icon(
-                                            icon: Icon(Icons.upload,color: Colors.white,size: 18,),
-                                            label: Text('Upload',style: TextStyle(color: Colors.white,),),
-                                            onPressed: () {
-                                              Map<String, dynamic> orderDetailsMap = {
-                                                'emailAddress': EmailAddressController.text,
-                                                'contactPerson': ContactpersonController.text,
-                                                'reason': _selectedReason,
-                                                'otherField': _controller.text,
-                                                'orderDetails': _orderDetails,
-                                                'totalAmount2': totalController.text,
-                                                'notes': NotesController.text
-                                              };
-                                              print('return design module file');
-                                              print(orderDetailsMap);
-                                              context.go('/Add_Image',extra: {
-                                                'orderDetails': _orderDetails,
-                                                'storeImages': widget.storeImages,
-                                                'imageSizeStrings':widget.imageSizeStrings,
-                                                'orderDetailsMap': orderDetailsMap,
-                                              });
-                                              Navigator.push(
-                                                context,
-                                                PageRouteBuilder(
-                                                  pageBuilder: (context, animation,
-                                                      secondaryAnimation) =>
-                                                   ReturnImage(
-                                                    orderDetails: _orderDetails,
-                                                    storeImages: widget.storeImages,
-                                                    imageSizeStrings: widget.imageSizeStrings,
-                                                    orderDetailsMap: orderDetailsMap,),
-                                                  transitionDuration:
-                                                  const Duration(milliseconds: 200),
-                                                  transitionsBuilder: (context, animation,
-                                                      secondaryAnimation, child) {
-                                                    return FadeTransition(
-                                                      opacity: animation,
-                                                      child: child,
-                                                    );
-                                                  },
-                                                ),
-                                              );
 
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(builder: (context) => NextPage(_orderDetails,storeImages,imageSizeStrings, orderDetails: [],)),
-                                              // );
-                                            },
-                                            style: OutlinedButton.styleFrom(
-                                              backgroundColor:
-                                              Colors.blueAccent,
-                                              // Button background color
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    5), // Rounded corners
-                                              ),
-                                              side: BorderSide.none, // No outline
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+
                                     ],
                                   ),
                                   Divider(
@@ -1523,75 +1296,11 @@ class _CreateReturnState extends State<CreateReturn> {
                                   // Divider(color: Color(0xFF00000029),),
 
                                   SizedBox(height: 8),
+
                                   Column(
-                                    children: [
-                                      if(widget.storeImages != '')
-                                        Column(
-                                          children: List.generate(widget.storeImages.length, (i) {
-                                            return Row(
-                                              // children: [
-                                              //   Icon(Icons.image),
-                                              //   Text('${widget.imageSizeString!}', style: TextStyle(fontSize: 24)),
-                                              //   Padding(
-                                              //     padding: const EdgeInsets.only(left: 1280), // add 10 pixels of space to the left
-                                              //     child: Text('${widget.imageSizeStrings[i]}', style: TextStyle(fontSize: 24)),
-                                              //   ),
-                                              //   IconButton(
-                                              //     icon: Icon(Icons.delete_forever_rounded,color: Colors.deepOrange,),
-                                              //     onPressed: () {
-                                              //       if (i < widget.imageSizeString!.length) {
-                                              //         setState(() {
-                                              //           widget.imageSizeString?.removeAt(i);
-                                              //          // widget.imageSizeString = removeCharAt(widget.imageSizeString!, i);
-                                              //           // Remove from list
-                                              //          // widget.imageSizeStrings.removeAt(i);
-                                              //        });
-                                              //       } else {
-                                              //         setState(() {
-                                              //         ///  widget.imageSizeString = removeCharAt(widget.imageSizeString!, i);
-                                              //           // Remove from list
-                                              //           widget.imageSizeStrings.removeAt(i);
-                                              //         });
-                                              //       }
-                                              //     },
-                                              //   ),
-                                              // ],
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 30),
-                                                  child: Icon(Icons.image,color: Colors.blue,size: 30,),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 15),
-                                                  child: Text('${widget.storeImages[i]}', style: TextStyle(fontSize: 18)),
-                                                ),
-                                                Spacer(),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(right: 30), // add 10 pixels of space to the left
-                                                  child: Text('${widget.imageSizeStrings[i]}', style: TextStyle(fontSize: 18)),
-                                                ),
-                                                IconButton(
-                                                  icon: Icon(Icons.delete_forever_rounded,color: Colors.deepOrange,size: 35,),
-                                                  onPressed: () {
-                                                    if (i < widget.storeImages.length - 0) {
-                                                      setState(() {
-                                                        widget.storeImages.removeAt(i);
-                                                        widget.imageSizeStrings.removeAt(i);
-                                                      });
-                                                    } else {
-                                                      setState(() {
-                                                        widget.storeImages.removeAt(i);
-                                                        widget.imageSizeStrings.removeAt(i - 1);
-                                                      });
-                                                    }
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          }),
-                                        )
-                                    ],
-                                  ),
+                                          children: List.generate(_orderDetails.length, (index) {
+                                          return Text('Image ID: ${_orderDetails[index].imageId}');
+                                         }),)
                                 ],
                               ),
                             ),
@@ -1621,7 +1330,8 @@ class _CreateReturnState extends State<CreateReturn> {
                                     Text('Notes', style: TextStyle(fontWeight: FontWeight.bold)),
                                     SizedBox(height: 8),
                                     TextFormField(
-          controller:  NotesController,
+                                      enabled: isEditing,
+                                      controller: NotesController,
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: Colors.grey.shade200,

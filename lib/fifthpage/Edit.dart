@@ -610,7 +610,7 @@ class _EditOrderState extends State<EditOrder> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Dashboard()),
+                                    builder: (context) => const DashboardPage()),
                               );
                             },
                             icon: Icon(Icons.dashboard,

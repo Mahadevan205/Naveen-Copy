@@ -1205,7 +1205,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                 PageRouteBuilder(
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) =>
-                                  const Dashboard(
+                                  const DashboardPage(
               
                                   ),
                                   transitionDuration:

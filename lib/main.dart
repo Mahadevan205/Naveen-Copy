@@ -23,7 +23,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Product Module/Create Product.dart';
+import 'Return Module/return image.dart';
 import 'Return Module/return module design.dart';
+import 'Return Module/return ontap.dart';
+import 'dashboard new copy.dart';
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   final productProvider = ProductProvider();
@@ -69,11 +72,11 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) =>  DashboardPage(),
       ),
       GoRoute(
         path: '/Orders/dashboard',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/Order_List',
@@ -88,10 +91,41 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const SecondPage(),
       ),
       GoRoute(
+       path: '/return-view',
+   builder: (context, state) {
+      final returnMaster = state.extra as ReturnMaster?;
+      return ReturnView(returnMaster: returnMaster);
+    },
+  ),
+      GoRoute(
+        path: '/Add_Image',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?; // Cast to Map<String, dynamic>
+
+          final orderDetails = extra?['orderDetails'] as List<dynamic>;
+          final storeImages = extra?['storeImages'] as List<String>;
+          final imageSizeStrings = extra?['imageSizeStrings'] as List<String>;
+          final orderDetailsMap = extra?['orderDetailsMap'] as Map<String, dynamic>;
+
+          return ReturnImage(
+            orderDetails: orderDetails,
+            storeImages: storeImages,
+            imageSizeStrings: imageSizeStrings,
+            orderDetailsMap: orderDetailsMap,
+          );
+        },
+      ),
+      GoRoute(
         //remain me to use as last sprint consult wtih krishna sir
         path: '/addproduct/dashboard',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) => const DashboardPage(),
       ),
+  GoRoute(
+  //remain me to use as last sprint consult wtih krishna sir
+  path: '/Return_List',
+  builder: (context, state) => const Returnpage(),
+  ),
+
       GoRoute(
         path: '/dasbaord/productpage/:product',
         builder: (context, state) {
@@ -116,6 +150,7 @@ class MyApp extends StatelessWidget {
               item: [],
               body: {},
               itemsList: [],
+              orderDetails: [],
             );
           } else {
             return SixthPage(
@@ -123,6 +158,7 @@ class MyApp extends StatelessWidget {
               item: List<Map<String, dynamic>>.from(extra['item']),
               body: Map<String, dynamic>.from(extra['body']),
               itemsList: List<Map<String, dynamic>>.from(extra['itemsList']),
+              orderDetails: List<OrderDetail>.from(extra['orderDetails']),
             );
           }
         },
@@ -229,14 +265,21 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: '/Order_List/Documents',
         builder: (context, state) {
-          final extra = state.extra;
+          //final extra = state.extra;
           Map<String, dynamic>? selectedProductsMap;
+          final extra = state.extra as Map<String, dynamic>;
 
           if (extra != null) {
             selectedProductsMap = (extra as Map<String, dynamic>)['selectedProducts'] as Map<String, dynamic>?;
           }
 
-          return SeventhPage(selectedProducts: selectedProductsMap ?? {},product: null,);
+          return SeventhPage(
+            selectedProducts: selectedProductsMap ?? {},
+            product: null,
+            orderId: extra['orderId'] as String,
+            orderDetails: List<OrderDetail>.from(extra['orderDetails']),
+
+          );
         },
       ),
       GoRoute(
@@ -309,6 +352,7 @@ class MyApp extends StatelessWidget {
             item: extra['item'] as List<Map<String, dynamic>>?,
             body: extra['body'] as Map<String, dynamic>,
             itemsList: extra['itemsList'] as List<Map<String, dynamic>>,
+            orderDetails: List<OrderDetail>.from(extra['orderDetails']),
           );
         },
       ),
@@ -358,19 +402,19 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/Orderspage/dasbaord',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/Orderspage/orders/dasbaord',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/Orderspage/create/dasbaord',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/Orderspage/placingorder/dasbaord',
-        builder: (context, state) => const Dashboard(),
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/Orderspage/placingorder/productpage:product',
@@ -484,7 +528,7 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/Order_Return',
-        builder: (context, state) =>  CreateReturn(storeImages: const [],storeImage: '',imageSizeStrings: const [],imageSizeString: const [],orderDetailsMap: const {},orderDetails: const [],),
+        builder: (context, state) =>  CreateReturn(storeImages: const [],storeImage: '',imageSizeStrings: const [],imageSizeString: '',orderDetailsMap: const {},orderDetails: const [],),
       ),
       GoRoute(
         path: '/dasbaord/Orderspage/addproduct/arrowback',

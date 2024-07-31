@@ -294,7 +294,7 @@ class _EighthPageState extends State<EighthPage> {
                                       PageRouteBuilder(
                                         pageBuilder:
                                             (context, animation, secondaryAnimation) =>
-                                        const Dashboard(
+                                        const DashboardPage(
                                         ),
                                         transitionDuration:
                                         const Duration(milliseconds: 200),

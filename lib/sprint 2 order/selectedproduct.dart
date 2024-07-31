@@ -316,7 +316,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
       // Redirect to the next page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SeventhPage(selectedProducts: updatedOrder,product: null,)), // Replace with your next page
+        MaterialPageRoute(builder: (context) => SeventhPage(selectedProducts: updatedOrder,product: null,orderId: '',)), // Replace with your next page
       );
     } else {
       // If the server did not return a 200 OK response,
@@ -354,7 +354,8 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
     _updateOrder(updatedOrder);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SeventhPage(selectedProducts: updatedOrder, product: null,)), // Replace with your next page
+      MaterialPageRoute(builder: (context) => SeventhPage(
+        selectedProducts: updatedOrder, product: null,orderId: '',)), // Replace with your next page
     );
 
   }
@@ -442,7 +443,7 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
                                       PageRouteBuilder(
                                         pageBuilder:
                                             (context, animation, secondaryAnimation) =>
-                                        const Dashboard(
+                                        const DashboardPage(
 
                                         ),
                                         transitionDuration:

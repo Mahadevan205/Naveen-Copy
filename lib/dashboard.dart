@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:math';
 import 'package:btb/Return%20Module/return%20first%20page.dart';
+import 'package:btb/pagination.dart';
 import 'package:btb/sprint%202%20order/sixthpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,36 +17,124 @@ import '../screen/login.dart';
 import '../sprint 2 order/firstpage.dart';
 import 'Product Module/Create Product.dart';
 import 'Product Module/Product Screen.dart';
+import 'dashboard.dart';
 void main() {
-  runApp( const Dashboard());
+  runApp( const DashboardPage());
 }
 
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key,});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key,});
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardPageState extends State<DashboardPage> {
   bool isHomeSelected = false;
   Timer? _searchDebounceTimer;
+  List<Dashboard1> _dashboardData = [];
   String _searchText = '';
   final String _category = '';
   DateTime? _selectedDate;
-  int? orderCount;
- // final appData = AppData();
   late TextEditingController _dateController;
   final String _subCategory = '';
   int startIndex = 0;
+  List<Dashboard1> _filteredData = [];
+  late Future<List<Dashboard1>> futureOrders;
   List<Product> filteredProducts = [];
   int currentPage = 1;
+  String status='';
+  String selectDate='';
+  int _pageSize = 10;
   String? dropdownValue1 = 'Filter I';
-  final _numberNotifier = ValueNotifier<int>(0);
+  int _currentPage = 1;
+  String searchQuery = '';
   List<Product> productList = [];
   String token = window.sessionStorage["token"] ?? " ";
   String? dropdownValue2 = 'Filter II';
-  int? _orderCount;
+  int totalPages = 1;
+  late Future<DashboardCounts> futureDashboardCounts;
+
+
+  Future<List<Dashboard1>> fetchDashboardData() async {
+    final response = await http.get(
+      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/dashboard/get_all_dashboard'),
+      headers: {
+        'Authorization': 'Bearer $token', // Replace with your token
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      totalPages = (data.length / _pageSize).ceil();
+      return  data.map((item) => Dashboard1.fromJson(item)).toList(); // Return the entire list
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+
+  void _loadDashboardData() async {
+    final response = await http.get(
+      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/dashboard/get_all_dashboard'),
+      headers: {
+        'Authorization': 'Bearer $token', // Replace with your token
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      totalPages = (data.length / _pageSize).ceil();
+      setState(() {
+        _dashboardData = data.map((item) => Dashboard1.fromJson(item)).toList();
+        _filteredData = _dashboardData;
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+
+
+  Future<List<Dashboard1>> fetchPaginatedData() async {
+    final response = await fetchDashboardData();
+    return response.sublist(0, _pageSize).map((item) => Dashboard1.fromJson(item as Map<String, dynamic>)).toList();
+  }
+
+  void _goToFirstPage() {
+    if (currentPage > 1) {
+      fetchDashboardData();
+    }
+  }
+
+  void _goToPreviousPage() {
+    print("previos");
+
+    if (currentPage > 1) {
+      setState(() {
+        currentPage--;
+      });
+      fetchDashboardData();
+    }
+  }
+
+  void _goToNextPage() async {
+    print('nextpage');
+    if (currentPage < totalPages) {
+      setState(() {
+        currentPage++;
+      });
+      // Call setState again to rebuild the widget
+    }
+  }
+
+  Future<void> _goToLastPage() async {
+    setState(() {
+      _currentPage = totalPages;
+    });
+    await fetchPaginatedData(); // Wait for the data to be fetched
+    setState(() {}); // Call setState again to rebuild the widget
+  }
 
   void _onSearchTextChanged(String text) {
     if (_searchDebounceTimer != null) {
@@ -58,41 +147,35 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    futureOrders = fetchDashboardData();
+    futureDashboardCounts = _getDashboardCounts();
+    _dateController = TextEditingController();
+    _selectedDate = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+    _dateController.text = formattedDate;
+    fetchProducts(page: currentPage);
+    _loadDashboardData();
 
-  Future<List<detail>> fetchOrders() async {
+
+  }
+
+  Future<DashboardCounts> _getDashboardCounts() async {
     final response = await http.get(
-      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
+      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/dashboard/get_dashboard_counts'),
       headers: {
-        'Authorization': 'Bearer $token', // Add the token to the Authorization header
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> detailJson = json.decode(response.body);
-      return detailJson.map((json) => detail.fromJson(json)).toList();
+      return DashboardCounts.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to load orders');
+      throw Exception('Failed to load dashboard counts');
     }
-  }
-
-
-
-
-
-  @override
-  void initState() {
-    super.initState();
-    _dateController = TextEditingController();
-   fetchOrders().then((orders) {
-    setState(() {
-        orderCount = orders.length;
-        print('order count');
-        print(orderCount);
-      //  _numberNotifier.value = orderCount;
-      });
-   });
-    fetchProducts(page: currentPage);
-
   }
 
   Future<void> fetchProducts({int? page}) async {
@@ -310,7 +393,7 @@ class _DashboardState extends State<Dashboard> {
                                   PageRouteBuilder(
                                     pageBuilder:
                                         (context, animation, secondaryAnimation) =>
-                                     Orderspage(),
+                                    const Orderspage(),
                                     transitionDuration:
                                     const Duration(milliseconds: 200),
                                     transitionsBuilder: (context, animation,
@@ -574,7 +657,7 @@ class _DashboardState extends State<Dashboard> {
                                                       ),
                                                       iconSize: 20,
                                                       onPressed: () {
-                                                        _showDatePicker(context);
+                                                        //  _showDatePicker(context);
                                                       },
                                                     ),
                                                   ),
@@ -605,252 +688,497 @@ class _DashboardState extends State<Dashboard> {
                                 child: Column(
                                   //crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
 
-                                        Card(
-                                          margin:  const EdgeInsets.only(left: 1, top: 20,),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          color: Colors.white,
-                                          elevation: 2, // equivalent to the boxShadow in the original code
-                                          child: Container(
-                                            // height: 140,
-                                            width: maxWidth * 0.15,
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.blue.withOpacity(0.1),
-                                                  spreadRadius: 3,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                    FutureBuilder(
+                                        future: futureDashboardCounts,
+                                        builder: (context, snapshot){
+                                          if(snapshot.hasData){
+                                            return Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 8),
-                                                  child: Image.asset(
-                                                    "images/open.png",
-                                                    width: 35, // Set your desired width
-                                                    height: 35,
+
+                                                Card(
+                                                  margin:  const EdgeInsets.only(left: 1, top: 20,),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  color: Colors.white,
+                                                  elevation: 2, // equivalent to the boxShadow in the original code
+                                                  child: Container(
+                                                    // height: 140,
+                                                    width: maxWidth * 0.15,
+                                                    padding: const EdgeInsets.all(16),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.blue.withOpacity(0.1),
+                                                          spreadRadius: 3,
+                                                          blurRadius: 7,
+                                                          offset: const Offset(0, 3),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8),
+                                                          child: Image.asset(
+                                                            "images/open.png",
+                                                            width: 35, // Set your desired width
+                                                            height: 35,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 10),
+                                                          child: Text('${snapshot.data!.openOrders}',
+                                                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ),
+                                                        const Padding(
+                                                          padding: EdgeInsets.only(left: 10),
+                                                          child: Text(
+                                                            'Open Orders',
+                                                            style:
+                                                            TextStyle(fontSize: 12, color: Colors.grey),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  height: 5,
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top:20),
+                                                  child: Card(
+                                                    // margin:  EdgeInsets.only(left: 600, top: 150),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                    ),
+                                                    color: Colors.white, // Set the color to white
+                                                    elevation: 2, // equivalent to the boxShadow in the original code
+                                                    child: Container(
+                                                      // height: 140,
+                                                      width: maxWidth * 0.15,
+                                                      padding: const EdgeInsets.all(16),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.blue.withOpacity(0.1),
+                                                            spreadRadius: 3,
+                                                            blurRadius: 7,
+                                                            offset: const Offset(0, 3),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 3),
+                                                            child: Image.asset(
+                                                              "images/file.png",
+                                                              width: 35,
+                                                              height: 35,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 10),
+                                                            child: Text('${snapshot.data!.openInvoices}',
+                                                              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                                            ),
+                                                          ),
+                                                          const Padding(
+                                                            padding: EdgeInsets.only(left: 10),
+                                                            child: Text(
+                                                              'Open Invoices',
+                                                              style:
+                                                              TextStyle(fontSize: 12, color: Colors.grey),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                  Padding(
-                                         padding: const EdgeInsets.only(left: 10),
-                                     child: Text('$orderCount', // Display the orderCount data
-                                       style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                                   ),
-                         ),
-                                                const Padding(
-                                                  padding: EdgeInsets.only(left: 10),
-                                                  child: Text(
-                                                    'Open Orders',
-                                                    style:
-                                                    TextStyle(fontSize: 12, color: Colors.grey),
+
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 20),
+                                                  child: Card(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                    ),
+                                                    color: Colors.white, // Set the color to white
+                                                    elevation: 2, // equivalent to the boxShadow in the original code
+                                                    child: Container(
+                                                      // height: 140,
+                                                      width: maxWidth * 0.15,
+                                                      padding: const EdgeInsets.all(16),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.blue.withOpacity(0.1),
+                                                            spreadRadius: 3,
+                                                            blurRadius: 7,
+                                                            offset: const Offset(0, 3),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 5),
+                                                            child: Image.asset(
+                                                              "images/dash.png",
+                                                              width: 35,
+                                                              height: 35,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 10),
+                                                            child: Text('${snapshot.data!.availableCreditLimit}',
+                                                              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                                            ),
+                                                          ),
+                                                          const Padding(
+                                                            padding: EdgeInsets.only(left: 10),
+                                                            child: Text(
+                                                              'Available Credit Limit',
+                                                              style:
+                                                              TextStyle(fontSize: 12, color: Colors.grey),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top:20,),
+                                                  child: Card(
+
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                    ),
+                                                    color: Colors.white, // Set the color to white
+                                                    elevation: 2, // equivalent to the boxShadow in the original code
+                                                    child: Container(
+                                                      // height: 140,
+                                                      width: maxWidth * 0.15,
+                                                      padding: const EdgeInsets.all(16),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.blue.withOpacity(0.1),
+                                                            spreadRadius: 3,
+                                                            blurRadius: 7,
+                                                            offset: const Offset(0, 3),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 1),
+                                                            child: Image.asset(
+                                                              "images/nk1.png",
+                                                              width: 35,
+                                                              height: 35,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 10),
+                                                            child: Text('${snapshot.data!.orderCompleted}',
+                                                              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                                            ),
+                                                          ),
+                                                          const Padding(
+                                                            padding: EdgeInsets.only(left: 10),
+                                                            child: Text(
+                                                              'Order Completed',
+                                                              style:
+                                                              TextStyle(fontSize: 12, color: Colors.grey),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ],
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top:20),
-                                          child: Card(
-                                            // margin:  EdgeInsets.only(left: 600, top: 150),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            color: Colors.white, // Set the color to white
-                                            elevation: 2, // equivalent to the boxShadow in the original code
-                                            child: Container(
-                                              // height: 140,
-                                              width: maxWidth * 0.15,
-                                              padding: const EdgeInsets.all(16),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.blue.withOpacity(0.1),
-                                                    spreadRadius: 3,
-                                                    blurRadius: 7,
-                                                    offset: const Offset(0, 3),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 3),
-                                                    child: Image.asset(
-                                                      "images/file.png",
-                                                      width: 35,
-                                                      height: 35,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                   Padding(
-                                                    padding: EdgeInsets.only(left: 10),
-                                                    child: Text(
-                                                      '$orderCount',
-                                                      style: TextStyle(
-                                                          fontSize: 25, fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  const Padding(
-                                                    padding: EdgeInsets.only(left: 10),
-                                                    child: Text(
-                                                      'Open Invoices',
-                                                      style:
-                                                      TextStyle(fontSize: 12, color: Colors.grey),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
 
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 20),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            color: Colors.white, // Set the color to white
-                                            elevation: 2, // equivalent to the boxShadow in the original code
-                                            child: Container(
-                                              // height: 140,
-                                              width: maxWidth * 0.15,
-                                              padding: const EdgeInsets.all(16),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.blue.withOpacity(0.1),
-                                                    spreadRadius: 3,
-                                                    blurRadius: 7,
-                                                    offset: const Offset(0, 3),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 5),
-                                                    child: Image.asset(
-                                                      "images/dash.png",
-                                                      width: 35,
-                                                      height: 35,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                   Padding(
-                                                    padding: EdgeInsets.only(left: 8),
-                                                    child: Text(
-                                                      "$orderCount",
-                                                      style: TextStyle(
-                                                          fontSize: 25, fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  const Padding(
-                                                    padding: EdgeInsets.only(left: 10),
-                                                    child: Text(
-                                                      'Available Credit Limit',
-                                                      style:
-                                                      TextStyle(fontSize: 12, color: Colors.grey),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top:20,),
-                                          child: Card(
-
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            color: Colors.white, // Set the color to white
-                                            elevation: 2, // equivalent to the boxShadow in the original code
-                                            child: Container(
-                                              // height: 140,
-                                              width: maxWidth * 0.15,
-                                              padding: const EdgeInsets.all(16),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.blue.withOpacity(0.1),
-                                                    spreadRadius: 3,
-                                                    blurRadius: 7,
-                                                    offset: const Offset(0, 3),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 1),
-                                                    child: Image.asset(
-                                                      "images/nk1.png",
-                                                      width: 35,
-                                                      height: 35,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                   Padding(
-                                                    padding: EdgeInsets.only(left: 10),
-                                                    child: Text(
-                                                      '$orderCount',
-                                                      style: TextStyle(
-                                                          fontSize: 25, fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  const Padding(
-                                                    padding: EdgeInsets.only(left: 10),
-                                                    child: Text(
-                                                      'Order Completed',
-                                                      style:
-                                                      TextStyle(fontSize: 12, color: Colors.grey),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-
-                                    ),
+                                            );
+                                          }else{
+                                            return Text('No data found');
+                                          }
+                                        }),
+                                    // Row(
+                                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    //   children: [
+                                    //     Card(
+                                    //       margin:  const EdgeInsets.only(left: 1, top: 20,),
+                                    //       shape: RoundedRectangleBorder(
+                                    //         borderRadius: BorderRadius.circular(10),
+                                    //       ),
+                                    //       color: Colors.white,
+                                    //       elevation: 2, // equivalent to the boxShadow in the original code
+                                    //       child: Container(
+                                    //         // height: 140,
+                                    //         width: maxWidth * 0.15,
+                                    //         padding: const EdgeInsets.all(16),
+                                    //         decoration: BoxDecoration(
+                                    //           color: Colors.white,
+                                    //           borderRadius: BorderRadius.circular(10),
+                                    //           boxShadow: [
+                                    //             BoxShadow(
+                                    //               color: Colors.blue.withOpacity(0.1),
+                                    //               spreadRadius: 3,
+                                    //               blurRadius: 7,
+                                    //               offset: const Offset(0, 3),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //         child: Column(
+                                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                                    //           children: [
+                                    //             Padding(
+                                    //               padding: const EdgeInsets.only(top: 8),
+                                    //               child: Image.asset(
+                                    //                 "images/open.png",
+                                    //                 width: 35, // Set your desired width
+                                    //                 height: 35,
+                                    //               ),
+                                    //             ),
+                                    //             const SizedBox(
+                                    //               height: 5,
+                                    //             ),
+                                    //             const Padding(
+                                    //               padding: EdgeInsets.only(left: 10),
+                                    //               child: Text(
+                                    //                 '5',
+                                    //                 style: TextStyle(
+                                    //                     fontSize: 25, fontWeight: FontWeight.bold),
+                                    //               ),
+                                    //             ),
+                                    //             const Padding(
+                                    //               padding: EdgeInsets.only(left: 10),
+                                    //               child: Text(
+                                    //                 'Open Orders',
+                                    //                 style:
+                                    //                 TextStyle(fontSize: 12, color: Colors.grey),
+                                    //               ),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     Padding(
+                                    //       padding: const EdgeInsets.only(top:20),
+                                    //       child: Card(
+                                    //         // margin:  EdgeInsets.only(left: 600, top: 150),
+                                    //         shape: RoundedRectangleBorder(
+                                    //           borderRadius: BorderRadius.circular(10),
+                                    //         ),
+                                    //         color: Colors.white, // Set the color to white
+                                    //         elevation: 2, // equivalent to the boxShadow in the original code
+                                    //         child: Container(
+                                    //           // height: 140,
+                                    //           width: maxWidth * 0.15,
+                                    //           padding: const EdgeInsets.all(16),
+                                    //           decoration: BoxDecoration(
+                                    //             color: Colors.white,
+                                    //             borderRadius: BorderRadius.circular(10),
+                                    //             boxShadow: [
+                                    //               BoxShadow(
+                                    //                 color: Colors.blue.withOpacity(0.1),
+                                    //                 spreadRadius: 3,
+                                    //                 blurRadius: 7,
+                                    //                 offset: const Offset(0, 3),
+                                    //               ),
+                                    //             ],
+                                    //           ),
+                                    //           child: Column(
+                                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                                    //             children: [
+                                    //               Padding(
+                                    //                 padding: const EdgeInsets.only(top: 3),
+                                    //                 child: Image.asset(
+                                    //                   "images/file.png",
+                                    //                   width: 35,
+                                    //                   height: 35,
+                                    //                 ),
+                                    //               ),
+                                    //               const SizedBox(
+                                    //                 height: 5,
+                                    //               ),
+                                    //               const Padding(
+                                    //                 padding: EdgeInsets.only(left: 10),
+                                    //                 child: Text(
+                                    //                   '26',
+                                    //                   style: TextStyle(
+                                    //                       fontSize: 25, fontWeight: FontWeight.bold),
+                                    //                 ),
+                                    //               ),
+                                    //               const Padding(
+                                    //                 padding: EdgeInsets.only(left: 10),
+                                    //                 child: Text(
+                                    //                   'Open Invoices',
+                                    //                   style:
+                                    //                   TextStyle(fontSize: 12, color: Colors.grey),
+                                    //                 ),
+                                    //               )
+                                    //             ],
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //
+                                    //     Padding(
+                                    //       padding: const EdgeInsets.only(top: 20),
+                                    //       child: Card(
+                                    //         shape: RoundedRectangleBorder(
+                                    //           borderRadius: BorderRadius.circular(10),
+                                    //         ),
+                                    //         color: Colors.white, // Set the color to white
+                                    //         elevation: 2, // equivalent to the boxShadow in the original code
+                                    //         child: Container(
+                                    //           // height: 140,
+                                    //           width: maxWidth * 0.15,
+                                    //           padding: const EdgeInsets.all(16),
+                                    //           decoration: BoxDecoration(
+                                    //             color: Colors.white,
+                                    //             borderRadius: BorderRadius.circular(10),
+                                    //             boxShadow: [
+                                    //               BoxShadow(
+                                    //                 color: Colors.blue.withOpacity(0.1),
+                                    //                 spreadRadius: 3,
+                                    //                 blurRadius: 7,
+                                    //                 offset: const Offset(0, 3),
+                                    //               ),
+                                    //             ],
+                                    //           ),
+                                    //           child: Column(
+                                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                                    //             children: [
+                                    //               Padding(
+                                    //                 padding: const EdgeInsets.only(top: 5),
+                                    //                 child: Image.asset(
+                                    //                   "images/dash.png",
+                                    //                   width: 35,
+                                    //                   height: 35,
+                                    //                 ),
+                                    //               ),
+                                    //               const SizedBox(
+                                    //                 height: 5,
+                                    //               ),
+                                    //               const Padding(
+                                    //                 padding: EdgeInsets.only(left: 8),
+                                    //                 child: Text(
+                                    //                   "\$526",
+                                    //                   style: TextStyle(
+                                    //                       fontSize: 25, fontWeight: FontWeight.bold),
+                                    //                 ),
+                                    //               ),
+                                    //               const Padding(
+                                    //                 padding: EdgeInsets.only(left: 10),
+                                    //                 child: Text(
+                                    //                   'Available Credit Limit',
+                                    //                   style:
+                                    //                   TextStyle(fontSize: 12, color: Colors.grey),
+                                    //                 ),
+                                    //               )
+                                    //             ],
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     Padding(
+                                    //       padding: const EdgeInsets.only(top:20,),
+                                    //       child: Card(
+                                    //
+                                    //         shape: RoundedRectangleBorder(
+                                    //           borderRadius: BorderRadius.circular(10),
+                                    //         ),
+                                    //         color: Colors.white, // Set the color to white
+                                    //         elevation: 2, // equivalent to the boxShadow in the original code
+                                    //         child: Container(
+                                    //           // height: 140,
+                                    //           width: maxWidth * 0.15,
+                                    //           padding: const EdgeInsets.all(16),
+                                    //           decoration: BoxDecoration(
+                                    //             color: Colors.white,
+                                    //             borderRadius: BorderRadius.circular(10),
+                                    //             boxShadow: [
+                                    //               BoxShadow(
+                                    //                 color: Colors.blue.withOpacity(0.1),
+                                    //                 spreadRadius: 3,
+                                    //                 blurRadius: 7,
+                                    //                 offset: const Offset(0, 3),
+                                    //               ),
+                                    //             ],
+                                    //           ),
+                                    //           child: Column(
+                                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                                    //             children: [
+                                    //               Padding(
+                                    //                 padding: const EdgeInsets.only(top: 1),
+                                    //                 child: Image.asset(
+                                    //                   "images/nk1.png",
+                                    //                   width: 35,
+                                    //                   height: 35,
+                                    //                 ),
+                                    //               ),
+                                    //               const SizedBox(
+                                    //                 height: 5,
+                                    //               ),
+                                    //               const Padding(
+                                    //                 padding: EdgeInsets.only(left: 10),
+                                    //                 child: Text(
+                                    //                   '200',
+                                    //                   style: TextStyle(
+                                    //                       fontSize: 25, fontWeight: FontWeight.bold),
+                                    //                 ),
+                                    //               ),
+                                    //               const Padding(
+                                    //                 padding: EdgeInsets.only(left: 10),
+                                    //                 child: Text(
+                                    //                   'Order Completed',
+                                    //                   style:
+                                    //                   TextStyle(fontSize: 12, color: Colors.grey),
+                                    //                 ),
+                                    //               )
+                                    //             ],
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
                                     Padding(
-                                        padding: const EdgeInsets.only(left: 1, top: 50,),
+                                        padding: const EdgeInsets.only(left: 1, top: 50,right: 1),
                                         child: Container(
-                                          height: 600,
+                                          height: 800,
                                           width: maxWidth,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
@@ -864,141 +1192,30 @@ class _DashboardState extends State<Dashboard> {
                                               ),
                                             ],
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
+                                          child: SizedBox(
+                                            width: maxWidth * 0.79,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                buildSearchField1(),
+                                                const SizedBox(height: 10),
+                                                Expanded(
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: buildDataTable1(),
 
-                                                padding:  EdgeInsets.only(
-                                                  left: 20,
-                                                  right: maxWidth * 0.5,
+                                                  ),
                                                 ),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        const SizedBox(height: 8),
-                                                        Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.white,
-                                                              borderRadius: BorderRadius.circular(4),
-                                                              border: Border.all(color: Colors.grey[100]!),
-                                                            ),
-                                                            child: TextFormField(
-                                                              decoration: const InputDecoration(
-                                                                hintText: 'Search',
-                                                                contentPadding: EdgeInsets.all(8),
-                                                                border: OutlineInputBorder(),
-                                                                suffixIcon: Icon(Icons.search_outlined),
-                                                              ),
-                                                              onChanged: _onSearchTextChanged,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              const SizedBox(height: 8),
-                                                              Padding(
-                                                                padding: const EdgeInsets.all(8.0),
-                                                                child: Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    borderRadius: BorderRadius.circular(2),
-                                                                    border: Border.all(color: Colors.grey),
-                                                                  ),
-                                                                  child: DropdownButtonFormField<String>(
-                                                                    decoration: const InputDecoration(
-                                                                      contentPadding:
-                                                                      EdgeInsets.symmetric(horizontal: 10),
-                                                                      border: InputBorder.none,
-                                                                      filled: true,
-                                                                      fillColor: Colors.white,
-                                                                      hintText: 'Filter I',
-                                                                    ),
-                                                                    value: dropdownValue1,
-                                                                    onChanged: (String? newValue) {
-                                                                      setState(() {
-                                                                        dropdownValue1 = newValue;
-                                                                      });
-                                                                    },
-                                                                    items: <String>['Filter I', 'Option 2', 'Option 3']
-                                                                        .map<DropdownMenuItem<String>>((String value) {
-                                                                      return DropdownMenuItem<String>(
-                                                                        value: value,
-                                                                        child: Text(value),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded: true,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(width: 16),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              const SizedBox(height: 8),
-                                                              Padding(
-                                                                padding: const EdgeInsets.all(8.0),
-                                                                child: Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    borderRadius: BorderRadius.circular(2),
-                                                                    border: Border.all(color: Colors.grey),
-                                                                  ),
-                                                                  child: DropdownButtonFormField<String>(
-                                                                    decoration: const InputDecoration(
-                                                                      contentPadding:
-                                                                      EdgeInsets.symmetric(horizontal: 10),
-                                                                      border: InputBorder.none,
-                                                                      filled: true,
-                                                                      fillColor: Colors.white,
-                                                                      hintText: 'Filter II',
-                                                                    ),
-                                                                    value: dropdownValue2,
-                                                                    onChanged: (String? newValue) {
-                                                                      setState(() {
-                                                                        dropdownValue2 = newValue;
-                                                                      });
-                                                                    },
-                                                                    items: <String>['Filter II', 'Option 2', 'Option 3']
-                                                                        .map<DropdownMenuItem<String>>((String value) {
-                                                                      return DropdownMenuItem<String>(
-                                                                        value: value,
-                                                                        child: Text(value),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded: true,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                PaginationControls(
+                                                  currentPage: currentPage,
+                                                  totalPages: totalPages,
+                                                //  onFirstPage: _goToFirstPage,
+                                                  onPreviousPage: _goToPreviousPage,
+                                                  onNextPage: _goToNextPage,
+                                                  //onLastPage: _goToLastPage,
                                                 ),
-                                              ),
-                                              const SizedBox(height: 10),
-                                              SingleChildScrollView(
-                                                  scrollDirection: Axis.horizontal,
-                                                  child: buildDataTable1()),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         )),
                                   ],
@@ -1026,240 +1243,427 @@ class _DashboardState extends State<Dashboard> {
 
   Widget buildSearchField1() {
     double maxWidth1 = MediaQuery.of(context).size.width;
-    return
-      SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-          padding: const EdgeInsets.only(
-            left: 20,
-            right: 750,
+    return LayoutBuilder(builder: (context,constraints){
+      return
+        ConstrainedBox(
+          constraints: BoxConstraints(
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey[100]!),
-                      ),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Search',
-                          contentPadding: EdgeInsets.all(8),
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.search_outlined),
-                        ),
-                        onChanged: _onSearchTextChanged,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(2),
-                              border: Border.all(color: Colors.grey),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                                border: InputBorder.none,
-                                filled: true,
-                                fillColor: Colors.white,
-                                hintText: 'Filter I',
-                              ),
-                              value: dropdownValue1,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  dropdownValue1 = newValue;
-                                });
-                              },
-                              items: <String>['Filter I', 'Option 2', 'Option 3']
-                                  .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(2),
-                              border: Border.all(color: Colors.grey),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                                border: InputBorder.none,
-                                filled: true,
-                                fillColor: Colors.white,
-                                hintText: 'Filter II',
-                              ),
-                              value: dropdownValue2,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  dropdownValue2 = newValue;
-                                });
-                              },
-                              items: <String>['Filter II', 'Option 2', 'Option 3']
-                                  .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-  }
-
-  Widget buildDataTable1() {
-    var _mediaQuery = MediaQuery.of(context).size.width;
-    filteredProducts = productList
-        .where((Product) => Product.productName
-        .toLowerCase()
-        .contains(_searchText.toLowerCase()))
-        .where((Product) => _category.isEmpty || Product.category == _category)
-        .where((Product) =>
-    _subCategory.isEmpty || Product.subCategory == _subCategory)
-        .toList();
-
-    return Container(
-      height: 50,
-      width: _mediaQuery * 0.832,
-      color: const Color(0xFFF7F7F7),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 5, bottom: 5),
-        child: Table(
-          columnWidths: const {
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(1),
-            2: FlexColumnWidth(1),
-            3: FlexColumnWidth(1),
-            4: FlexColumnWidth(1),
-            5: FlexColumnWidth(1),
-
-          },
-          children:  [
-            TableRow(
+          child: Container(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 950,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TableCell(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        'Status',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: Colors.indigo[900]),
-                      ),
-                    ),
-                  ),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        'Order Id',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: Colors.indigo[900]),
-                      ),
-                    ),
-                  ),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        'Created Date',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: Colors.indigo[900]
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: Colors.grey[100]!),
+                        ),
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'Search',
+                            contentPadding: EdgeInsets.all(8),
+                            border: OutlineInputBorder(),
+                            suffixIcon: Icon(Icons.search_outlined),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              searchQuery = value;
+                            });
+                          },
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                TableCell(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        'Reference Number',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: Colors.indigo[900]),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                                  border: InputBorder.none,
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'Filter I',
+                                ),
+                                value: dropdownValue1,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    dropdownValue1 = newValue;
+                                    status = newValue ??'';
+                                  });
+                                },
+                                items: <String>['Filter I', 'Option 2', 'Option 3']
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        'Total Amount',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: Colors.indigo[900]),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                                  border: InputBorder.none,
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'Filter II',
+                                ),
+                                value: dropdownValue2,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectDate = newValue ??'';
+                                    dropdownValue2 = newValue;
+                                  });
+                                },
+                                items: <String>['Filter II', 'Option 2', 'Option 3']
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        'Delivery Status',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: Colors.indigo[900]),
-                      ),
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+    });
+
   }
+
+
+
+
+
+  Widget buildDataTable1() {
+    var _mediaQuery = MediaQuery.of(context).size.width;
+    _filteredData = _dashboardData.where((element) {
+      return element.dashBoardId.toString().contains(searchQuery) ||
+          element.status.toString().contains(searchQuery) ||
+          element.orderId.toString().contains(searchQuery) ||
+          element.createdDate.toString().contains(searchQuery) ||
+          element.referenceNumber.toString().contains(searchQuery) ||
+          element.totalAmount.toString().contains(searchQuery) ||
+          element.deliveryStatus.toString().contains(searchQuery) &&
+              (status == '' || element.status == status) &&
+              (selectDate == '' || element.createdDate.toString().contains(selectDate));
+    }).toList();
+    return  Container(
+      width: _mediaQuery * 0.83,
+      //  height: 50,
+      //  width: _mediaQuery * 0.832,
+      color: const Color(0xFFF7F7F7),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        child:
+        DataTable(
+          headingRowHeight: 50,
+          columns: [
+            DataColumn(label: Container(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30),
+                  child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+                    fontWeight: FontWeight.bold,),),
+                ))),
+            DataColumn(label: Container(child: Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                  fontWeight: FontWeight.bold),),
+            ))),
+            DataColumn(label: Container(child: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                fontWeight: FontWeight.bold),))),
+            DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                fontWeight: FontWeight.bold),))),
+            DataColumn(label: Container(child: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                fontWeight: FontWeight.bold),))),
+            DataColumn(label: Container(child: Padding(
+              padding: const EdgeInsets.only(left: 2),
+              child: Text('Delivery Status',style:  TextStyle(
+                  color: Colors.indigo[900],
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold),),
+            ))),
+          ],
+          rows:  _filteredData.skip((currentPage - 1) * _pageSize)
+              .take(_pageSize)
+              .map((dashboard){
+            final isSelected = false;
+            return DataRow(
+                color: MaterialStateColor.resolveWith(
+                        (states) => isSelected ? Colors.grey[200]! : Colors.white),
+                cells: [
+                  DataCell(
+                      Container(
+                        // padding: EdgeInsets.only(left: 40),
+                          child: Text(dashboard.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),))),
+                  DataCell(Container( child: Text(dashboard.orderId!))),
+                  DataCell(Container( child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(dashboard.createdDate!),
+                  ))),
+                  DataCell(Container(child: Padding(
+                    padding: const EdgeInsets.only(left: 50),
+                    child: Text(dashboard.referenceNumber.toString()!),
+                  ))),
+                  DataCell(Container(child: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(dashboard.totalAmount.toString()),
+                  ))),
+                  DataCell(Container(child: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(dashboard.deliveryStatus.toString()),
+                  ))),
+                  // DataCell(Container(child: Padding(
+                  //   padding: const EdgeInsets.only(left: 10),
+                  //   child: Text(returnMaster.notes!),
+                  // ))),
+
+                ]);
+          }).toList(),
+        ),
+        // DataTable(
+        //   columns: [
+        //     DataColumn(label: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+        //       fontWeight: FontWeight.bold,),)),
+        //     DataColumn(label: Text('Order ID',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+        //       fontWeight: FontWeight.bold,),)),
+        //     DataColumn(label: Text('Created Date',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+        //       fontWeight: FontWeight.bold,),)),
+        //     DataColumn(label: Text('Reference Number',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+        //       fontWeight: FontWeight.bold,),)),
+        //     DataColumn(label: Text('Total Amount',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+        //       fontWeight: FontWeight.bold,),)),
+        //     DataColumn(label: Text('Delivery Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+        //       fontWeight: FontWeight.bold,),)),
+        //   ],
+        //   rows:  filteredData.skip((currentPage - 1) * _pageSize)
+        //       .take(_pageSize)
+        //       .map((dashboard) {
+        //     return DataRow(
+        //       // color: MaterialStateColor.resolveWith(
+        //       //         (states) => isSelected ? Colors.grey[200]! : Colors.white),
+        //       cells: [
+        //         DataCell(Text(dashboard.status)),
+        //         DataCell(Text(dashboard.orderId)),
+        //         DataCell(Text(dashboard.createdDate)),
+        //         DataCell(Text(dashboard.referenceNumber.toString())),
+        //         DataCell(Text(dashboard.totalAmount.toString())),
+        //         DataCell(Text(dashboard.deliveryStatus)),
+        //       ],
+        //     );
+        //   }).toList(),
+        // ),
+
+      ),
+
+
+    );
+
+
+
+
+
+  }
+
+
+  // original code
+  // Widget buildDataTable1() {
+  //   var _mediaQuery = MediaQuery.of(context).size.width;
+  //
+  //   return
+  //     FutureBuilder(
+  //         future: fetchDashboardData(),
+  //         builder: (context, snapshot){
+  //           if(snapshot.hasData){
+  //             //  List<Dashboard1> data = snapshot.data as List<Dashboard1>;
+  //             List<Dashboard1> data = snapshot.data!;
+  //             List<Dashboard1> filteredData = data.where((element) {
+  //               return element.dashBoardId.toString().contains(searchQuery) ||
+  //                   element.status.toString().contains(searchQuery) ||
+  //                   element.orderId.toString().contains(searchQuery) ||
+  //                   element.createdDate.toString().contains(searchQuery) ||
+  //                   element.referenceNumber.toString().contains(searchQuery) ||
+  //                   element.totalAmount.toString().contains(searchQuery) ||
+  //                   element.deliveryStatus.toString().contains(searchQuery) &&
+  //                       (status == '' || element.status == status) &&
+  //                       (selectDate == '' || element.createdDate.toString().contains(selectDate));
+  //             }).toList();
+  //             //  filteredData = snapshot.data!;
+  //             return  Container(
+  //               width: _mediaQuery * 0.83,
+  //               //  height: 50,
+  //               //  width: _mediaQuery * 0.832,
+  //               color: const Color(0xFFF7F7F7),
+  //               child: Padding(
+  //                 padding: const EdgeInsets.only(top: 5, bottom: 5),
+  //                 child:
+  //                 DataTable(
+  //                   headingRowHeight: 50,
+  //                   columns: [
+  //                     DataColumn(label: Container(
+  //                         child: Padding(
+  //                           padding: EdgeInsets.only(left: 30),
+  //                           child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                             fontWeight: FontWeight.bold,),),
+  //                         ))),
+  //                     DataColumn(label: Container(child: Padding(
+  //                       padding: const EdgeInsets.only(left: 5),
+  //                       child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+  //                           fontWeight: FontWeight.bold),),
+  //                     ))),
+  //                     DataColumn(label: Container(child: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+  //                         fontWeight: FontWeight.bold),))),
+  //                     DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+  //                         fontWeight: FontWeight.bold),))),
+  //                     DataColumn(label: Container(child: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+  //                         fontWeight: FontWeight.bold),))),
+  //                     DataColumn(label: Container(child: Padding(
+  //                       padding: const EdgeInsets.only(left: 2),
+  //                       child: Text('Delivery Status',style:  TextStyle(
+  //                           color: Colors.indigo[900],
+  //                           fontSize: 15,
+  //                           fontWeight: FontWeight.bold),),
+  //                     ))),
+  //                   ],
+  //                   rows:  filteredData.skip((currentPage - 1) * _pageSize)
+  //                       .take(_pageSize)
+  //                       .map((dashboard){
+  //                     final isSelected = false;
+  //                     return DataRow(
+  //                         color: MaterialStateColor.resolveWith(
+  //                                 (states) => isSelected ? Colors.grey[200]! : Colors.white),
+  //                         cells: [
+  //                           DataCell(
+  //                               Container(
+  //                                 // padding: EdgeInsets.only(left: 40),
+  //                                   child: Text(dashboard.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),))),
+  //                           DataCell(Container( child: Text(dashboard.orderId!))),
+  //                           DataCell(Container( child: Padding(
+  //                             padding: const EdgeInsets.only(left: 10),
+  //                             child: Text(dashboard.createdDate!),
+  //                           ))),
+  //                           DataCell(Container(child: Padding(
+  //                             padding: const EdgeInsets.only(left: 50),
+  //                             child: Text(dashboard.referenceNumber.toString()!),
+  //                           ))),
+  //                           DataCell(Container(child: Padding(
+  //                             padding: const EdgeInsets.only(left: 20),
+  //                             child: Text(dashboard.totalAmount.toString()),
+  //                           ))),
+  //                           DataCell(Container(child: Padding(
+  //                             padding: const EdgeInsets.only(left: 20),
+  //                             child: Text(dashboard.deliveryStatus.toString()),
+  //                           ))),
+  //                           // DataCell(Container(child: Padding(
+  //                           //   padding: const EdgeInsets.only(left: 10),
+  //                           //   child: Text(returnMaster.notes!),
+  //                           // ))),
+  //
+  //                         ]);
+  //                   }).toList(),
+  //                 ),
+  //                 // DataTable(
+  //                 //   columns: [
+  //                 //     DataColumn(label: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                 //       fontWeight: FontWeight.bold,),)),
+  //                 //     DataColumn(label: Text('Order ID',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                 //       fontWeight: FontWeight.bold,),)),
+  //                 //     DataColumn(label: Text('Created Date',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                 //       fontWeight: FontWeight.bold,),)),
+  //                 //     DataColumn(label: Text('Reference Number',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                 //       fontWeight: FontWeight.bold,),)),
+  //                 //     DataColumn(label: Text('Total Amount',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                 //       fontWeight: FontWeight.bold,),)),
+  //                 //     DataColumn(label: Text('Delivery Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+  //                 //       fontWeight: FontWeight.bold,),)),
+  //                 //   ],
+  //                 //   rows:  filteredData.skip((currentPage - 1) * _pageSize)
+  //                 //       .take(_pageSize)
+  //                 //       .map((dashboard) {
+  //                 //     return DataRow(
+  //                 //       // color: MaterialStateColor.resolveWith(
+  //                 //       //         (states) => isSelected ? Colors.grey[200]! : Colors.white),
+  //                 //       cells: [
+  //                 //         DataCell(Text(dashboard.status)),
+  //                 //         DataCell(Text(dashboard.orderId)),
+  //                 //         DataCell(Text(dashboard.createdDate)),
+  //                 //         DataCell(Text(dashboard.referenceNumber.toString())),
+  //                 //         DataCell(Text(dashboard.totalAmount.toString())),
+  //                 //         DataCell(Text(dashboard.deliveryStatus)),
+  //                 //       ],
+  //                 //     );
+  //                 //   }).toList(),
+  //                 // ),
+  //
+  //               ),
+  //
+  //
+  //             );
+  //
+  //
+  //           }else{
+  //             return Text('No data found');
+  //           }
+  //         });
+  //
+  //
+  //
+  //
+  // }
+
+
 
   void _showDatePicker(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -1277,3 +1681,102 @@ class _DashboardState extends State<Dashboard> {
   }
 }
 
+
+
+
+class Dashboard {
+  String dashBoardId;
+  String status;
+  String orderId;
+  String createdDate;
+  int referenceNumber;
+  int totalAmount;
+  String deliveryStatus;
+
+  Dashboard({
+    required this.dashBoardId,
+    required this.status,
+    required this.orderId,
+    required this.createdDate,
+    required this.referenceNumber,
+    required this.totalAmount,
+    required this.deliveryStatus,
+  });
+
+  factory Dashboard.fromJson(Map<String, dynamic> json) {
+    return Dashboard(
+      dashBoardId: json['dashBoardId'],
+      status: json['status'],
+      orderId: json['orderId'],
+      createdDate: json['createdDate'],
+      referenceNumber: json['referenceNumber'],
+      totalAmount: json['totalAmount'],
+      deliveryStatus: json['deliveryStatus'],
+    );
+  }
+}
+
+
+class Dashboard1 {
+  final String dashBoardId;
+  final String status;
+  final String orderId;
+  final String createdDate;
+  final int referenceNumber;
+  final int totalAmount;
+  final String deliveryStatus;
+
+  Dashboard1({
+    required this.dashBoardId,
+    required this.status,
+    required this.orderId,
+    required this.createdDate,
+    required this.referenceNumber,
+    required this.totalAmount,
+    required this.deliveryStatus,
+  });
+
+  factory Dashboard1.fromJson(Map<String, dynamic> json) {
+    return Dashboard1(
+      dashBoardId: json['dashBoardId'],
+      status: json['status'],
+      orderId: json['orderId'],
+      createdDate: json['createdDate'],
+      referenceNumber: json['referenceNumber'],
+      totalAmount: json['totalAmount'],
+      deliveryStatus: json['deliveryStatus'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Dashboard1('
+        'dashBoardId: $dashBoardId, '
+        'status: $status, '
+        'orderId: $orderId, '
+        'createdDate: $createdDate, '
+        'referenceNumber: $referenceNumber, '
+        'totalAmount: $totalAmount, '
+        'deliveryStatus: $deliveryStatus)';
+  }
+}
+
+
+class DashboardCounts {
+  final int openOrders;
+
+  final int openInvoices;
+  final int availableCreditLimit;
+  final int orderCompleted;
+
+  DashboardCounts({required this.openOrders, required this.openInvoices, required this.availableCreditLimit, required this.orderCompleted});
+
+  factory DashboardCounts.fromJson(Map<String, dynamic> json) {
+    return DashboardCounts(
+      openOrders: json['Open Orders'],
+      openInvoices: json['Open Invoices'],
+      availableCreditLimit: json['Available Credit Limit'],
+      orderCompleted: json['Order Completed'],
+    );
+  }
+}

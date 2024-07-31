@@ -1,8 +1,10 @@
-//import 'package:btb/fifthpage/secondpage%20sprint2.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'package:btb/Return%20Module/return%20module%20design.dart';
+import 'package:btb/Return%20Module/return%20ontap.dart';
+
 import 'package:btb/sprint%202%20order/secondpage.dart';
 import 'package:btb/sprint%202%20order/seventhpage%20.dart';
 //import 'package:btb/sprint%202%20order/sixthpage%20final%20responsive.dart';
@@ -16,10 +18,16 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/single_child_widget.dart';
 
+// import '../Product Module/Product Screen.dart';
+// import '../dashboard.dart';
 import '../Product Module/Product Screen.dart';
+import '../dashboard.dart';
+import '../pagination.dart';
 import '../screen/login.dart';
 import '../sprint 2 order/firstpage.dart';
-import '../dashboard.dart';
+import '../sprint 2 order/mycustomscrollbehavior.dart';
+
+
 
 
 void main() {
@@ -36,23 +44,27 @@ class Returnpage extends StatefulWidget {
 class _ReturnpageState extends State<Returnpage> {
   Timer? _searchDebounceTimer;
   String _searchText = '';
+  String status= '';
+  String selectDate ='';
   final String _category = '';
   bool isOrdersSelected = false;
   // Order? _selectedProduct;
   // List<Order> _orders = [];
   DateTime? _selectedDate;
+  late Future<void> _futureReturnMasters;
   late TextEditingController _dateController;
   final String _subCategory = '';
   int startIndex = 0;
   List<Product> filteredProducts = [];
   int currentPage = 1;
-  String? dropdownValue1 = 'Filter I';
+  String? dropdownValue1 = 'Status';
   late Future<List<detail>> futureOrders;
+  List<ReturnMaster> filteredData =[];
   bool _loading = false;
-  List<Product> productList = [];
+  List<ReturnMaster> productList = [];
 
   String token = window.sessionStorage["token"] ?? " ";
-  String? dropdownValue2 = 'Filter II';
+  String? dropdownValue2 = 'SelectYear';
 
   // 1void _onSearchTextChanged(String text) {
   //   if (_searchDebounceTimer != null) {
@@ -65,8 +77,6 @@ class _ReturnpageState extends State<Returnpage> {
   //     });
   //  });
   //  }
-
-
 
   void _onSearchTextChanged(String text) {
     if (_searchDebounceTimer != null) {
@@ -84,28 +94,184 @@ class _ReturnpageState extends State<Returnpage> {
   void initState() {
     super.initState();
     _dateController = TextEditingController();
-    futureOrders = fetchOrders();
+    fetchReturnMasters(currentPage,itemsPerPage);
+    //  futureOrders = fetchOrders() as Future<List<detail>>;
 
   }
+  int itemsPerPage = 10;
+  int totalItems = 0;
+  int totalPages = 0;
+  bool isLoading = false;
 
-  Future<List<detail>> fetchOrders() async {
-    final response = await http.get(
-      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/return_master/get_all_returnmaster'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // Add the token to the Authorization header
-      },
-    );
+  Future<void> fetchReturnMasters(int page, int itemsPerPage) async {
 
-    if (response.statusCode == 200) {
-      List<dynamic> detailJson = json.decode(response.body);
-      return detailJson.map((json) => detail.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load orders');
+    if (isLoading) return;
+    if (!mounted) return;
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/return_master/get_all_returnmaster?page=$page&limit=$itemsPerPage', // Changed limit to 10
+        ),
+        headers: {
+          "Content-type": "application/json",
+          "Authorization": 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        print('json data');
+        print(jsonData);
+        List<ReturnMaster> products = [];
+        if (jsonData != null) {
+          if (jsonData is List) {
+            products = jsonData.map((item) => ReturnMaster.fromJson(item)).toList();
+          } else if (jsonData is Map && jsonData.containsKey('body')) {
+            products = (jsonData['body'] as List).map((item) => ReturnMaster.fromJson(item)).toList();
+            totalItems = jsonData['totalItems'] ?? 0; // Get the total number of items
+          }
+
+          if(mounted){
+            setState(() {
+              totalPages = (products.length / itemsPerPage).ceil();
+              print('pages');
+              print(totalPages);
+              productList = products;
+              print(productList);
+              _filterAndPaginateProducts();
+            });
+          }
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+
+      // if (response.statusCode == 200) {
+      //   final jsonData = jsonDecode(response.body);
+      //   print('json data');
+      //   print(jsonData);
+      //   List<detail> products = [];
+      //   if (jsonData != null) {
+      //     if (jsonData is List) {
+      //       products = jsonData.map((item) => detail.fromJson(item)).toList();
+      //     } else if (jsonData is Map && jsonData.containsKey('body')) {
+      //       products = (jsonData['body'] as List).map((item) => detail.fromJson(item)).toList();
+      //       //  totalItems = jsonData['totalItems'] ?? 0;
+      //
+      //       print('pages');
+      //       print(totalPages);// Changed itemsPerPage to 10
+      //     }
+      //
+      //     if(mounted){
+      //       setState(() {
+      //         productList = products;
+      //         totalPages = (products.length / itemsPerPage).ceil();
+      //         print(totalPages);
+      //         _filterAndPaginateProducts();
+      //       });
+      //     }
+      //
+      //
+      //   }
+      // } else {
+      //   throw Exception('Failed to load data');
+      // }
+    } catch (e) {
+      print('Error decoding JSON: $e');
+      // Optionally, show an error message to the user
+    } finally {
+      if(mounted){
+        setState(() {
+          isLoading = false;
+        });
+      }
+
+    }
+    // final response = await http.get(
+    //   Uri.parse(
+    //       'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
+    //   headers: {
+    //     'Authorization': 'Bearer $token',
+    //     // Add the token to the Authorization header
+    //   },
+    // );
+    // if (response.statusCode == 200) {
+    //   detailJson = json.decode(response.body);
+    //   filteredData = detailJson.map((json) =>
+    //       detail.fromJson(json)).toList();
+    //   if (_searchText.isNotEmpty) {
+    //     print(_searchText);
+    //     filteredData = filteredData.where((detail) =>
+    //         detail.orderId!.toLowerCase().contains(_searchText.toLowerCase()))
+    //         .toList();
+    //     setState(() {
+    //       _filterAndPaginateProducts();
+    //     });
+    //   }
+    //   return filteredData;
+    // } else {
+    //   throw Exception('Failed to load orders');
+    // }
+  }
+
+
+
+
+  // Future<List<ReturnMaster>> fetchReturnMasters() async {
+  //   final response = await http.get(
+  //     Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/return_master/get_all_returnmaster'),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $token',
+  //     },
+  //   );
+  //
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> data = json.decode(response.body);
+  //     return data.map((json) => ReturnMaster.fromJson(json)).toList();
+  //   } else {
+  //     throw Exception('Failed to load return masters');
+  //   }
+  // }
+
+  void _updateSearch(String searchText) {
+    setState(() {
+      _searchText = searchText;
+      currentPage = 1;  // Reset to first page when searching
+      _filterAndPaginateProducts();
+      // _clearSearch();
+    });
+  }
+  void _goToPreviousPage() {
+    print("previos");
+
+    if (currentPage > 1) {
+      if(filteredData.length > itemsPerPage) {
+        setState(() {
+          currentPage--;
+          //  fetchPskioroducts(currentPage, itemsPerPage);
+        });
+      }
+      //fetchProducts(page: currentPage);
+      // _filterAndPaginateProducts();
     }
   }
+  void _goToNextPage() {
+    print('nextpage');
 
-
+    if (currentPage < totalPages) {
+      if(filteredData.length > itemsPerPage) {
+        setState(() {
+          currentPage++;
+          //  fetchProducts(currentPage, itemsPerPage);
+        });
+        // fetchProducts(page: currentPage);
+        //  _filterAndPaginateProducts();
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -150,12 +316,10 @@ class _ReturnpageState extends State<Returnpage> {
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 35),
-                  child:
-                  PopupMenuButton<String>(
+                  child: PopupMenuButton<String>(
                     icon: const Icon(Icons.account_circle),
                     onSelected: (value) {
                       if (value == 'logout') {
-                        window.sessionStorage.remove('token');
                         context.go('/');
                         Navigator.push(
                           context,
@@ -221,7 +385,7 @@ class _ReturnpageState extends State<Returnpage> {
                                     pageBuilder:
                                         (context, animation,
                                         secondaryAnimation) =>
-                                    const Dashboard(
+                                     DashboardPage(
                                     ),
                                     transitionDuration:
                                     const Duration(milliseconds: 200),
@@ -358,7 +522,7 @@ class _ReturnpageState extends State<Returnpage> {
                                   color: isOrdersSelected
                                       ? Colors.blueAccent
                                       : Colors.blueAccent),
-                              label: const Text(
+                              label: Text(
                                 'Return',
                                 style: TextStyle(color: Colors.blueAccent),
                               ),
@@ -400,24 +564,24 @@ class _ReturnpageState extends State<Returnpage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              const Spacer(),
+                              Spacer(),
                               Align(
                                 alignment: Alignment.topRight,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10, right: 130),
+                                  padding:  EdgeInsets.only(
+                                      top: 10, right: maxWidth * 0.069),
                                   child: OutlinedButton(
                                     onPressed: () {
                                       // context.go(
                                       //     '${PageName.dashboardRoute}/${PageName.subpage1}');
                                       //router
-                                       context.go('/Order_Return');
+                                      context.go('/Order_Return');
                                       Navigator.push(
                                         context,
                                         PageRouteBuilder(
                                           pageBuilder: (context, animation,
                                               secondaryAnimation) =>
-                                              CreateReturn(storeImage: 'even', imageSizeString: const [],imageSizeStrings: const [],storeImages: const [],orderDetails: const [],orderDetailsMap: const {},),
+                                              CreateReturn(storeImage: 'even', imageSizeString: '',imageSizeStrings: [],storeImages: [],orderDetails: [],orderDetailsMap: {},),
                                           transitionDuration:
                                           const Duration(milliseconds: 200),
                                           transitionsBuilder: (context, animation,
@@ -468,11 +632,11 @@ class _ReturnpageState extends State<Returnpage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 250, top: 120, right: 150),
+                      padding:  EdgeInsets.only(
+                          left: 250, top: 120, right: maxWidth * 0.077,bottom: 10),
                       child: Container(
                         width: maxWidth,
-                        height: 1100,
+                        height: 800,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(1),
@@ -488,20 +652,27 @@ class _ReturnpageState extends State<Returnpage> {
                         ),
                         child: SingleChildScrollView(
                           scrollDirection: Axis.vertical,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: SizedBox(
-                              width: maxWidth * 0.79,
-                              // padding: EdgeInsets.only(),
-                              // margin: EdgeInsets.only(left: 400, right: 100),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  buildSearchField(),
-                                  // buildSearchField(),
-                                  const SizedBox(height: 30),
-                                  buildDataTable(),
-                                ],
+                          child: ScrollConfiguration(
+                            behavior: MyCustomScrollBehavior(),
+                            child: Scrollbar(
+                              thickness: 8,
+                              thumbVisibility: true,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: SizedBox(
+                                  width: maxWidth * 0.792,
+                                  // padding: EdgeInsets.only(),
+                                  // margin: EdgeInsets.only(left: 400, right: 100),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      buildSearchField(),
+                                      // buildSearchField(),
+                                      const SizedBox(height: 30),
+                                      buildDataTable(),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -520,12 +691,12 @@ class _ReturnpageState extends State<Returnpage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ConstrainedBox(
-          constraints: const BoxConstraints(
+          constraints: BoxConstraints(
             // maxWidth: constraints.maxWidth,
             // maxHeight: constraints.maxHeight,
           ),
           child: Container(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               left: 20,
               right: 20, // changed from 800 to 20
             ),
@@ -535,9 +706,9 @@ class _ReturnpageState extends State<Returnpage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: constraints.maxWidth * 0.27, // 80% of screen width
@@ -555,22 +726,22 @@ class _ReturnpageState extends State<Returnpage> {
                               border: OutlineInputBorder(),
                               suffixIcon: Icon(Icons.search_outlined),
                             ),
-                            onChanged: _onSearchTextChanged,
+                            onChanged: _updateSearch,
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
@@ -590,8 +761,8 @@ class _ReturnpageState extends State<Returnpage> {
                                     fillColor: Colors.white,
                                     hintText: 'Category',
                                   ),
-                                  icon: const Padding(
-                                    padding: EdgeInsets.only(right: 25),
+                                  icon: Padding(
+                                    padding: const EdgeInsets.only(right: 25),
                                     child: Icon(Icons.arrow_drop_down_outlined),
                                   ), // default icon
                                   iconSize: 24, // change the size of the icon
@@ -599,13 +770,15 @@ class _ReturnpageState extends State<Returnpage> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownValue1 = newValue;
+                                      status = newValue?? '';
+                                      _filterAndPaginateProducts();
                                     });
                                   },
                                   items: <String>[
-                                    'Filter I',
-                                    'Select 1',
-                                    'Select 2',
-                                    'Select 3'
+                                    'Status',
+                                    'In preparation',
+                                    'Completed',
+                                    'Cancelled'
                                   ].map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
@@ -623,9 +796,9 @@ class _ReturnpageState extends State<Returnpage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
@@ -637,7 +810,7 @@ class _ReturnpageState extends State<Returnpage> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 20),
+                                padding: EdgeInsets.only(right: 20),
                                 child: DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -646,15 +819,19 @@ class _ReturnpageState extends State<Returnpage> {
                                     fillColor: Colors.white,
                                     hintText: 'Sub Category',
                                   ),
-                                  icon: const Icon(Icons.arrow_drop_down_outlined), // default icon
+                                  icon: Icon(Icons.arrow_drop_down_outlined), // default icon
                                   iconSize: 24,
                                   value: dropdownValue2,
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownValue2 = newValue;
+                                      selectDate = newValue?? '';
+                                      _filterAndPaginateProducts();
                                     });
                                   },
-                                  items: <String>['Filter II', 'Yes', 'No']
+                                  items: <String>['SelectYear',
+                                    'option 1',
+                                    'option 2',]
                                       .map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
@@ -804,122 +981,235 @@ class _ReturnpageState extends State<Returnpage> {
   }
 
   Widget buildDataTable() {
-    return LayoutBuilder(builder: (context, constraints){
-      // double padding = constraints.maxWidth * 0.065;
-      double right = constraints.maxWidth;
-
-      return FutureBuilder<List<detail>>(
-        future: futureOrders,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                Container(
-                  width: right,
-                  color: const Color(0xFFF7F7F7),
-                  child: DataTable(
-                    headingRowHeight: 50,
-                    columns: [
-                      DataColumn(label: Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
-                          fontWeight: FontWeight.bold,),),
-                      )),
-                      DataColumn(label: Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                            fontWeight: FontWeight.bold),),
-                      )),
-                      DataColumn(label: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),)),
-                      DataColumn(label: Text('Delivery Status',style:  TextStyle(
-                          color: Colors.indigo[900],
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),)),
-                    ],
-                    rows: snapshot.data!.map((detail detail) {
-                      const isSelected = false;
-                      return DataRow(
-                          color: MaterialStateColor.resolveWith(
-                                  (states) => isSelected ? Colors.grey[200]! : Colors.white),
-                          cells: [
-                            DataCell(
-                                Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
-                            // DataCell(
-                            //     MouseRegion(
-                            //       cursor: SystemMouseCursors.click,
-                            //       onEnter: (event) {
-                            //         setState(() {
-                            //           detail.isSelected = true;
-                            //         });
-                            //       },
-                            //       onExit: (event) {
-                            //         detail.isSelected = false;
-                            //       },
-                            //       child: GestureDetector(
-                            //         onTap: () {
-                            //           //origingal
-                            //           context.go('/OrdersList', extra: {
-                            //             'product': detail,
-                            //             'item': [], // pass an empty list of maps
-                            //             'body': {},
-                            //             'itemsList': [], // pass an empty list of maps
-                            //           });
-                            //
-                            //           //  Order order = Order.fromDetail(_selectedOrder);
-                            //           // setState(() {
-                            //           //   _selectedProduct = order as Order?;
-                            //           // });
-                            //           // Navigate to the new page and pass the selected product as an argument
-                            //           Navigator.push(
-                            //             context,
-                            //             MaterialPageRoute(
-                            //                 builder: (context) => SixthPage(
-                            //                   product: detail,
-                            //                   item:  [],
-                            //                   body: {},
-                            //                   itemsList: [],
-                            //                 )), // pass the selected product here
-                            //           );
-                            //         },
-                            //         child: Container(
-                            //           // padding: EdgeInsets.only(left: 40),
-                            //             child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
-                            //       ),
-                            //     )),
-                            DataCell(Text(detail.orderId!)),
-                            DataCell(Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(detail.orderDate),
-                            )),
-                            DataCell(Text(detail.referenceNumber)),
-                            DataCell(Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Text(detail.total.toString()),
-                            )),
-                            DataCell(Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(detail.deliveryStatus),
-                            )),
-
-                          ]);
-                    }).toList(),
-                  ),
-                )
-              ],
-
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("${snapshot.error}"));
-          }
-
-          return const Center(child: CircularProgressIndicator());
-        },
+    if (filteredData.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 300),
+        child: Center(
+          child: Text('No products found'),
+        ),
       );
+    }
+    return LayoutBuilder(builder: (context, constraints){
+      var _mediaQuery = MediaQuery.of(context).size.width;
+      return Column(
+        children: [
+          Container(
+            width: _mediaQuery,
+            color: const Color(0xFFF7F7F7),
+            child:
+            DataTable(
+              headingRowHeight: 40,
+              columns: [
+
+                DataColumn(label: Container(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+                        fontWeight: FontWeight.bold,),),
+                    ))),
+                DataColumn(label: Container(child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Text('Return ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                      fontWeight: FontWeight.bold),),
+                ))),
+                DataColumn(label: Container(child: Text('Invoice Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                    fontWeight: FontWeight.bold),))),
+                DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                    fontWeight: FontWeight.bold),))),
+                DataColumn(label: Container(child: Text('Credit Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                    fontWeight: FontWeight.bold),))),
+                // DataColumn(label: Container(child: Text('Delivery Status',style:  TextStyle(
+                //     color: Colors.indigo[900],
+                //     fontSize: 15,
+                //     fontWeight: FontWeight.bold),))),
+              ],
+              rows:filteredData
+                  .skip((currentPage - 1) * itemsPerPage)
+                  .take(itemsPerPage)
+                  .map((returnMaster) {
+                 var isSelected = false;
+                //final isSelected = _selectedProduct == product;
+                return DataRow(
+                    color: MaterialStateColor.resolveWith(
+                            (states) => isSelected ? Colors.grey[200]! : Colors.white),
+                    cells: [
+                      DataCell(
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            onEnter: (event) {
+                              setState(() {
+                                isSelected!= true;
+                              });
+                            },
+                            onExit: (event) {
+                              setState(() {
+                                isSelected = true;
+                              });
+                            },
+                            child: GestureDetector(
+
+                              onTap:() {
+                                context.go('/return-view', extra: returnMaster);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ReturnView(returnMaster: returnMaster,)
+                                  )
+                                  , // pass the selected product here
+                                );
+
+                              },
+                              child: Container(
+
+                                // padding: EdgeInsets.only(left: 40),
+                                  child: Text(returnMaster.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                            ),
+                          )),
+                      // DataCell(
+                      //     MouseRegion(
+                      //       cursor: SystemMouseCursors.click,
+                      //       onEnter: (event) {
+                      //         setState(() {
+                      //           detail.isSelected = true;
+                      //         });
+                      //       },
+                      //       onExit: (event) {
+                      //         detail.isSelected = false;
+                      //       },
+                      //       child: GestureDetector(
+                      //         onTap: () {
+                      //           //origingal
+                      //           context.go('/OrdersList', extra: {
+                      //             'product': detail,
+                      //             'item': [], // pass an empty list of maps
+                      //             'body': {},
+                      //             'itemsList': [], // pass an empty list of maps
+                      //           });
+                      //
+                      //           //  Order order = Order.fromDetail(_selectedOrder);
+                      //           // setState(() {
+                      //           //   _selectedProduct = order as Order?;
+                      //           // });
+                      //           // Navigate to the new page and pass the selected product as an argument
+                      //           Navigator.push(
+                      //             context,
+                      //             MaterialPageRoute(
+                      //                 builder: (context) => SixthPage(
+                      //                   product: detail,
+                      //                   item:  [],
+                      //                   body: {},
+                      //                   itemsList: [],
+                      //                 )), // pass the selected product here
+                      //           );
+                      //         },
+                      //         child: Container(
+                      //           // padding: EdgeInsets.only(left: 40),
+                      //             child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                      //       ),
+                      //     )),
+                      DataCell(Container( child: Text(returnMaster.returnId!))),
+                      DataCell(Container( child: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(returnMaster.invoiceNumber!),
+                      ))),
+                      DataCell(Container(child: Text(returnMaster.reason!))),
+                      DataCell(Container(child: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(returnMaster.totalCredit.toString()),
+                      ))),
+                      // DataCell(Container(child: Padding(
+                      //   padding: const EdgeInsets.only(left: 10),
+                      //   child: Text(returnMaster.notes!),
+                      // ))),
+
+                    ]);
+              }).toList(),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Divider(
+              color: Colors.grey,
+              height: 1,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right:100),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: PaginationControls(
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    // onFirstPage: _goToFirstPage,
+                    onPreviousPage: _goToPreviousPage,
+                    onNextPage: _goToNextPage,
+                    // onLastPage: _goToLastPage,
+                  ),
+                ),
+              ],
+            ),
+          )
+
+
+        ],
+
+      );
+    });
+
+  }
+  void _filterAndPaginateProducts() {
+    filteredData = productList.where((product) {
+      final matchesSearchText = product.returnId!.toLowerCase().contains(
+          _searchText.toLowerCase());
+      print('-----');
+      print(product.reason);
+      // String orderYear = '';
+      // if (product.orderDate.contains('/')) {
+      //   final dateParts = product.orderDate.split('/');
+      //   if (dateParts.length == 3) {
+      //     orderYear = dateParts[2]; // Extract the year
+      //   }
+      // }
+      // final orderYear = element.orderDate.substring(5,9);
+      if (status.isEmpty && selectDate.isEmpty) {
+        return matchesSearchText; // Include all products that match the search text
+      }
+      if(status == 'Status' && selectDate == 'SelectYear'){
+        return matchesSearchText;
+      }
+      if(status == 'Status' &&  selectDate.isEmpty)
+      {
+        return matchesSearchText;
+      }
+      if(selectDate == 'SelectYear' &&  status.isEmpty)
+      {
+        return matchesSearchText;
+      }
+      if (status == 'Status' && selectDate.isNotEmpty) {
+        return matchesSearchText && product.reason == selectDate; // Include all products
+      }
+      if (status.isNotEmpty && selectDate == 'SelectYear') {
+        return matchesSearchText && product.status == status;// Include all products
+      }
+      if (status.isEmpty && selectDate.isNotEmpty) {
+        return matchesSearchText && product.reason == selectDate; // Include all products
+      }
+
+      if (status.isNotEmpty && selectDate.isEmpty) {
+        return matchesSearchText && product.status == status;// Include all products
+      }
+      return matchesSearchText &&
+          (product.status == status && product.reason == selectDate);
+      return false;
+    }).toList();
+    setState(() {
+      currentPage = 1;
     });
 
   }
@@ -1035,5 +1325,106 @@ class _ReturnpageState extends State<Returnpage> {
 // }
 
 
+class ApiService {
+  static const String apiUrl = 'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/return_master/get_all_returnmaster';
 
+
+}
+
+
+class ReturnMaster {
+  final String? returnId;
+  final String? invoiceNumber;
+  final String? reason;
+  final String? contactPerson;
+  final String status;
+  final String? email;
+  final double totalCredit;
+  final String? notes;
+  final List<ReturnItem> items;
+
+  ReturnMaster({
+    required this.returnId,
+    required this.invoiceNumber,
+    required this.reason,
+    required this.contactPerson,
+    required this.email,
+    required this.status,
+    required this.totalCredit,
+    required this.notes,
+    required this.items,
+  });
+
+  factory ReturnMaster.fromJson(Map<String, dynamic> json) {
+    return ReturnMaster(
+      returnId: json['returnId'],
+      invoiceNumber: json['invoiceNumber'],
+      reason: json['reason'],
+      status: 'In preparation',
+      contactPerson: json['contactPerson'],
+      email: json['email'],
+      totalCredit: json['totalCredit'].toDouble(),
+      notes: json['notes'],
+      items: (json['items'] as List)
+          .map((item) => ReturnItem.fromJson(item))
+          .toList(),
+    );
+  }
+
+
+
+  factory ReturnMaster.fromString(String jsonString) {
+    final jsonMap = jsonDecode(jsonString);
+    return ReturnMaster.fromJson(jsonMap);
+  }
+
+}
+
+class ReturnItem {
+  final String? returnMasterItemId;
+  final String? productName;
+  final String? category;
+  final String? subCategory;
+  final double price;
+  final int qty;
+  final int returnQty;
+  final double invoiceAmount;
+  final double creditRequest;
+  final String? imageId;
+  final String? returnId;
+
+  ReturnItem({
+    required this.returnMasterItemId,
+    required this.productName,
+    required this.category,
+    required this.subCategory,
+    required this.price,
+    required this.qty,
+    required this.returnQty,
+    required this.invoiceAmount,
+    required this.creditRequest,
+    required this.imageId,
+    required this.returnId,
+  });
+
+  factory ReturnItem.fromJson(Map<String, dynamic> json) {
+    return ReturnItem(
+      returnMasterItemId: json['returnMasterItemId'],
+      productName: json['productName'],
+      category: json['category'],
+      subCategory: json['subCategory'],
+      price: json['price'].toDouble(),
+      qty: json['qty'],
+      returnQty: json['returnQty'],
+      invoiceAmount: json['invoiceAmount'].toDouble(),
+      creditRequest: json['creditRequest'].toDouble(),
+      imageId: json['imageId'],
+      returnId: json['returnId'],
+    );
+  }
+  factory ReturnItem.fromString(String jsonString) {
+    final jsonMap = jsonDecode(jsonString);
+    return ReturnItem.fromJson(jsonMap);
+  }
+}
 

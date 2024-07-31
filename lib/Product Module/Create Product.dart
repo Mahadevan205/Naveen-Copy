@@ -488,7 +488,7 @@ class _SecondPageState extends State<SecondPage> {
                                 PageRouteBuilder(
                                   pageBuilder: (context, animation,
                                       secondaryAnimation) =>
-                                  const Dashboard(
+                                  const DashboardPage(
                                   ),
                                   transitionDuration:
                                   const Duration(milliseconds: 200),

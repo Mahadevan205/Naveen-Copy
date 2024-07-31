@@ -1,67 +1,47 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
+import 'package:btb/pagination.dart';
 import 'package:btb/sprint%202%20order/secondpage.dart';
 import 'package:btb/sprint%202%20order/sixthpage.dart';
 import 'package:btb/thirdpage/productclass.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../Product Module/Product Screen.dart';
 import '../Return Module/return first page.dart';
-import '../screen/login.dart';
 import '../dashboard.dart';
-
+import '../screen/login.dart';
 
 void main() {
   runApp(const Orderspage());
 }
-
 class Orderspage extends StatefulWidget {
- // final Function(int) onOrderCountChangedZ;
   const Orderspage({super.key});
-
   @override
   State<Orderspage> createState() => _OrderspageState();
 }
-
 class _OrderspageState extends State<Orderspage> {
   Timer? _searchDebounceTimer;
-  final _numberNotifier = ValueNotifier<int>(0);
   String _searchText = '';
-  final String _category = '';
-  int orderCount = 0;
   bool isOrdersSelected = false;
-  // Order? _selectedProduct;
-  // List<Order> _orders = [];
   DateTime? _selectedDate;
   late TextEditingController _dateController;
-  final String _subCategory = '';
   int startIndex = 0;
   List<Product> filteredProducts = [];
   int currentPage = 1;
-  String? dropdownValue1 = 'Filter I';
+  String? dropdownValue1 = 'Status';
   late Future<List<detail>> futureOrders;
-  bool _loading = false;
-  List<Product> productList = [];
+  List<detail> productList = [];
+  List<dynamic> detailJson = [];
+  String searchQuery = '';
+  List<detail>filteredData = [];
+  String status = '';
+  String selectDate = '';
 
   String token = window.sessionStorage["token"] ?? " ";
-  String? dropdownValue2 = 'Filter II';
-
-  // 1void _onSearchTextChanged(String text) {
-  //   if (_searchDebounceTimer != null) {
-  //    _searchDebounceTimer!.cancel(); // Cancel the previous timer
-  //  }
-  //   _searchDebounceTimer = Timer(const Duration(milliseconds: 500), () {
-  //   setState(() {
-  //       _searchText = text;
-  //       _filteredOrders = _orders.where((order) => order.orderId.toLowerCase().contains(_searchText.toLowerCase())).toList();
-  //     });
-  //  });
-  //  }
+  String? dropdownValue2 = 'SelectYear';
 
   void _onSearchTextChanged(String text) {
     if (_searchDebounceTimer != null) {
@@ -75,52 +55,175 @@ class _OrderspageState extends State<Orderspage> {
   }
 
 
+  int itemsPerPage = 10;
+  int totalItems = 0;
+  int totalPages = 0;
+  bool isLoading = false;
+
+  Future<void> fetchProducts(int page, int itemsPerPage) async {
+
+    if (isLoading) return;
+    if (!mounted) return;
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster?page=$page&limit=$itemsPerPage', // Changed limit to 10
+        ),
+        headers: {
+          "Content-type": "application/json",
+          "Authorization": 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        print('json data');
+        print(jsonData);
+        List<detail> products = [];
+        if (jsonData != null) {
+          if (jsonData is List) {
+            products = jsonData.map((item) => detail.fromJson(item)).toList();
+          } else if (jsonData is Map && jsonData.containsKey('body')) {
+            products = (jsonData['body'] as List).map((item) => detail.fromJson(item)).toList();
+            totalItems = jsonData['totalItems'] ?? 0; // Get the total number of items
+          }
+
+          if(mounted){
+            setState(() {
+              totalPages = (products.length / itemsPerPage).ceil();
+              print('pages');
+              print(totalPages);
+              productList = products;
+              print(productList);
+              _filterAndPaginateProducts();
+            });
+          }
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+
+      // if (response.statusCode == 200) {
+      //   final jsonData = jsonDecode(response.body);
+      //   print('json data');
+      //   print(jsonData);
+      //   List<detail> products = [];
+      //   if (jsonData != null) {
+      //     if (jsonData is List) {
+      //       products = jsonData.map((item) => detail.fromJson(item)).toList();
+      //     } else if (jsonData is Map && jsonData.containsKey('body')) {
+      //       products = (jsonData['body'] as List).map((item) => detail.fromJson(item)).toList();
+      //       //  totalItems = jsonData['totalItems'] ?? 0;
+      //
+      //       print('pages');
+      //       print(totalPages);// Changed itemsPerPage to 10
+      //     }
+      //
+      //     if(mounted){
+      //       setState(() {
+      //         productList = products;
+      //         totalPages = (products.length / itemsPerPage).ceil();
+      //         print(totalPages);
+      //         _filterAndPaginateProducts();
+      //       });
+      //     }
+      //
+      //
+      //   }
+      // } else {
+      //   throw Exception('Failed to load data');
+      // }
+    } catch (e) {
+      print('Error decoding JSON: $e');
+      // Optionally, show an error message to the user
+    } finally {
+      if(mounted){
+        setState(() {
+          isLoading = false;
+        });
+      }
+
+    }
+    // final response = await http.get(
+    //   Uri.parse(
+    //       'https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
+    //   headers: {
+    //     'Authorization': 'Bearer $token',
+    //     // Add the token to the Authorization header
+    //   },
+    // );
+    // if (response.statusCode == 200) {
+    //   detailJson = json.decode(response.body);
+    //   filteredData = detailJson.map((json) =>
+    //       detail.fromJson(json)).toList();
+    //   if (_searchText.isNotEmpty) {
+    //     print(_searchText);
+    //     filteredData = filteredData.where((detail) =>
+    //         detail.orderId!.toLowerCase().contains(_searchText.toLowerCase()))
+    //         .toList();
+    //     setState(() {
+    //       _filterAndPaginateProducts();
+    //     });
+    //   }
+    //   return filteredData;
+    // } else {
+    //   throw Exception('Failed to load orders');
+    // }
+  }
+
+  void _updateSearch(String searchText) {
+    setState(() {
+      _searchText = searchText;
+      currentPage = 1;  // Reset to first page when searching
+      _filterAndPaginateProducts();
+      // _clearSearch();
+    });
+  }
+
+  void _goToPreviousPage() {
+    print("previos");
+
+    if (currentPage > 1) {
+      if(filteredData.length > itemsPerPage) {
+        setState(() {
+          currentPage--;
+          //  fetchProducts(currentPage, itemsPerPage);
+        });
+      }
+      //fetchProducts(page: currentPage);
+      // _filterAndPaginateProducts();
+    }
+  }
+
+  void _goToNextPage() {
+    print('nextpage');
+
+    if (currentPage < totalPages) {
+      if(filteredData.length > itemsPerPage) {
+        setState(() {
+          currentPage++;
+          //  fetchProducts(currentPage, itemsPerPage);
+        });
+        // fetchProducts(page: currentPage);
+        //  _filterAndPaginateProducts();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _dateController = TextEditingController();
-    futureOrders = fetchOrders() as Future<List<detail>>;
-    print('this is the count the order whatever opended currentluy');
-    // fetchOrders().then((orders) {
-    //    setState(() {
-    //        orderCount = orders.length;
-    //        print('order count');
-    //        print(orderCount);
-    //        _numberNotifier.value = orderCount;
-    //      });
-    //   });
-
-
-    //
+    fetchProducts(currentPage, itemsPerPage);
   }
-
-
-
-
-
-  Future<List<detail>> fetchOrders() async {
-    final response = await http.get(
-      Uri.parse('https://mjl9lz64l7.execute-api.ap-south-1.amazonaws.com/stage1/api/order_master/get_all_ordermaster'),
-      headers: {
-        'Authorization': 'Bearer $token', // Add the token to the Authorization header
-      },
-    );
-
-    if (response.statusCode == 200) {
-      List<dynamic> detailJson = json.decode(response.body);
-      return detailJson.map((json) => detail.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load orders');
-    }
-  }
-
   @override
   void dispose() {
     _searchDebounceTimer
         ?.cancel(); // Cancel the timer when the widget is disposed
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +254,7 @@ class _OrderspageState extends State<Orderspage> {
             ),
             const SizedBox(width: 10,),
             Padding(
-              padding: const EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 7),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
@@ -183,13 +286,13 @@ class _OrderspageState extends State<Orderspage> {
                     },
                     itemBuilder: (BuildContext context) {
                       return [
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
                           value: 'logout',
                           child: Text('Logout'),
                         ),
                       ];
                     },
-                    offset: const Offset(0, 40), // Adjust the offset to display the menu below the icon
+                    offset: Offset(0, 40), // Adjust the offset to display the menu below the icon
                   ),
                 ),
               ),
@@ -225,8 +328,8 @@ class _OrderspageState extends State<Orderspage> {
                                     pageBuilder:
                                         (context, animation,
                                         secondaryAnimation) =>
-                                    const Dashboard(
-                                    ),
+                                        DashboardPage(
+                                        ),
                                     transitionDuration:
                                     const Duration(milliseconds: 200),
                                     transitionsBuilder: (context, animation,
@@ -291,7 +394,6 @@ class _OrderspageState extends State<Orderspage> {
                             TextButton.icon(
                               onPressed: () {
                                 // context.go('${PageName.main}/${PageName.subpage1Main}');
-
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
@@ -310,7 +412,6 @@ class _OrderspageState extends State<Orderspage> {
                                     },
                                   ),
                                 );
-
                                 setState(() {
                                   isOrdersSelected = false;
                                   // Handle button press19
@@ -423,7 +524,7 @@ class _OrderspageState extends State<Orderspage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              const Spacer(),
+                              Spacer(),
                               Align(
                                 alignment: Alignment.topRight,
                                 child: Padding(
@@ -491,11 +592,11 @@ class _OrderspageState extends State<Orderspage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 250, top: 120, right: 150),
+                      padding:  EdgeInsets.only(
+                          left: 250, top: 120, right: maxWidth * 0.077),
                       child: Container(
                         width: maxWidth,
-                        height: 1100,
+                        height: 800,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(1),
@@ -510,7 +611,6 @@ class _OrderspageState extends State<Orderspage> {
                           ],
                         ),
                         child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: SizedBox(
@@ -539,18 +639,16 @@ class _OrderspageState extends State<Orderspage> {
     );
   }
 
-
-
   Widget buildSearchField() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ConstrainedBox(
-          constraints: const BoxConstraints(
+          constraints: BoxConstraints(
             // maxWidth: constraints.maxWidth,
             // maxHeight: constraints.maxHeight,
           ),
           child: Container(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               left: 20,
               right: 20, // changed from 800 to 20
             ),
@@ -560,12 +658,12 @@ class _OrderspageState extends State<Orderspage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxWidth: constraints.maxWidth * 0.27, // 80% of screen width
+                          maxWidth: constraints.maxWidth * 0.318, // 80% of screen width
                         ),
                         child: Container(
                           decoration: BoxDecoration(
@@ -580,25 +678,25 @@ class _OrderspageState extends State<Orderspage> {
                               border: OutlineInputBorder(),
                               suffixIcon: Icon(Icons.search_outlined),
                             ),
-                            onChanged: _onSearchTextChanged,
+                            onChanged: _updateSearch,
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
+                              maxWidth: constraints.maxWidth * 0.15, // 40% of screen width
                             ),
                             child: Container(
                                 decoration: BoxDecoration(
@@ -609,14 +707,14 @@ class _OrderspageState extends State<Orderspage> {
                                 child:
                                 DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 5),
                                     border: InputBorder.none,
                                     filled: true,
                                     fillColor: Colors.white,
                                     hintText: 'Category',
                                   ),
-                                  icon: const Padding(
-                                    padding: EdgeInsets.only(right: 25),
+                                  icon: Padding(
+                                    padding: const EdgeInsets.only(right: 25),
                                     child: Icon(Icons.arrow_drop_down_outlined),
                                   ), // default icon
                                   iconSize: 24, // change the size of the icon
@@ -624,13 +722,14 @@ class _OrderspageState extends State<Orderspage> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownValue1 = newValue;
+                                      status = newValue ??'';
+                                      _filterAndPaginateProducts();
                                     });
                                   },
                                   items: <String>[
-                                    'Filter I',
-                                    'Select 1',
-                                    'Select 2',
-                                    'Select 3'
+                                    'Status',
+                                    'In preparation',
+                                    'Completed',
                                   ].map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
@@ -648,12 +747,12 @@ class _OrderspageState extends State<Orderspage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: constraints.maxWidth * 0.13, // 40% of screen width
+                              maxWidth: constraints.maxWidth * 0.15, // 40% of screen width
                             ),
                             child: Container(
                               decoration: BoxDecoration(
@@ -662,24 +761,25 @@ class _OrderspageState extends State<Orderspage> {
                                 border: Border.all(color: Colors.blue[100]!),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 20),
+                                padding: EdgeInsets.only(right: 20),
                                 child: DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
                                     border: InputBorder.none,
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintText: 'Sub Category',
                                   ),
-                                  icon: const Icon(Icons.arrow_drop_down_outlined), // default icon
+                                  icon: Icon(Icons.arrow_drop_down_outlined), // default icon
                                   iconSize: 24,
                                   value: dropdownValue2,
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownValue2 = newValue;
+                                      selectDate = newValue ??'';
+                                      _filterAndPaginateProducts();
                                     });
                                   },
-                                  items: <String>['Filter II', 'Yes', 'No']
+                                  items: <String>['SelectYear', '2023', '2024','2025']
                                       .map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
@@ -702,403 +802,707 @@ class _OrderspageState extends State<Orderspage> {
         );
       },
     );
-    // return Container(
-    //   padding: const EdgeInsets.only(
-    //     left: 20,
-    //     right: 800,
-    //   ),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           const SizedBox(height: 8),
-    //           Padding(
-    //             padding: const EdgeInsets.all(8.0),
-    //             child: Container(
-    //               decoration: BoxDecoration(
-    //                 color: Colors.white,
-    //                 borderRadius: BorderRadius.circular(4),
-    //                 border: Border.all(color: Colors.grey[100]!),
-    //               ),
-    //               child: TextFormField(
-    //                 decoration: const InputDecoration(
-    //                   hintText: 'Search',
-    //                   contentPadding: EdgeInsets.all(8),
-    //                   border: OutlineInputBorder(),
-    //                   suffixIcon: Icon(Icons.search_outlined),
-    //                 ),
-    //                 onChanged: _onSearchTextChanged,
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       const SizedBox(height: 8),
-    //       Row(
-    //         children: [
-    //           Expanded(
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 const SizedBox(height: 8),
-    //                 Padding(
-    //                   padding: const EdgeInsets.all(8.0),
-    //                   child: Container(
-    //                     decoration: BoxDecoration(
-    //                       color: Colors.white,
-    //                       borderRadius: BorderRadius.circular(2),
-    //                       border: Border.all(color: Colors.grey),
-    //                     ),
-    //                     child: DropdownButtonFormField<String>(
-    //                       decoration: const InputDecoration(
-    //                         contentPadding:
-    //                         EdgeInsets.symmetric(horizontal: 10),
-    //                         border: InputBorder.none,
-    //                         filled: true,
-    //                         fillColor: Colors.white,
-    //                         hintText: 'Filter I',
-    //                       ),
-    //                       value: dropdownValue1,
-    //                       onChanged: (String? newValue) {
-    //                         setState(() {
-    //                           dropdownValue1 = newValue;
-    //                         });
-    //                       },
-    //                       items: <String>['Filter I', 'Option 2', 'Option 3']
-    //                           .map<DropdownMenuItem<String>>((String value) {
-    //                         return DropdownMenuItem<String>(
-    //                           value: value,
-    //                           child: Text(value),
-    //                         );
-    //                       }).toList(),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //           const SizedBox(width: 16),
-    //           Expanded(
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 const SizedBox(height: 8),
-    //                 Padding(
-    //                   padding: const EdgeInsets.all(8.0),
-    //                   child: Container(
-    //                     decoration: BoxDecoration(
-    //                       color: Colors.white,
-    //                       borderRadius: BorderRadius.circular(2),
-    //                       border: Border.all(color: Colors.grey),
-    //                     ),
-    //                     child: DropdownButtonFormField<String>(
-    //                       decoration: const InputDecoration(
-    //                         contentPadding:
-    //                         EdgeInsets.symmetric(horizontal: 10),
-    //                         border: InputBorder.none,
-    //                         filled: true,
-    //                         fillColor: Colors.white,
-    //                         hintText: 'Filter II',
-    //                       ),
-    //                       value: dropdownValue2,
-    //                       onChanged: (String? newValue) {
-    //                         setState(() {
-    //                           dropdownValue2 = newValue;
-    //                         });
-    //                       },
-    //                       items: <String>['Filter II', 'Option 2', 'Option 3']
-    //                           .map<DropdownMenuItem<String>>((String value) {
-    //                         return DropdownMenuItem<String>(
-    //                           value: value,
-    //                           child: Text(value),
-    //                         );
-    //                       }).toList(),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   Widget buildDataTable() {
+
+    if (filteredData.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 450),
+        child: Center(
+          child: Text('No products found'),
+        ),
+      );
+    }
     return LayoutBuilder(builder: (context, constraints){
       // double padding = constraints.maxWidth * 0.065;
       double right = constraints.maxWidth;
 
-      return FutureBuilder<List<detail>>(
+
+      return  Column(
+        children: [
+          Container(
+            width: right,
+            color: const Color(0xFFF7F7F7),
+            child: SingleChildScrollView(
+              child: DataTable(
+                headingRowHeight: 50,
+                columns: [
+                  DataColumn(label: Container(
+                      child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
+                        fontWeight: FontWeight.bold,),))),
+                  DataColumn(label: Container(child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                      fontWeight: FontWeight.bold),))),
+                  DataColumn(label: Container(child: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                      fontWeight: FontWeight.bold),))),
+                  DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                      fontWeight: FontWeight.bold),))),
+                  DataColumn(label: Container(child: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
+                      fontWeight: FontWeight.bold),))),
+                  DataColumn(label: Container(child: Text('Delivery Status',style:  TextStyle(
+                      color: Colors.indigo[900],
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),))),
+                ],
+                rows: filteredData.skip((currentPage - 1) * itemsPerPage).take(itemsPerPage).map((detail)  {
+                  final isSelected = false;
+                  return DataRow(
+                      color: MaterialStateColor.resolveWith(
+                              (states) => isSelected ? Colors.grey[200]! : Colors.white),
+                      cells: [
+                        DataCell(
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onEnter: (event) {
+                                setState(() {
+                                  detail.isSelected = true;
+                                });
+                              },
+                              onExit: (event) {
+                                detail.isSelected = false;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go('/OrdersList', extra: {
+                                    'product': detail,
+                                    'item': [], // pass an empty list of maps
+                                    'body': {},
+                                    'itemsList': [], // pass an empty list of maps
+                                    'orderDetails':filteredData.map((detail) => OrderDetail(
+                                      orderId: detail.orderId,
+                                      orderDate: detail.orderDate, items: [],
+                                      // Add other fields as needed
+                                    )).toList(),
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SixthPage(
+                                          product: detail,
+                                          item:  const [],
+                                          body: const {},
+                                          itemsList: const [],
+                                          orderDetails: filteredData.map((detail) => OrderDetail(
+                                            orderId: detail.orderId,
+                                            orderDate: detail.orderDate, items: [],
+                                            // Add other fields as needed
+                                          )).toList(),
+                                          //storeStaticData: storeStaticData,
+
+                                        )
+                                    )
+                                    , // pass the selected product here
+                                  );
+                                },
+                                child: Container(
+                                  // padding: EdgeInsets.only(left: 40),
+                                    child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                              ),
+                            )),
+                        DataCell(
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onEnter: (event) {
+                                setState(() {
+                                  detail.isSelected = true;
+                                });
+                              },
+                              onExit: (event) {
+                                detail.isSelected = false;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go('/OrdersList', extra: {
+                                    'product': detail,
+                                    'item': [], // pass an empty list of maps
+                                    'body': {},
+                                    'itemsList': [], // pass an empty list of maps
+                                    'orderDetails':filteredData.map((detail) => OrderDetail(
+                                      orderId: detail.orderId,
+                                      orderDate: detail.orderDate, items: [],
+                                      // Add other fields as needed
+                                    )).toList(),
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SixthPage(
+                                          product: detail,
+                                          item:  const [],
+                                          body: const {},
+                                          itemsList: const [],
+                                          orderDetails: filteredData.map((detail) => OrderDetail(
+                                            orderId: detail.orderId,
+                                            orderDate: detail.orderDate, items: [],
+                                            // Add other fields as needed
+                                          )).toList(),
+                                          //storeStaticData: storeStaticData,
+
+                                        )
+                                    )
+                                    , // pass the selected product here
+                                  );
+                                },
+                                child: Container(child: Text(detail.orderId!)),
+                              ),
+                            )),
+                        DataCell(
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onEnter: (event) {
+                                setState(() {
+                                  detail.isSelected = true;
+                                });
+                              },
+                              onExit: (event) {
+                                detail.isSelected = false;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go('/OrdersList', extra: {
+                                    'product': detail,
+                                    'item': [], // pass an empty list of maps
+                                    'body': {},
+                                    'itemsList': [], // pass an empty list of maps
+                                    'orderDetails':filteredData.map((detail) => OrderDetail(
+                                      orderId: detail.orderId,
+                                      orderDate: detail.orderDate, items: [],
+                                      // Add other fields as needed
+                                    )).toList(),
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SixthPage(
+                                          product: detail,
+                                          item:  const [],
+                                          body: const {},
+                                          itemsList: const [],
+                                          orderDetails: filteredData.map((detail) => OrderDetail(
+                                            orderId: detail.orderId,
+                                            orderDate: detail.orderDate, items: [],
+                                            // Add other fields as needed
+                                          )).toList(),
+                                          //storeStaticData: storeStaticData,
+
+                                        )
+                                    )
+                                    , // pass the selected product here
+                                  );
+                                },
+                                child: Container(child: Text(detail.orderDate)),
+                              ),
+                            )),
+                        DataCell(
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onEnter: (event) {
+                                setState(() {
+                                  detail.isSelected = true;
+                                });
+                              },
+                              onExit: (event) {
+                                detail.isSelected = false;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go('/OrdersList', extra: {
+                                    'product': detail,
+                                    'item': [], // pass an empty list of maps
+                                    'body': {},
+                                    'itemsList': [], // pass an empty list of maps
+                                    'orderDetails':filteredData.map((detail) => OrderDetail(
+                                      orderId: detail.orderId,
+                                      orderDate: detail.orderDate, items: [],
+                                      // Add other fields as needed
+                                    )).toList(),
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SixthPage(
+                                          product: detail,
+                                          item:  const [],
+                                          body: const {},
+                                          itemsList: const [],
+                                          orderDetails: filteredData.map((detail) => OrderDetail(
+                                            orderId: detail.orderId,
+                                            orderDate: detail.orderDate, items: [],
+                                            // Add other fields as needed
+                                          )).toList(),
+                                          //storeStaticData: storeStaticData,
+
+                                        )
+                                    )
+                                    , // pass the selected product here
+                                  );
+                                },
+                                child: Container(child: Text(detail.referenceNumber)),
+                              ),
+                            )),
+                        DataCell(
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onEnter: (event) {
+                                setState(() {
+                                  detail.isSelected = true;
+                                });
+                              },
+                              onExit: (event) {
+                                detail.isSelected = false;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go('/OrdersList', extra: {
+                                    'product': detail,
+                                    'item': [], // pass an empty list of maps
+                                    'body': {},
+                                    'itemsList': [], // pass an empty list of maps
+                                    'orderDetails':filteredData.map((detail) => OrderDetail(
+                                      orderId: detail.orderId,
+                                      orderDate: detail.orderDate, items: [],
+                                      // Add other fields as needed
+                                    )).toList(),
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SixthPage(
+                                          product: detail,
+                                          item:  const [],
+                                          body: const {},
+                                          itemsList: const [],
+                                          orderDetails: filteredData.map((detail) => OrderDetail(
+                                            orderId: detail.orderId,
+                                            orderDate: detail.orderDate, items: [],
+                                            // Add other fields as needed
+                                          )).toList(),
+                                          //storeStaticData: storeStaticData,
+
+                                        )
+                                    )
+                                    , // pass the selected product here
+                                  );
+                                },
+                                child: Container(child: Text(detail.total.toString())),
+                              ),
+                            )),
+                        DataCell(
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onEnter: (event) {
+                                setState(() {
+                                  detail.isSelected = true;
+                                });
+                              },
+                              onExit: (event) {
+                                detail.isSelected = false;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go('/OrdersList', extra: {
+                                    'product': detail,
+                                    'item': [], // pass an empty list of maps
+                                    'body': {},
+                                    'itemsList': [], // pass an empty list of maps
+                                    'orderDetails':filteredData.map((detail) => OrderDetail(
+                                      orderId: detail.orderId,
+                                      orderDate: detail.orderDate, items: [],
+                                      // Add other fields as needed
+                                    )).toList(),
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SixthPage(
+                                          product: detail,
+                                          item:  const [],
+                                          body: const {},
+                                          itemsList: const [],
+                                          orderDetails: filteredData.map((detail) => OrderDetail(
+                                            orderId: detail.orderId,
+                                            orderDate: detail.orderDate, items: [],
+                                            // Add other fields as needed
+                                          )).toList(),
+                                          //storeStaticData: storeStaticData,
+
+                                        )
+                                    )
+                                    , // pass the selected product here
+                                  );
+                                },
+                                child: Container(child: Text(detail.deliveryStatus)),
+                              ),
+                            )),
+
+                      ]);
+                }).toList(),
+                // rows: filteredData.skip((currentPage -1)* itemsPerPage).take(itemsPerPage).map((product) {
+                //   final isSelected = _selectedProduct == product;
+                //   return DataRow(
+                //       color: MaterialStateColor.resolveWith(
+                //               (states) => isSelected ? Colors.grey[200]! : Colors.white),
+                //       cells: [
+                //         DataCell(
+                //             MouseRegion(
+                //               cursor: SystemMouseCursors.click,
+                //               onEnter: (event) {
+                //                 setState(() {
+                //                   _selectedProduct = product;
+                //                 });
+                //               },
+                //               onExit: (event) {
+                //                 _selectedProduct = null;
+                //               },
+                //               child: GestureDetector(
+                //                 onTap: () {
+                //                   //origingal
+                //                   //corrected code for router
+                //
+                //                   context.go('/OrdersList', extra: {
+                //                     'product': product,
+                //                     'item': [], // pass an empty list of maps
+                //                     'body': {},
+                //                     'itemsList': [], // pass an empty list of maps
+                //                   });
+                //
+                //                   //  Order order = Order.fromDetail(_selectedOrder);
+                //                   // setState(() {
+                //                   //   _selectedProduct = order as Order?;
+                //                   // });
+                //                   // Navigate to the new page and pass the selected product as an argument
+                //                   // correct code for nativation
+                //                   // correct code for nativation
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                         builder: (context) => SixthPage(
+                //                           product: product,
+                //                           item:  [],
+                //                           body: {},
+                //                           itemsList: [],
+                //                         )), // pass the selected product here
+                //                   );
+                //                   //for shortcut seventhpage
+                //                   // Navigator.push(
+                //                   //   context,
+                //                   //   MaterialPageRoute(
+                //                   //       builder: (context) => SeventhPage(selectedProducts: {}, product: detail,
+                //                   //
+                //                   //       )), // pass the selected product here
+                //                   // );
+                //                 },
+                //                 child: Container(
+                //                   // padding: EdgeInsets.only(left: 40),
+                //                     child: Text(product.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),)),
+                //               ),
+                //             )),
+                //         DataCell(
+                //             MouseRegion(
+                //               cursor: SystemMouseCursors.click,
+                //               onEnter: (event) {
+                //                 setState(() {
+                //                   _selectedProduct = product;
+                //                 });
+                //               },
+                //               onExit: (event) {
+                //                 _selectedProduct = null;
+                //               },
+                //               child: GestureDetector(
+                //                 onTap: () {
+                //                   context.go('/OrdersList', extra: {
+                //                     'product': product,
+                //                     'item': [], // pass an empty list of maps
+                //                     'body': {},
+                //                     'itemsList': [], // pass an empty list of maps
+                //                   });
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                         builder: (context) => SixthPage(
+                //                           product: product,
+                //                           item:  [],
+                //                           body: {},
+                //                           itemsList: [],
+                //                         )), // pass the selected product here
+                //                   );
+                //                 },
+                //                 child: Container(child: Text(product.orderId!)),
+                //               ),
+                //             )),
+                //         DataCell(
+                //             MouseRegion(
+                //               cursor: SystemMouseCursors.click,
+                //               onEnter: (event) {
+                //                 setState(() {
+                //                   _selectedProduct = product;
+                //                 });
+                //               },
+                //               onExit: (event) {
+                //                 _selectedProduct = null;
+                //               },
+                //               child: GestureDetector(
+                //                 onTap: () {
+                //                   context.go('/OrdersList', extra: {
+                //                     'product': product,
+                //                     'item': [], // pass an empty list of maps
+                //                     'body': {},
+                //                     'itemsList': [], // pass an empty list of maps
+                //                   });
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                         builder: (context) => SixthPage(
+                //                           product: product,
+                //                           item:  [],
+                //                           body: {},
+                //                           itemsList: [],
+                //                         )), // pass the selected product here
+                //                   );
+                //                 },
+                //                 child: Container(child: Text(product.orderDate)),
+                //               ),
+                //             )),
+                //         DataCell(
+                //             MouseRegion(
+                //               cursor: SystemMouseCursors.click,
+                //               onEnter: (event) {
+                //                 setState(() {
+                //                   _selectedProduct = product;
+                //                 });
+                //               },
+                //               onExit: (event) {
+                //                 _selectedProduct = null;
+                //               },
+                //               child: GestureDetector(
+                //                 onTap: () {
+                //                   context.go('/OrdersList', extra: {
+                //                     'product': product,
+                //                     'item': [], // pass an empty list of maps
+                //                     'body': {},
+                //                     'itemsList': [], // pass an empty list of maps
+                //                   });
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                         builder: (context) => SixthPage(
+                //                           product: product,
+                //                           item:  [],
+                //                           body: {},
+                //                           itemsList: [],
+                //                         )), // pass the selected product here
+                //                   );
+                //                 },
+                //                 child: Container(child: Text(product.referenceNumber)),
+                //               ),
+                //             )),
+                //         DataCell(
+                //             MouseRegion(
+                //               cursor: SystemMouseCursors.click,
+                //               onEnter: (event) {
+                //                 setState(() {
+                //
+                //                   _selectedProduct = product;
+                //                 });
+                //               },
+                //               onExit: (event) {
+                //                 _selectedProduct = null;
+                //               },
+                //               child: GestureDetector(
+                //                 onTap: () {
+                //                   context.go('/OrdersList', extra: {
+                //                     'product': product,
+                //                     'item': [], // pass an empty list of maps
+                //                     'body': {},
+                //                     'itemsList': [], // pass an empty list of maps
+                //                   });
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                         builder: (context) => SixthPage(
+                //                           product: product,
+                //                           item:  [],
+                //                           body: {},
+                //                           itemsList: [],
+                //                         )), // pass the selected product here
+                //                   );
+                //                 },
+                //                 child: Container(child: Text(product.total.toString())),
+                //               ),
+                //             )),
+                //         DataCell(
+                //             MouseRegion(
+                //               cursor: SystemMouseCursors.click,
+                //               onEnter: (event) {
+                //                 setState(() {
+                //                   _selectedProduct = product;
+                //                 });
+                //               },
+                //               onExit: (event) {
+                //                 _selectedProduct = null;
+                //               },
+                //               child: GestureDetector(
+                //                 onTap: () {
+                //                   context.go('/OrdersList', extra: {
+                //                     'product': product,
+                //                     'item': [], // pass an empty list of maps
+                //                     'body': {},
+                //                     'itemsList': [], // pass an empty list of maps
+                //                   });
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                         builder: (context) => SixthPage(
+                //                           product: product,
+                //                           item:  [],
+                //                           body: {},
+                //                           itemsList: [],
+                //                         )), // pass the selected product here
+                //                   );
+                //                 },
+                //                 child: Container(child: Text(product.deliveryStatus)),
+                //               ),
+                //             )),
+                //
+                //       ]);
+                // }).toList(),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Divider(
+              color: Colors.grey,
+              height: 1,
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: PaginationControls(
+              currentPage: currentPage,
+              totalPages: totalPages,
+              // onFirstPage: _goToFirstPage,
+              onPreviousPage: _goToPreviousPage,
+              onNextPage: _goToNextPage,
+              // onLastPage: _goToLastPage,
+            ),
+          ),
+        ],
+
+      );
+
+      FutureBuilder<List<detail>>(
         future: futureOrders,
         builder: (context, snapshot) {
+
           if (snapshot.hasData) {
-            return Column(
-              children: [
-                Container(
-                  width: right,
-                  color: const Color(0xFFF7F7F7),
-                  child: DataTable(
-                    headingRowHeight: 50,
-                    columns: [
-                      DataColumn(label: Container(
-                          child: Text('Status',style:TextStyle( color: Colors.indigo[900],   fontSize: 15,
-                            fontWeight: FontWeight.bold,),))),
-                      DataColumn(label: Container(child: Text('Order ID',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Created Date',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Reference Number',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Total Amount',style:TextStyle(                            color: Colors.indigo[900], fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                      DataColumn(label: Container(child: Text('Delivery Status',style:  TextStyle(
-                          color: Colors.indigo[900],
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),))),
-                    ],
-                    rows: snapshot.data!.map((detail detail) {
-                      //final isSelected = false;
-                      bool isSelected = detail.isSelected;
-                      return DataRow(
-                          color: MaterialStateColor.resolveWith(
-                                  (states) => isSelected ? Colors.grey[200]! : Colors.white),
-                          cells: [
-                            DataCell(
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (event) {
-                                    setState(() {
-                                      detail.isSelected = true;
-                                    });
-                                  },
-                                  onExit: (event) {
-                                    detail.isSelected = false;
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      //origingal
-                                      //corrected code for router
+            filteredData = productList.where((element) {
+              final matchesSearchText= element.orderId!.toLowerCase().contains(searchQuery.toLowerCase());
+              print('-----');
+              print(element.orderDate);
+              String orderYear = '';
+              if (element.orderDate.contains('/')) {
+                final dateParts = element.orderDate.split('/');
+                if (dateParts.length == 3) {
+                  orderYear = dateParts[2]; // Extract the year
+                }
+              }
+              // final orderYear = element.orderDate.substring(5,9);
+              if (status.isEmpty && selectDate.isEmpty) {
+                return matchesSearchText; // Include all products that match the search text
+              }
+              if(status == 'Status' && selectDate == 'SelectYear'){
+                return matchesSearchText;
+              }
+              if(status == 'Status' &&  selectDate.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if(selectDate == 'SelectYear' &&  status.isEmpty)
+              {
+                return matchesSearchText;
+              }
+              if (status == 'Status' && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
+              if (status.isNotEmpty && selectDate == 'SelectYear') {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              if (status.isEmpty && selectDate.isNotEmpty) {
+                return matchesSearchText && orderYear == selectDate; // Include all products
+              }
 
-                                      context.go('/OrdersList', extra: {
-                                        'product': detail,
-                                        'item': [], // pass an empty list of maps
-                                        'body': {},
-                                        'itemsList': [], // pass an empty list of maps
-                                      });
+              if (status.isNotEmpty && selectDate.isEmpty) {
+                return matchesSearchText && element.status == status;// Include all products
+              }
+              return matchesSearchText &&
+                  (element.status == status && orderYear == selectDate);
+              //  return false;
+            }).toList();
 
-                                      //  Order order = Order.fromDetail(_selectedOrder);
-                                      // setState(() {
-                                      //   _selectedProduct = order as Order?;
-                                      // });
-                                      // Navigate to the new page and pass the selected product as an argument
-                                      // correct code for nativation
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SixthPage(
-                                              product: detail,
-                                              item:  const [],
-                                              body: const {},
-                                              itemsList: const [],
-                                            )), // pass the selected product here
-                                      );
-                                      //for shortcut seventhpage
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) => SeventhPage(selectedProducts: {}, product: detail,
-                                      //
-                                      //       )), // pass the selected product here
-                                      // );
-                                    },
-                                    child: Text(detail.status, style: TextStyle(fontSize: 15,color:isSelected ? Colors.deepOrange[200] : const Color(0xFFFFB315) ,),),
-                                  ),
-                                )),
-                            DataCell(
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (event) {
-                                    setState(() {
-                                      detail.isSelected = true;
-                                    });
-                                  },
-                                  onExit: (event) {
-                                    detail.isSelected = false;
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context.go('/OrdersList', extra: {
-                                        'product': detail,
-                                        'item': [], // pass an empty list of maps
-                                        'body': {},
-                                        'itemsList': [], // pass an empty list of maps
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SixthPage(
-                                              product: detail,
-                                              item:  const [],
-                                              body: const {},
-                                              itemsList: const [],
-                                            )), // pass the selected product here
-                                      );
-                                    },
-                                    child: Container(child: Text(detail.orderId!)),
-                                  ),
-                                )),
-                            DataCell(
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (event) {
-                                    setState(() {
-                                      detail.isSelected = true;
-                                    });
-                                  },
-                                  onExit: (event) {
-                                    detail.isSelected = false;
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context.go('/OrdersList', extra: {
-                                        'product': detail,
-                                        'item': [], // pass an empty list of maps
-                                        'body': {},
-                                        'itemsList': [], // pass an empty list of maps
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SixthPage(
-                                              product: detail,
-                                              item:  const [],
-                                              body: const {},
-                                              itemsList: const [],
-                                            )), // pass the selected product here
-                                      );
-                                    },
-                                    child: Text(detail.orderDate),
-                                  ),
-                                )),
-                            DataCell(
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (event) {
-                                    setState(() {
-                                      detail.isSelected = true;
-                                    });
-                                  },
-                                  onExit: (event) {
-                                    detail.isSelected = false;
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context.go('/OrdersList', extra: {
-                                        'product': detail,
-                                        'item': [], // pass an empty list of maps
-                                        'body': {},
-                                        'itemsList': [], // pass an empty list of maps
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SixthPage(
-                                              product: detail,
-                                              item:  const [],
-                                              body: const {},
-                                              itemsList: const [],
-                                            )), // pass the selected product here
-                                      );
-                                    },
-                                    child: Text(detail.referenceNumber),
-                                  ),
-                                )),
-                            DataCell(
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (event) {
-                                    setState(() {
-                                      detail.isSelected = true;
-                                    });
-                                  },
-                                  onExit: (event) {
-                                    detail.isSelected = false;
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context.go('/OrdersList', extra: {
-                                        'product': detail,
-                                        'item': [], // pass an empty list of maps
-                                        'body': {},
-                                        'itemsList': [], // pass an empty list of maps
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SixthPage(
-                                              product: detail,
-                                              item:  const [],
-                                              body: const {},
-                                              itemsList: const [],
-                                            )), // pass the selected product here
-                                      );
-                                    },
-                                    child: Text(detail.total.toString()),
-                                  ),
-                                )),
-                            DataCell(
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  onEnter: (event) {
-                                    setState(() {
-                                      detail.isSelected = true;
-                                    });
-                                  },
-                                  onExit: (event) {
-                                    detail.isSelected = false;
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context.go('/OrdersList', extra: {
-                                        'product': detail,
-                                        'item': [], // pass an empty list of maps
-                                        'body': {},
-                                        'itemsList': [], // pass an empty list of maps
-                                      });
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SixthPage(
-                                              product: detail,
-                                              item:  const [],
-                                              body: const {},
-                                              itemsList: const [],
-                                            )), // pass the selected product here
-                                      );
-                                    },
-                                    child: Text(detail.deliveryStatus),
-                                  ),
-                                )),
 
-                          ]);
-                    }).toList(),
-                  ),
-                )
-              ],
 
-            );
+
+
           } else if (snapshot.hasError) {
             return Center(child: Text("${snapshot.error}"));
           }
 
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator());
         },
       );
+    });
+
+  }
+  void _filterAndPaginateProducts() {
+    filteredData = productList.where((product) {
+      final matchesSearchText= product.orderId!.toLowerCase().contains(_searchText.toLowerCase());
+      print('-----');
+      print(product.orderDate);
+      String orderYear = '';
+      if (product.orderDate.contains('/')) {
+        final dateParts = product.orderDate.split('/');
+        if (dateParts.length == 3) {
+          orderYear = dateParts[2]; // Extract the year
+        }
+      }
+      // final orderYear = element.orderDate.substring(5,9);
+      if (status.isEmpty && selectDate.isEmpty) {
+        return matchesSearchText; // Include all products that match the search text
+      }
+      if(status == 'Status' && selectDate == 'SelectYear'){
+        return matchesSearchText;
+      }
+      if(status == 'Status' &&  selectDate.isEmpty)
+      {
+        return matchesSearchText;
+      }
+      if(selectDate == 'SelectYear' &&  status.isEmpty)
+      {
+        return matchesSearchText;
+      }
+      if (status == 'Status' && selectDate.isNotEmpty) {
+        return matchesSearchText && orderYear == selectDate; // Include all products
+      }
+      if (status.isNotEmpty && selectDate == 'SelectYear') {
+        return matchesSearchText && product.status == status;// Include all products
+      }
+      if (status.isEmpty && selectDate.isNotEmpty) {
+        return matchesSearchText && orderYear == selectDate; // Include all products
+      }
+
+      if (status.isNotEmpty && selectDate.isEmpty) {
+        return matchesSearchText && product.status == status;// Include all products
+      }
+      return matchesSearchText &&
+          (product.status == status && orderYear == selectDate);
+      //  return false;
+    }).toList();
+    setState(() {
+      currentPage = 1;
     });
 
   }
@@ -1118,25 +1522,6 @@ class _OrderspageState extends State<Orderspage> {
     }
   }
 }
-//   void _showDatePicker(BuildContext context) {
-//     showDatePicker(
-//       context: context,
-//       initialDate: DateTime.now(),
-//       firstDate: DateTime(2000),
-//       lastDate: DateTime(2101),
-//     ).then((selectedDate) {
-//       if (selectedDate != null) {
-//         // Handle selected date
-//       }
-//     });
-//   }
-// }
-
-
-
-
-
-
 class detail {
   final String? orderId;
   final String? value;
@@ -1218,65 +1603,78 @@ class detail {
 }
 
 
-// class Detail {
-//   final String? orderId;
-//   final String? orderDate;
-//   final String? deliveryLocation;
-//   final String? deliveryAddress;
-//   final String? contactPerson;
-//   final String? contactNumber;
-//   final String? comments;
-//   final double total;
-//   final List<dynamic> items;
-//
-//   Detail({
-//     this.orderId,
-//     this.orderDate,
-//     this.deliveryLocation,
-//     this.deliveryAddress,
-//     this.contactPerson,
-//     this.contactNumber,
-//     this.comments,
-//     required this.total,
-//     required this.items,
-//   });
-//
-//   factory Detail.fromJson(Map<String, dynamic> json) {
-//     return Detail(
-//       orderId: json['orderId'],
-//       orderDate: json['orderDate'],
-//       deliveryLocation: json['deliveryLocation'],
-//       deliveryAddress: json['deliveryAddress'],
-//       contactPerson: json['contactPerson'],
-//       contactNumber: json['contactNumber'],
-//       comments: json['comments'],
-//       total: json['total'].toDouble(),
-//       items: json['items'],
-//     );
-//   }
-//
-//   factory Detail.fromString(String jsonString) {
-//     final jsonMap = jsonDecode(jsonString);
-//     return Detail.fromJson(jsonMap);
-//   }
-//
-//   @override
-//   String toString() {
-//     return 'Order ID: $orderId, Order Date: $orderDate, Delivery Location: $deliveryLocation, Delivery Address: $deliveryAddress, Contact Person: $contactPerson, Contact Number: $contactNumber, Comments: $comments, Total: $total, Items: $items';
-//   }
-//
-//   String toJson() {
-//     return jsonEncode({
-//       "orderId": orderId,
-//       "orderDate": orderDate,
-//       "deliveryLocation": deliveryLocation,
-//       "deliveryAddress": deliveryAddress,
-//       "contactPerson": contactPerson,
-//       "contactNumber": contactNumber,
-//       "comments": comments,
-//       "total": total,
-//       "items": items,
-//     });
-//   }
-// }
+class OrderDetail {
+  String? orderId;
+  String? orderDate;
+  String? referenceNumber;
+  double? total;
+  String? deliveryStatus;
+  String? status;
+  final String? deliveryLocation;
+  final String? deliveryAddress;
+  final String? contactPerson;
+  final String? contactNumber;
+  final String? comments;
+  final List<dynamic> items;
 
+  OrderDetail({
+    this.orderId,
+    this.orderDate,
+    this.referenceNumber,
+    this.total,
+    this.deliveryStatus,
+    this.status,
+    this.deliveryLocation,
+    this.deliveryAddress,
+    this.contactPerson,
+    this.contactNumber,
+    this.comments,
+    required this.items,
+  });
+
+  factory OrderDetail.fromJson(Map<String, dynamic> json) {
+    return OrderDetail(
+      orderId: json['orderId'],
+      orderDate: json['orderDate'] ?? 'Unknown date',
+      total: json['total'].toDouble() ?? 0.0,
+      status: 'In preparation',
+      // Dummy value
+      deliveryStatus: 'Not Started',
+      // Dummy value
+      referenceNumber: '  ', // Dummy value
+      deliveryLocation: json['deliveryLocation'],
+      deliveryAddress: json['deliveryAddress'],
+      contactPerson: json['contactPerson'],
+      contactNumber: json['contactNumber'],
+      comments: json['comments'],
+      items: json['items'],
+    );
+  }
+
+  factory OrderDetail.fromString(String jsonString) {
+    final jsonMap = jsonDecode(jsonString);
+    return OrderDetail.fromJson(jsonMap);
+  }
+
+  @override
+  String toString() {
+    return 'Order ID: $orderId, Order Date: $orderDate, Total: $total, Status: $status, Delivery Status: $deliveryStatus, Reference Number: $referenceNumber';
+  }
+
+  String toJson() {
+    return jsonEncode({
+      "orderId": orderId,
+      "orderDate": orderDate,
+      "total": total,
+      "status": status,
+      "deliveryStatus": deliveryStatus,
+      "referenceNumber": referenceNumber,
+      "items": items,
+      "deliveryLocation": deliveryLocation,
+      "deliveryAddress": deliveryAddress,
+      "contactPerson": contactPerson,
+      "contactNumber": contactNumber,
+      "comments": comments,
+    });
+  }
+}
