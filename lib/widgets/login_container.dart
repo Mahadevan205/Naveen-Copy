@@ -32,13 +32,37 @@ class _LoginContainerState extends State<LoginContainer1> {
         }
       } else {
         window.sessionStorage["token"] = tempData['token'];
-        context.go(PageName.dashboardRoute);
-        Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: (context, animation,
-              secondaryAnimation) =>
-              DashboardPage(
-              ),
-        ));
+        // Navigator.pushNamed(context, '/dashboard').then((_) {
+        //   showDialog(
+        //     context: context,
+        //     builder: (BuildContext context) {
+        //       return DashboardPage();
+        //     },
+        //   );
+        // });
+        // Navigator.of(context).pushNamed<T>('/:dashbaord');
+        // Navigator.pushNamed(
+        //   context,
+        //   '/:dashboard', // Replace 123 with the actual product ID.
+        // );
+        context.go('/Home');
+        //original code
+        // context.go(PageName.dashboardRoute);
+        // Navigator.of(context).push(PageRouteBuilder(
+        //   pageBuilder: (context, animation,
+        //       secondaryAnimation) =>
+        //       DashboardPage(
+        //       ),
+        //   //settings: RouteSettings(name: '/:dashboard'),
+        // ));
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     path: '/dashboard/productpage/:product',
+        //     builder: (context) => ProductPage(
+        //       product: null,
+        //     ),
+        //   ),
+        // );
       }
     }
   }

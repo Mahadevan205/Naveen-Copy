@@ -477,12 +477,12 @@ class _ProductForm1State extends State<ProductForm1> {
                           TextButton.icon(
                             onPressed: () {
                               context.go(
-                                  '/dashboard/productpage/:product/dashboard');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const DashboardPage()),
-                              );
+                                  '/Product_View/Home');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => const DashboardPage()),
+                              // );
                             },
                             icon: Icon(Icons.dashboard,
                                 color: Colors.indigo[900]),
@@ -511,12 +511,12 @@ class _ProductForm1State extends State<ProductForm1> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              context.go('/:products/Orderspage');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Orderspage()),
-                              );
+                              context.go('/Product_View/Orderspage/:Orders');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => const Orderspage()),
+                              // );
                               setState(() {
                                 isOrdersSelected = false;
                                 // Handle button press19
@@ -564,24 +564,24 @@ class _ProductForm1State extends State<ProductForm1> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              context.go('/dashboard/return/:return');
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) =>
-                                  const Returnpage(),
-                                  transitionDuration:
-                                  const Duration(milliseconds: 200),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                              context.go('/Product_View/Return/:return');
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation, secondaryAnimation) =>
+                              //     const Returnpage(),
+                              //     transitionDuration:
+                              //     const Duration(milliseconds: 200),
+                              //     transitionsBuilder: (context, animation,
+                              //         secondaryAnimation, child) {
+                              //       return FadeTransition(
+                              //         opacity: animation,
+                              //         child: child,
+                              //       );
+                              //     },
+                              //   ),
+                              // );
                             },
                             icon: Icon(Icons.backspace_sharp,
                                 color: Colors.blue[900]),
@@ -787,12 +787,12 @@ class _ProductForm1State extends State<ProductForm1> {
                               icon: const Icon(
                                   Icons.arrow_back), // Back button icon
                               onPressed: () {
-                                context.go('/dashboard/productpage/:product');
-                                Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                      const ProductPage(product: null),
-                                ));
+                                context.go('/Products');
+                                // Navigator.of(context).push(PageRouteBuilder(
+                                //   pageBuilder: (context, animation,
+                                //       secondaryAnimation) =>
+                                //       const ProductPage(product: null),
+                                // ));
                               },
                             ),
                             const Padding(
@@ -850,28 +850,28 @@ class _ProductForm1State extends State<ProductForm1> {
                                       'imageId': widget.displayData['imageId']?? imageIdContoller.text?? '',
                                       'productData': {}, // or pass the actual product data
                                    });
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EditOrder(
-                                          prodId: prodText,
-                                          // product: null,
-                                          textInput: _textInput,
-                                          priceInput: _priceInput,
-                                          discountInput: discountInput,
-                                          inputText: inputText,
-                                          subText: subText,
-                                          unitText: unitText,
-                                          taxText: taxText,
-                                          imagePath: storeImageBytes1,
-                                          imageId:
-                                          widget.displayData['imageId'] ??
-                                              imageIdContoller.text ??
-                                              "",
-                                          productData: {},
-                                        ),
-                                      ),
-                                    );
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => EditOrder(
+                                    //       prodId: prodText,
+                                    //       // product: null,
+                                    //       textInput: _textInput,
+                                    //       priceInput: _priceInput,
+                                    //       discountInput: discountInput,
+                                    //       inputText: inputText,
+                                    //       subText: subText,
+                                    //       unitText: unitText,
+                                    //       taxText: taxText,
+                                    //       imagePath: storeImageBytes1,
+                                    //       imageId:
+                                    //       widget.displayData['imageId'] ??
+                                    //           imageIdContoller.text ??
+                                    //           "",
+                                    //       productData: {},
+                                    //     ),
+                                    //   ),
+                                    // );
                                   } else {
                                     // Handle case when imagePath is null or other required fields are empty
                                     print(

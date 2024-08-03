@@ -403,12 +403,12 @@ class _SecondPageState extends State<SecondPage> {
                               Icons.arrow_back), // Back button icon
                           onPressed: () {
                             context.go(
-                                '/dashboard/productpage/:product');
-                            Navigator.of(context).push(PageRouteBuilder(
-                              pageBuilder: (context, animation,
-                                  secondaryAnimation) =>
-                              const ProductPage(product: null),
-                            ));
+                                '/Products');
+                            // Navigator.of(context).push(PageRouteBuilder(
+                            //   pageBuilder: (context, animation,
+                            //       secondaryAnimation) =>
+                            //   const ProductPage(product: null),
+                            // ));
                           },
                         ),
                         const Padding(

@@ -519,7 +519,7 @@ class _EditOrderState extends State<EditOrder> {
                                 // context.go(
                                 //     '${PageName.subsubpage2Main}/${PageName.subpage2Main}');
                                 //router maha dev
-                                context.go('/dashboard/productpage/ontap/Edit/Update1', extra: {
+                                context.go('/dashboard/productpage/ontap/Edit/Update', extra: {
                                   'displayData':  widget.productData,
                                   'product': null,
                                   'imagePath': null,
@@ -532,29 +532,29 @@ class _EditOrderState extends State<EditOrder> {
                                   'discountText': widget.productData['discount'],
                                   'prodId': widget.prodId,
                                 });
-                                Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                      ProductForm1(
-                                        displayData: widget.productData,
-                                        product: null,
-                                        imagePath: null,
-                                        // imageName: widget.product!.imageId,
-                                        productText:
-                                        widget.productData['productName'],
-                                        selectedValue:
-                                        widget.productData['category'],
-                                        selectedValue1:
-                                        widget.productData['subCategory'],
-                                        selectedValue3: widget.productData['tax'],
-                                        selectedvalue2:
-                                        widget.productData['unit'],
-                                        priceText: widget.productData['price'],
-                                        discountText:
-                                        widget.productData['discount'],
-                                        prodId: widget.prodId,
-                                      ),
-                                ));
+                                // Navigator.of(context).push(PageRouteBuilder(
+                                //   pageBuilder: (context, animation,
+                                //       secondaryAnimation) =>
+                                //       ProductForm1(
+                                //         displayData: widget.productData,
+                                //         product: null,
+                                //         imagePath: null,
+                                //         // imageName: widget.product!.imageId,
+                                //         productText:
+                                //         widget.productData['productName'],
+                                //         selectedValue:
+                                //         widget.productData['category'],
+                                //         selectedValue1:
+                                //         widget.productData['subCategory'],
+                                //         selectedValue3: widget.productData['tax'],
+                                //         selectedvalue2:
+                                //         widget.productData['unit'],
+                                //         priceText: widget.productData['price'],
+                                //         discountText:
+                                //         widget.productData['discount'],
+                                //         prodId: widget.prodId,
+                                //       ),
+                                // ));
                               }
                             },
                             style: OutlinedButton.styleFrom(
@@ -606,12 +606,12 @@ class _EditOrderState extends State<EditOrder> {
                           TextButton.icon(
                             onPressed: () {
                               context.go(
-                                  '/dashboard/productpage/:product/dashboard');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const DashboardPage()),
-                              );
+                                  '/Edit/Home');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => const DashboardPage()),
+                              // );
                             },
                             icon: Icon(Icons.dashboard,
                                 color: Colors.indigo[900]),
@@ -640,24 +640,24 @@ class _EditOrderState extends State<EditOrder> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              context.go('/:products/Orderspage');
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) =>
-                                  const Orderspage(),
-                                  transitionDuration:
-                                  const Duration(milliseconds: 200),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                              context.go('/Edit/Orderspage/:Return');
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation, secondaryAnimation) =>
+                              //     const Orderspage(),
+                              //     transitionDuration:
+                              //     const Duration(milliseconds: 200),
+                              //     transitionsBuilder: (context, animation,
+                              //         secondaryAnimation, child) {
+                              //       return FadeTransition(
+                              //         opacity: animation,
+                              //         child: child,
+                              //       );
+                              //     },
+                              //   ),
+                              // );
                               setState(() {
                                 isOrdersSelected = false;
                                 // Handle button press19
@@ -705,24 +705,24 @@ class _EditOrderState extends State<EditOrder> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              context.go('/dashboard/return/:return');
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) =>
-                                  const Returnpage(),
-                                  transitionDuration:
-                                  const Duration(milliseconds: 200),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                              context.go('/Edit/Return/:Return');
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation, secondaryAnimation) =>
+                              //     const Returnpage(),
+                              //     transitionDuration:
+                              //     const Duration(milliseconds: 200),
+                              //     transitionsBuilder: (context, animation,
+                              //         secondaryAnimation, child) {
+                              //       return FadeTransition(
+                              //         opacity: animation,
+                              //         child: child,
+                              //       );
+                              //     },
+                              //   ),
+                              // );
                             },
                             icon: Icon(Icons.backspace_sharp,
                                 color: Colors.blue[900]),

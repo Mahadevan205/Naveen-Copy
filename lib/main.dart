@@ -49,7 +49,7 @@ void main()async {
 
 abstract class PageName {
   static const homeRoute = '/';
-  static const dashboardRoute = '/dashboard';
+  static const dashboardRoute = '/Home';
   static const subpage1 = 'subpage1'; // Relative path, no leading slash
   static const subpage2 = 'subpage2'; // Relative path, no leading slash
   static const subsubPage1 = 'subsubPage1';
@@ -62,19 +62,82 @@ abstract class PageName {
       'subsubpage2Main'; // Relative path, no leading slash
 }
 
+
+
+
+
+
 class MyApp extends StatelessWidget {
-
-
   final _router = GoRouter(
-    initialLocation: window.sessionStorage.containsKey('token') ? '/dashboard' : '/',
-    routes: [
+    initialLocation: window.sessionStorage.containsKey('token') ? '/Home' : '/',
+    routes:<RouteBase> [
       GoRoute(
         path: '/',
         builder: (context, state) => const LoginScr(),
       ),
       GoRoute(
-        path: '/dashboard',
-        builder: (context, state) =>  DashboardPage(),
+        path: '/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Create_return/Return/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Create_return/Return/Products',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Create_return/Return/Orders',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
         path: '/Orders/dashboard',
@@ -103,7 +166,6 @@ class MyApp extends StatelessWidget {
         path: '/Add_Image',
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>?; // Cast to Map<String, dynamic>
-
           final orderDetails = extra?['orderDetails'] as List<dynamic>;
           final storeImages = extra?['storeImages'] as List<String>;
           final imageSizeStrings = extra?['imageSizeStrings'] as List<String>;
@@ -118,25 +180,119 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        //remain me to use as last sprint consult wtih krishna sir
-        path: '/dashboard/productpage/:product/dashboard',
-        builder: (context, state) => const DashboardPage(),
+        path: '/Products/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Orders/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Return/Orders',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Orderspage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Return/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child:
+              DashboardPage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
         //remain me to use as last sprint consult wtih krishna sir
         path: '/Return_List',
         builder: (context, state) => const Returnpage(),
       ),
-
       GoRoute(
-        path: '/dashboard/productpage/:product',
+        path: '/Products',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Home/Products/Add_Product',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: SecondPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/:Home/Add_Product/:Products',
         builder: (context, state) {
           final product = state.extra as ord.Product?;
           return ProductPage(product: product);
         },
       ),
       GoRoute(
-        path: '/dashboard/return/:return',
+        path: '/:Home/:Return',
         builder: (context, state) {
           // final product = state.extra as ord.Product?;
           return const Returnpage();
@@ -144,25 +300,31 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/OrdersList',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final extra = state.extra as Map<String, dynamic>?;
-          if (extra == null) {
-            return const SixthPage(
+          return CustomTransitionPage(
+            child: extra == null
+                ? const SixthPage(
               product: null,
               item: [],
               body: {},
               itemsList: [],
               orderDetails: [],
-            );
-          } else {
-            return SixthPage(
+            )
+                : SixthPage(
               product: extra['product'] as detail?,
               item: List<Map<String, dynamic>>.from(extra['item']),
               body: Map<String, dynamic>.from(extra['body']),
               itemsList: List<Map<String, dynamic>>.from(extra['itemsList']),
               orderDetails: List<OrderDetail>.from(extra['orderDetails']),
-            );
-          }
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            }, transitionDuration: Duration(milliseconds: 5),
+          );
         },
       ),
       // GoRoute(
@@ -197,35 +359,80 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: '/PlaceOrder',
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: FifthPage(
-            selectedProducts: (state.extra as Map<String, dynamic>)['selectedProducts'] as List<Product> ?? [],
-            data: (state.extra as Map<String, dynamic>)['data'] as Map<String, dynamic> ?? {},
-            select: '',
-          ),
-        ),
+        path: '/Home/Orders/Create_Order/Add_Product/PlaceOrder',
+        pageBuilder: (context, state) {
+          final extraData = state.extra as Map<String, dynamic>? ?? {};
+          final selectedProducts = extraData['selectedProducts'] as List<Product>? ?? [];
+          final data = extraData['data'] as Map<String, dynamic>? ?? {};
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: FifthPage(
+              selectedProducts: selectedProducts,
+              data: data,
+              select: '',
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust the duration as needed
+          );
+        },
       ),
+
       GoRoute(
         path: '/dasbaord/productpage/addproduct',
         builder: (context, state) => const SecondPage(),
       ),
       GoRoute(
-        path: '/dashboard/Add_Product',
-        builder: (context, state) => const SecondPage(),
+        path: '/Add_Product',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: SecondPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
+
       GoRoute(
         path: '/Download',
         builder: (context, state) => const EighthPage(),
       ),
       GoRoute(
-        path: '/Product_List',
-        builder: (context, state) {
+        path: '/Orders/Products',
+        pageBuilder: (context, state) {
           final product = state.extra as ord.Product?;
-          return ProductPage(product: product);
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ProductPage(product: product),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Set transition duration here
+          );
         },
       ),
+
+      // GoRoute(
+      //   path: '/Product_List',
+      //   builder: (context, state) {
+      //     final product = state.extra as ord.Product?;
+      //     return ProductPage(product: product);
+      //   },
+      // ),
       GoRoute(
           path: '/Edit_Product',
           builder: (context, state) {
@@ -247,10 +454,12 @@ class MyApp extends StatelessWidget {
 
       ),
       GoRoute(
-          path: '/dashboard/productpage/:View',
-          builder: (context, state) {
-            final product = state.extra as Product?;
-            return ProductForm1(
+        path: '/dashboard/productpage/:View',
+        pageBuilder: (context, state) {
+          final product = state.extra as Product?;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ProductForm1(
               displayData: const {},
               prodId: product?.prodId,
               imagePath: null,
@@ -262,8 +471,17 @@ class MyApp extends StatelessWidget {
               selectedvalue2: null,
               discountText: null,
               product: product,
-            );
-          }),
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
       GoRoute(
         path: '/Order_List/Documents',
         builder: (context, state) {
@@ -285,76 +503,75 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        name: 'editProductRoute',
-        path: '/dashboard/productpage/:Edit/Edit',
-        builder: (context, state) {
-          final params = state.extra as Map<String, dynamic>?; // Make it nullable
-          if (params == null) {
-            // If params is null, return a default EditOrder or handle it as per your requirement
-            return const EditOrder(
-              prodId: '',
-              textInput: '',
-              priceInput: '',
-              discountInput: '',
-              inputText: '',
-              subText: '',
-              unitText: '',
-              taxText: '',
-              imagePath: null,
-              imageId: '',
-              productData: {},
-            );
-          } else {
-            return EditOrder(
-              prodId: params['prodId'] ?? '',
-              textInput: params['textInput'] ?? '',
-              priceInput: params['priceInput'] ?? '',
-              discountInput: params['discountInput'] ?? '',
-              inputText: params['inputText'] ?? '',
-              subText: params['subText'] ?? '',
-              unitText: params['unitText'] ?? '',
-              taxText: params['taxText'] ?? '',
-              imagePath: params['imagePath'] ?? '',
-              imageId: params['imageId'] ?? '',
-              productData: params['productData'] ?? {},
-            );
-          }
-        },
-      ),
-      GoRoute(
-        path: '/dashboard/productpage/ontap/Edit/Update1',
-        builder: (context, state) {
+        path: '/dashboard/productpage/ontap/Edit/Update',
+        pageBuilder: (context, state) {
           final Map<String, dynamic> extra =
           state.extra as Map<String, dynamic>;
-          return ProductForm1(
-            displayData: extra['displayData'],
-            product: extra['product'],
-            imagePath: extra['imagePath'],
-            productText: extra['productText'],
-            selectedValue: extra['selectedValue'],
-            selectedValue1: extra['selectedValue1'],
-            selectedValue3: extra['selectedValue3'],
-            selectedvalue2: extra['selectedvalue2'],
-            priceText: extra['priceText'],
-            discountText: extra['discountText'],
-            prodId: extra['prodId'],
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            ProductForm1(
+              displayData: extra['displayData'],
+              product: extra['product'],
+              imagePath: extra['imagePath'],
+              productText: extra['productText'],
+              selectedValue: extra['selectedValue'],
+              selectedValue1: extra['selectedValue1'],
+              selectedValue3: extra['selectedValue3'],
+              selectedvalue2: extra['selectedvalue2'],
+              priceText: extra['priceText'],
+              discountText: extra['discountText'],
+              prodId: extra['prodId'],
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/Orders',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child:
+              Orderspage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
           );
         },
       ),
       GoRoute(
-        path: '/dasbaord/Orderspage',
-        builder: (context, state) => const Orderspage(),
-      ),
-      GoRoute(
-        path: '/Placed_Order_List',
-        builder: (context, state) {
+        path: '/Home/Orders/Create_Order/Add_Product/PlaceOrder/Placed_Order_List',
+        pageBuilder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
-          return SixthPage(
-            product: extra['product'] as detail?,
-            item: extra['item'] as List<Map<String, dynamic>>?,
-            body: extra['body'] as Map<String, dynamic>,
-            itemsList: extra['itemsList'] as List<Map<String, dynamic>>,
-            orderDetails: List<OrderDetail>.from(extra['orderDetails']),
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            SixthPage(
+              product: extra['product'] as detail?,
+              item: extra['item'] as List<Map<String, dynamic>>?,
+              body: extra['body'] as Map<String, dynamic>,
+              itemsList: extra['itemsList'] as List<Map<String, dynamic>>,
+              orderDetails: List<OrderDetail>.from(extra['orderDetails']),
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
           );
         },
       ),
@@ -387,20 +604,319 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const Orderspage(),
       ),
       GoRoute(
+        path: '/Placed_Order_List/PlaceOrder/Add_Product/Create_Order/Orders/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Placed_Order_List/PlaceOrder/Add_Product/Create_Order/Orders/Products',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Placed_Order_List/PlaceOrder/Add_Product/Create_Order/Orders/Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/PlaceOrder/Add_Product/Create_Order/Orders/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/PlaceOrder/Add_Product/Create_Order/Orders/Products',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      // GoRoute(
+      //   path: '/Add_Product/Create_Order/Orders/Return',
+      //   pageBuilder: (context, state) {
+      //     return CustomTransitionPage(
+      //       key: state.pageKey,
+      //       child:
+      //       Returnpage(),
+      //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      //         return FadeTransition(
+      //           opacity: animation,
+      //           child: child,
+      //         );
+      //       },
+      //       transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+      //     );
+      //   },
+      // ),
+      GoRoute(
+        path: '/PlaceOrder/Add_Product/Create_Order/Orders/Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Product_View/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child:
+              DashboardPage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
         path: '/CreateOrder/Orderspage',
         builder: (context, state) => const Orderspage(),
       ),
       GoRoute(
-        path: '/:products/Orderspage',
-        builder: (context, state) => const Orderspage(),
+        path: '/Edit/Orderspage/:Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Orderspage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Product_View/Orderspage/:Orders',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Orderspage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
         path: '/BeforplacingOrder/Orderspage',
         builder: (context, state) => const Orderspage(),
       ),
       GoRoute(
-        path: '/Create/Orderspage',
-        builder: (context, state) => const Orderspage(),
+        path: '/Add_Product/Create_Order/Orders/Orders',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Orderspage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Add_Product/Create_Order/Orders/Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Products/Orderspage/:Orders',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child:
+              Orderspage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Home/Products/:Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/Edit/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child:
+              DashboardPage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Edit/Return/:Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Orders/Return/:Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Product_View/Return/:return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
         path: '/Orderspage/dasbaord',
@@ -411,12 +927,89 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
-        path: '/Orderspage/create/dasbaord',
-        builder: (context, state) => const DashboardPage(),
+        path: '/Add_Product/Create_Order/Orders/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
-        path: '/Orderspage/placingorder/dasbaord',
-        builder: (context, state) => const DashboardPage(),
+        path: '/Add_Product/Create_Order/Orders/Products',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Create_Order/Orders/Home',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            DashboardPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Create_Order/Orders/Products',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            ProductPage(product: null,),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        path: '/Create_Order/Orders/Return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            Returnpage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
         path: '/Orderspage/placingorder/productpage:product',
@@ -459,11 +1052,66 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: '/Order_List/Product_List',
-        builder: (context, state) {
+        path: '/Home/Orders/Create_Order/Add_Product',
+        pageBuilder: (context, state) {
           final data = state.extra as Map<String, dynamic>?;
-          return OrderPage3(
-              data: data ?? {}); // Pass an empty map if data is null
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            OrderPage3(
+                data: data ?? {}),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
+      ),
+      GoRoute(
+        name: 'editProductRoute',
+        path: '/dashboard/productpage/:Edit/Edit',
+        pageBuilder: (context, state) {
+          final params = state.extra as Map<String, dynamic>?; // Make it nullable
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: params == null
+                ? const EditOrder(
+              prodId: '',
+              textInput: '',
+              priceInput: '',
+              discountInput: '',
+              inputText: '',
+              subText: '',
+              unitText: '',
+              taxText: '',
+              imagePath: null,
+              imageId: '',
+              productData: {},
+            )
+                : EditOrder(
+              prodId: params['prodId'] ?? '',
+              textInput: params['textInput'] ?? '',
+              priceInput: params['priceInput'] ?? '',
+              discountInput: params['discountInput'] ?? '',
+              inputText: params['inputText'] ?? '',
+              subText: params['subText'] ?? '',
+              unitText: params['unitText'] ?? '',
+              taxText: params['taxText'] ?? '',
+              imagePath: params['imagePath'] ?? '',
+              imageId: params['imageId'] ?? '',
+              productData: params['productData'] ?? {},
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust duration as needed
+          );
         },
       ),
       GoRoute(
@@ -525,17 +1173,88 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: '/Create_Order',
-        builder: (context, state) =>  OrdersSecond(),
+        path: '/Home/Orders/Create_Order',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            OrdersSecond(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
       GoRoute(
-        path: '/Order_Return',
-        builder: (context, state) =>  CreateReturn(storeImages: const [],storeImage: '',imageSizeStrings: const [],imageSizeString: '',orderDetailsMap: const {},orderDetails: const [],),
+        path: '/Placed_Order_List',
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+
+          // Extracting the passed arguments
+          final List<Product> products = extra['products'] ?? [];
+          final List<Product> selectedProducts = extra['selectedProducts'] ?? [];
+          final Product selectedProduct = extra['selectedProduct'] ?? Product(
+              prodId: '', category: '', productName: '', subCategory: '',
+              unit: '', selectedUOM: '', selectedVariation: '',
+              quantity: 0, total: 0, totalamount: 0, tax: '',
+              discount: '', price: 0, imageId: '',qty: 0,totalAmount: 0,
+          );
+          final Map<String, dynamic> data2 = extra['data2'] ?? {};
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: NextPage(
+              data: data2,
+              product: selectedProduct,
+              inputText: '',
+              products: products,
+              subText: 'hii',
+              selectedProducts: selectedProducts,
+              notselect: 'selectedproduct',
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 200), // Adjust duration as needed
+          );
+        },
       ),
+
       GoRoute(
-        path: '/dasbaord/Orderspage/addproduct/arrowback',
-        builder: (context, state) =>  OrdersSecond(),
+        path: '/Return/Create_return',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child:
+            CreateReturn(
+              storeImages: const [],
+              storeImage: '',
+              imageSizeStrings: const [],
+              imageSizeString: '',
+              orderDetailsMap: const {},
+              orderDetails: const [],
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 5), // Adjust transition duration if needed
+          );
+        },
       ),
+      // GoRoute(
+      //   path: '/dasbaord/Orderspage/addproduct/arrowback',
+      //   builder: (context, state) =>  OrdersSecond(),
+      // ),
       GoRoute(
         path: '/Order_List/Product_List/Add_Products',
         pageBuilder: (context, state) {
@@ -593,6 +1312,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     );
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     routes: {
+  //       '/': (context) => LoginScr(),
+  //       '/:Home': (context) => DashboardPage(),
+  //     },
+  //   );
+  // }
 }
 
 class ErrorScreen extends StatelessWidget {

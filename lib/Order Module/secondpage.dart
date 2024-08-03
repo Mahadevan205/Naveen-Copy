@@ -389,26 +389,26 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             onPressed: () {
                               // context
                               //     .go('${PageName.main}/${PageName.subpage1Main}');
-                              context.go('/Orderspage/placingorder/dasbaord');
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) =>
-                                  const DashboardPage(
-              
-                                  ),
-                                  transitionDuration:
-                                  const Duration(milliseconds: 200),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                              context.go('/Create_Order/Orders/Home');
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation, secondaryAnimation) =>
+                              //     const DashboardPage(
+                              //
+                              //     ),
+                              //     transitionDuration:
+                              //     const Duration(milliseconds: 200),
+                              //     transitionsBuilder: (context, animation,
+                              //         secondaryAnimation, child) {
+                              //       return FadeTransition(
+                              //         opacity: animation,
+                              //         child: child,
+                              //       );
+                              //     },
+                              //   ),
+                              // );
                             },
                             icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
                             label: Text(
@@ -420,26 +420,26 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           TextButton.icon(
                             onPressed: () {
                               context.go(
-                                  '/Orderspage/placingorder/productpage:product');
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) =>
-                                  const ProductPage(
-                                    product: null,
-                                  ),
-                                  transitionDuration:
-                                  const Duration(milliseconds: 200),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                                  '/Create_Order/Orders/Products');
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation, secondaryAnimation) =>
+                              //     const ProductPage(
+                              //       product: null,
+                              //     ),
+                              //     transitionDuration:
+                              //     const Duration(milliseconds: 200),
+                              //     transitionsBuilder: (context, animation,
+                              //         secondaryAnimation, child) {
+                              //       return FadeTransition(
+                              //         opacity: animation,
+                              //         child: child,
+                              //       );
+                              //     },
+                              //   ),
+                              // );
                             },
                             icon: Icon(Icons.image_outlined,
                                 color: Colors.indigo[900]),
@@ -451,7 +451,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              context.go('/BeforplacingOrder/Orderspage');
+                             // context.go('/BeforplacingOrder/Orderspage');
                             },
                             icon: const Icon(Icons.warehouse,
                                 color: Colors.blueAccent),
@@ -495,24 +495,24 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           const SizedBox(height: 20),
                           TextButton.icon(
                             onPressed: () {
-                              context.go('/dashboard/return/:return');
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) =>
-                                  const Returnpage(),
-                                  transitionDuration:
-                                  const Duration(milliseconds: 200),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                              context.go('/Create_Order/Orders/Return');
+                              // Navigator.push(
+                              //   context,
+                              //   PageRouteBuilder(
+                              //     pageBuilder:
+                              //         (context, animation, secondaryAnimation) =>
+                              //     const Returnpage(),
+                              //     transitionDuration:
+                              //     const Duration(milliseconds: 200),
+                              //     transitionsBuilder: (context, animation,
+                              //         secondaryAnimation, child) {
+                              //       return FadeTransition(
+                              //         opacity: animation,
+                              //         child: child,
+                              //       );
+                              //     },
+                              //   ),
+                              // );
                             },
                             icon: Icon(Icons.backspace_sharp,
                                 color: Colors.blue[900]),
@@ -559,7 +559,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     const Icon(Icons.arrow_back), // Back button icon
                                     onPressed: () {
                                       context.go(
-                                          '/Order_List');
+                                          '/Orders');
                                       //  Navigator.push(
                                       //      context,
                                       //     MaterialPageRoute(
@@ -762,21 +762,21 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                                 'Comments': CommentsController.text,
                                                 'date': _dateController.text,
                                               };
-                                              context.go('/Order_List/Product_List',extra: data);
-                                              Navigator.push(
-                                                context,
-                                                PageRouteBuilder(
-                                                  pageBuilder: (context, animation, secondaryAnimation) =>
-                                                      OrderPage3(data: data),
-                                                  transitionDuration: const Duration(milliseconds: 200),
-                                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                                    return FadeTransition(
-                                                      opacity: animation,
-                                                      child: child,
-                                                    );
-                                                  },
-                                                ),
-                                              );
+                                              context.go('/Home/Orders/Create_Order/Add_Product',extra: data);
+                                              // Navigator.push(
+                                              //   context,
+                                              //   PageRouteBuilder(
+                                              //     pageBuilder: (context, animation, secondaryAnimation) =>
+                                              //         OrderPage3(data: data),
+                                              //     transitionDuration: const Duration(milliseconds: 200),
+                                              //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                              //       return FadeTransition(
+                                              //         opacity: animation,
+                                              //         child: child,
+                                              //       );
+                                              //     },
+                                              //   ),
+                                              // );
                                             } else {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(

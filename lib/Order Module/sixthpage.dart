@@ -22,13 +22,7 @@ class SixthPage extends StatefulWidget {
   final List<Map<String, dynamic>>? item;
   final Map<String, dynamic>? body;
   final List<Map<String, dynamic>>? itemsList;
-
-
   const SixthPage({super.key, required this.product, this.item, this.body, this.itemsList,this.storeStaticData,this.orderDetails});
-
-
-
-
 
   @override
   _SixthPageState createState() => _SixthPageState();
@@ -752,26 +746,26 @@ class _SixthPageState extends State<SixthPage> {
                               onPressed: () {
                                 // context
                                 //     .go('${PageName.main}/${PageName.subpage1Main}');
-                                context.go('/Orderspage/placingorder/dasbaord');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const DashboardPage(
-
-                                    ),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/Placed_Order_List/PlaceOrder/Add_Product/Create_Order/Orders/Home');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const DashboardPage(
+                                //
+                                //     ),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
 
                                 // Navigator.pushReplacementNamed(
                                 //     context, PageName.dashboardRoute);
@@ -788,26 +782,26 @@ class _SixthPageState extends State<SixthPage> {
                             TextButton.icon(
                               onPressed: () {
                                 context.go(
-                                    '/Orderspage/placingorder/productpage:product');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const ProductPage(
-                                      product: null,
-                                    ),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                    '/Placed_Order_List/PlaceOrder/Add_Product/Create_Order/Orders/Products');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const ProductPage(
+                                //       product: null,
+                                //     ),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.image_outlined,
                                   color: Colors.indigo[900]),
@@ -819,7 +813,7 @@ class _SixthPageState extends State<SixthPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/BeforplacingOrder/Orderspage');
+                                //context.go('/BeforplacingOrder/Orderspage');
                                 // Navigator.push(
                                 //   context,
                                 //   PageRouteBuilder(
@@ -885,24 +879,24 @@ class _SixthPageState extends State<SixthPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/dashboard/return/:return');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const Returnpage(),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/Placed_Order_List/PlaceOrder/Add_Product/Create_Order/Orders/Return');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const Returnpage(),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
@@ -1000,7 +994,6 @@ class _SixthPageState extends State<SixthPage> {
                                     print(data);
                                     context.go('/Edit_Order', extra: data);
                                     Map<String, dynamic> orderDetailsMap = widget.orderDetails!.map((e) => e.toJson()).toList().asMap().cast<String, String>();
-
                                     Navigator.push(
                                       context,
                                       PageRouteBuilder(

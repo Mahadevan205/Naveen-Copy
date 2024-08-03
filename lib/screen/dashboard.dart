@@ -348,15 +348,21 @@ class _DashboardPageState extends State<DashboardPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                // context.go('/dashboard/productpage/:product');
-                                // Navigator.of(context).push(
-                                //   PageRouteBuilder(
-                                //     pageBuilder: (context, animation, secondaryAnimation) =>
-                                //         ProductPage(
-                                //           product: null,
-                                //         ),
-                                //   ),
-                                // );
+
+                                context.go('/Products');
+                             //    Navigator.of(context).push(
+                             //      PageRouteBuilder(
+                             //        pageBuilder: (context, animation, secondaryAnimation) =>
+                             //            ProductPage(
+                             //              product: null,
+                             //            ),
+                             //      ),
+                             //
+                             //    );
+                             //    GoRouter.of(context).go('/Home/Products', extra: (context) {
+                             //         return ProductPage(product: null);
+                             //       });
+
                                 // Navigator.of(context).push(
                                 //   MaterialPageRoute(
                                 //     path: '/dashboard/productpage/:product',
@@ -365,11 +371,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 //     ),
                                 //   ),
                                 // );
-                                Navigator.pushNamed(
-                                  context,
-                                  '/dashboard/productpage/:product',
-                                  arguments: {'product': null},
-                                );
+                                // Navigator.pushNamed(
+                                //   context,
+                                //   '/dashboard/productpage/:product',
+                                //   arguments: {'product': null},
+                                // );
                                 // Navigator.push(
                                 //      context,
                                 //      PageRouteBuilder(
@@ -396,12 +402,15 @@ class _DashboardPageState extends State<DashboardPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/dasbaord/Orderspage');
-                                Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                      Orderspage(),
-                                ));
+                                context.go('/Orders');
+                               // Navigator.pushNamed(context, '/:Orders');
+                              //   context.go('/:Orders');
+                              // //  context.go('/dasbaord/Orderspage');
+                              //   Navigator.of(context).push(PageRouteBuilder(
+                              //     pageBuilder: (context, animation,
+                              //         secondaryAnimation) =>
+                              //         Orderspage(),
+                              //   ));
                               },
                               icon: Icon(Icons.warehouse_outlined,
                                   color: Colors.indigo[900]),
@@ -446,7 +455,8 @@ class _DashboardPageState extends State<DashboardPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/dashboard/return/:return');
+                                context.go('/:Home/:Return');
+                               // context.go('/dashboard/return/:return');
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
@@ -517,24 +527,24 @@ class _DashboardPageState extends State<DashboardPage> {
                                       padding: const EdgeInsets.only(right: 80),
                                       child: OutlinedButton(
                                         onPressed: () {
-                                          context.go('/dashboard/Add_Product');
-                                          Navigator.pushReplacement(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder:
-                                                  (context, animation, secondaryAnimation) =>
-                                              const SecondPage(),
-                                              transitionDuration:
-                                              const Duration(milliseconds: 200),
-                                              transitionsBuilder: (context, animation,
-                                                  secondaryAnimation, child) {
-                                                return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
-                                                );
-                                              },
-                                            ),
-                                          );
+                                          context.go('/Add_Product');
+                                          // Navigator.push(
+                                          //   context,
+                                          //   PageRouteBuilder(
+                                          //     pageBuilder:
+                                          //         (context, animation, secondaryAnimation) =>
+                                          //     const SecondPage(),
+                                          //     transitionDuration:
+                                          //     const Duration(milliseconds: 200),
+                                          //     transitionsBuilder: (context, animation,
+                                          //         secondaryAnimation, child) {
+                                          //       return FadeTransition(
+                                          //         opacity: animation,
+                                          //         child: child,
+                                          //       );
+                                          //     },
+                                          //   ),
+                                          // );
                                         },
                                         style: OutlinedButton.styleFrom(
                                           backgroundColor:

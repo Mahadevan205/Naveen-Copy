@@ -221,12 +221,13 @@ class OrderPage3State extends State<OrderPage3> {
                           IconButton(
                             icon: const Icon(Icons.arrow_back), // Back button icon
                             onPressed: () {
-                              context.go('/dasbaord/Orderspage/addproduct/arrowback');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrdersSecond()),
-                              );
+
+                              context.go('/Home/Orders/Create_Order');
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => OrdersSecond()),
+                              // );
                             },
                           ),
                           const Padding(
@@ -669,6 +670,16 @@ class OrderPage3State extends State<OrderPage3> {
                             } else {
                               print('---data1');
                               print(Product);
+                              // context.go('/Order_List/Product_List/Add_Products',extra: {
+                              //   //'product': Product,
+                              //        'selectedProducts': const [],
+                              //        'data': data1,
+                              //        'inputText': '',
+                              //       'product': product,
+                              //        'products': const [],
+                              //        'subText': '',
+                              //        'notselect': '',
+                              // });
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
@@ -678,15 +689,18 @@ class OrderPage3State extends State<OrderPage3> {
                                         product: product,
                                         data: data1,
                                         inputText: '',
-                                        subText: '', products: const [], notselect: '',
+                                        subText: '',
+                                        products: const [],
+                                        notselect: '',
                                       ),
                                   settings: RouteSettings(
                                     name: '/Order_List/Product_List/Add_Products',
                                     arguments: {
                                       'product': Product,
+                                      'selectedProducts': const [],
                                       'data': data1,
                                       'inputText': '',
-                                      'subText': '',
+                                     // 'products': const [],
                                     },
                                   ),
                                 ),
@@ -720,25 +734,25 @@ class OrderPage3State extends State<OrderPage3> {
           children: [
             TextButton.icon(
               onPressed: () {
-                context.go('/Orderspage/create/dasbaord');
-                // context.go('${PageName.dashboardRoute}');
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                    const DashboardPage(
 
-                    ),
-                    transitionDuration: const Duration(milliseconds: 200),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
+                context.go('/Add_Product/Create_Order/Orders/Home');
+                // context.go('${PageName.dashboardRoute}');
+                // Navigator.push(
+                //   context,
+                //   PageRouteBuilder(
+                //     pageBuilder: (context, animation, secondaryAnimation) =>
+                //     const DashboardPage(
+                //     ),
+                //     transitionDuration: const Duration(milliseconds: 200),
+                //     transitionsBuilder:
+                //         (context, animation, secondaryAnimation, child) {
+                //       return FadeTransition(
+                //         opacity: animation,
+                //         child: child,
+                //       );
+                //     },
+                //   ),
+                // );
               },
               icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
               label: Text(
@@ -749,24 +763,24 @@ class OrderPage3State extends State<OrderPage3> {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
-                context.go('/dasbaord/Orderspage/create/productpage/:product');
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                    const ProductPage(
-                      product: null,
-                    ),
-                    transitionDuration: const Duration(milliseconds: 200),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
+                context.go('/Add_Product/Create_Order/Orders/Products');
+                // Navigator.push(
+                //   context,
+                //   PageRouteBuilder(
+                //     pageBuilder: (context, animation, secondaryAnimation) =>
+                //     const ProductPage(
+                //       product: null,
+                //     ),
+                //     transitionDuration: const Duration(milliseconds: 200),
+                //     transitionsBuilder:
+                //         (context, animation, secondaryAnimation, child) {
+                //       return FadeTransition(
+                //         opacity: animation,
+                //         child: child,
+                //       );
+                //     },
+                //   ),
+                // );
               },
               icon: Icon(Icons.image_outlined, color: Colors.indigo[900]),
               label: Text(
@@ -779,22 +793,22 @@ class OrderPage3State extends State<OrderPage3> {
             ),
             TextButton.icon(
               onPressed: () {
-                context.go('/Create/Orderspage');
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                    const Orderspage(),
-                    transitionDuration: const Duration(milliseconds: 200),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
+                context.go('/Add_Product/Create_Order/Orders/Orders');
+                // Navigator.push(
+                //   context,
+                //   PageRouteBuilder(
+                //     pageBuilder: (context, animation, secondaryAnimation) =>
+                //     const Orderspage(),
+                //     transitionDuration: const Duration(milliseconds: 200),
+                //     transitionsBuilder:
+                //         (context, animation, secondaryAnimation, child) {
+                //       return FadeTransition(
+                //         opacity: animation,
+                //         child: child,
+                //       );
+                //     },
+                //   ),
+                // );
                 setState(() {
                   isOrdersSelected = false;
                   // Handle button press19
@@ -841,24 +855,24 @@ class OrderPage3State extends State<OrderPage3> {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
-                context.go('/dashboard/return/:return');
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder:
-                        (context, animation, secondaryAnimation) =>
-                    const Returnpage(),
-                    transitionDuration:
-                    const Duration(milliseconds: 200),
-                    transitionsBuilder: (context, animation,
-                        secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
+                context.go('/Add_Product/Create_Order/Orders/Return');
+                // Navigator.push(
+                //   context,
+                //   PageRouteBuilder(
+                //     pageBuilder:
+                //         (context, animation, secondaryAnimation) =>
+                //     const Returnpage(),
+                //     transitionDuration:
+                //     const Duration(milliseconds: 200),
+                //     transitionsBuilder: (context, animation,
+                //         secondaryAnimation, child) {
+                //       return FadeTransition(
+                //         opacity: animation,
+                //         child: child,
+                //       );
+                //     },
+                //   ),
+                // );
               },
               icon: Icon(Icons.backspace_sharp, color: Colors.blue[900]),
               label: Text(

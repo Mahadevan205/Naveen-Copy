@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
+import 'package:btb/widgets/productclass.dart' as ord;
 import 'package:btb/Return%20Module/return%20module%20design.dart';
 import 'package:btb/Return%20Module/return%20ontap.dart';
 import 'package:btb/widgets/productclass.dart';
@@ -33,6 +34,7 @@ class _ReturnpageState extends State<Returnpage> {
   String _searchText = '';
   String status= '';
   String selectDate ='';
+  ord.Product? product;
   ReturnMaster? _isselected;
   final String _category = '';
   bool isOrdersSelected = false;
@@ -268,7 +270,7 @@ class _ReturnpageState extends State<Returnpage> {
                           children: [
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/Dashboard');
+                                context.go('/Return/Home');
                                 // Navigator.push(
                                 //   context,
                                 //   PageRouteBuilder(
@@ -299,7 +301,7 @@ class _ReturnpageState extends State<Returnpage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/Product_List');
+                                context.go('/Return/Products', extra: product);
                                 // Navigator.push(
                                 //   context,
                                 //   PageRouteBuilder(
@@ -331,26 +333,26 @@ class _ReturnpageState extends State<Returnpage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
+                                context.go('/Return/Orders');
                                 // context.go('${PageName.main}/${PageName.subpage1Main}');
-
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation,
-                                        secondaryAnimation) =>
-                                    const Orderspage(),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation,
+                                //         secondaryAnimation) =>
+                                //     const Orderspage(),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.warehouse,
                                   color: Colors.blue[900]),
@@ -453,24 +455,24 @@ class _ReturnpageState extends State<Returnpage> {
                                       top: 10, right: maxWidth * 0.069),
                                   child: OutlinedButton(
                                     onPressed: () {
-                                      context.go('/Order_Return');
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation,
-                                              secondaryAnimation) =>
-                                              CreateReturn(storeImage: 'even', imageSizeString: '',imageSizeStrings: const [],storeImages: const [],orderDetails: const [],orderDetailsMap: const {},),
-                                          transitionDuration:
-                                          const Duration(milliseconds: 200),
-                                          transitionsBuilder: (context, animation,
-                                              secondaryAnimation, child) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            );
-                                          },
-                                        ),
-                                      );
+                                      context.go('/Return/Create_return');
+                                      // Navigator.push(
+                                      //   context,
+                                      //   PageRouteBuilder(
+                                      //     pageBuilder: (context, animation,
+                                      //         secondaryAnimation) =>
+                                      //         CreateReturn(storeImage: 'even', imageSizeString: '',imageSizeStrings: const [],storeImages: const [],orderDetails: const [],orderDetailsMap: const {},),
+                                      //     transitionDuration:
+                                      //     const Duration(milliseconds: 200),
+                                      //     transitionsBuilder: (context, animation,
+                                      //         secondaryAnimation, child) {
+                                      //       return FadeTransition(
+                                      //         opacity: animation,
+                                      //         child: child,
+                                      //       );
+                                      //     },
+                                      //   ),
+                                      // );
                                     },
                                     style: OutlinedButton.styleFrom(
                                       backgroundColor:

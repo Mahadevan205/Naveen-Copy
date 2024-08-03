@@ -262,26 +262,26 @@ class _OrderspageState extends State<Orderspage> {
                               onPressed: () {
                                 // context
                                 //     .go('${PageName.main}/${PageName.subpage1Main}');
-                                context.go('/Dashboard');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation,
-                                        secondaryAnimation) =>
-                                        const DashboardPage(
-                                        ),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/Orders/Home');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation,
+                                //         secondaryAnimation) =>
+                                //         const DashboardPage(
+                                //         ),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(
                                   Icons.dashboard, color: Colors.indigo[900]),
@@ -293,27 +293,27 @@ class _OrderspageState extends State<Orderspage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/Product_List');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation,
-                                        secondaryAnimation) =>
-                                    const ProductPage(
-                                      product: null,
-                                    ),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/Orders/Products');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation,
+                                //         secondaryAnimation) =>
+                                //     const ProductPage(
+                                //       product: null,
+                                //     ),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.image_outlined,
                                   color: Colors.indigo[900]),
@@ -326,24 +326,24 @@ class _OrderspageState extends State<Orderspage> {
                             TextButton.icon(
                               onPressed: () {
                                 // context.go('${PageName.main}/${PageName.subpage1Main}');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation,
-                                        secondaryAnimation) =>
-                                    const Orderspage(),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation,
+                                //         secondaryAnimation) =>
+                                //     const Orderspage(),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                                 setState(() {
                                   isOrdersSelected = false;
                                   // Handle button press19
@@ -393,24 +393,24 @@ class _OrderspageState extends State<Orderspage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/dashboard/return/:return');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const Returnpage(),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/Orders/Return/:Return');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const Returnpage(),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
@@ -467,7 +467,7 @@ class _OrderspageState extends State<Orderspage> {
                                       // context.go(
                                       //     '${PageName.dashboardRoute}/${PageName.subpage1}');
                                       //router
-                                      context.go('/Create_Order');
+                                      context.go('/Home/Orders/Create_Order');
                                       // Navigator.push(
                                       //   context,
                                       //   PageRouteBuilder(
@@ -821,25 +821,25 @@ class _OrderspageState extends State<Orderspage> {
                                       // Add other fields as needed
                                     )).toList(),
                                   });
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SixthPage(
-                                          product: detail,
-                                          item:  const [],
-                                          body: const {},
-                                          itemsList: const [],
-                                          orderDetails: filteredData.map((detail) => OrderDetail(
-                                            orderId: detail.orderId,
-                                            orderDate: detail.orderDate, items: [],
-                                            // Add other fields as needed
-                                          )).toList(),
-                                          //storeStaticData: storeStaticData,
-
-                                        )
-                                    )
-                                    , // pass the selected product here
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => SixthPage(
+                                  //         product: detail,
+                                  //         item:  const [],
+                                  //         body: const {},
+                                  //         itemsList: const [],
+                                  //         orderDetails: filteredData.map((detail) => OrderDetail(
+                                  //           orderId: detail.orderId,
+                                  //           orderDate: detail.orderDate, items: [],
+                                  //           // Add other fields as needed
+                                  //         )).toList(),
+                                  //         //storeStaticData: storeStaticData,
+                                  //
+                                  //       )
+                                  //   )
+                                  //   , // pass the selected product here
+                                  // );
                                 },
                                 child: Container(
                                   // padding: EdgeInsets.only(left: 40),

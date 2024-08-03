@@ -278,22 +278,22 @@ class _FifthPageState extends State<FifthPage> {
           });
 
           // Navigate to the next page
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => SixthPage(
-                product: details,
-                item: items,
-                body: body,
-                itemsList: items,
-                orderDetails: filteredData.map((detail) => OrderDetail(
-                  orderId: detail.orderId,
-                  orderDate: detail.orderDate, items: [],
-                  // Add other fields as needed
-                )).toList(),
-              ),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   PageRouteBuilder(
+          //     pageBuilder: (context, animation, secondaryAnimation) => SixthPage(
+          //       product: details,
+          //       item: items,
+          //       body: body,
+          //       itemsList: items,
+          //       orderDetails: filteredData.map((detail) => OrderDetail(
+          //         orderId: detail.orderId,
+          //         orderDate: detail.orderDate, items: [],
+          //         // Add other fields as needed
+          //       )).toList(),
+          //     ),
+          //   ),
+          // );
         }
         navigateToNextPage();
       } else {
@@ -635,26 +635,26 @@ class _FifthPageState extends State<FifthPage> {
                               onPressed: () {
                                 // context
                                 //     .go('${PageName.main}/${PageName.subpage1Main}');
-                                context.go('/Orderspage/placingorder/dasbaord');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const DashboardPage(
-
-                                    ),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/PlaceOrder/Add_Product/Create_Order/Orders/Home');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const DashboardPage(
+                                //
+                                //     ),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.dashboard, color: Colors.indigo[900]),
                               label: Text(
@@ -666,26 +666,26 @@ class _FifthPageState extends State<FifthPage> {
                             TextButton.icon(
                               onPressed: () {
                                 context.go(
-                                    '/Orderspage/placingorder/productpage:product');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const ProductPage(
-                                      product: null,
-                                    ),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                    '/PlaceOrder/Add_Product/Create_Order/Orders/Products');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const ProductPage(
+                                //       product: null,
+                                //     ),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.image_outlined,
                                   color: Colors.indigo[900]),
@@ -697,7 +697,7 @@ class _FifthPageState extends State<FifthPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/BeforplacingOrder/Orderspage');
+                               // context.go('/BeforplacingOrder/Orderspage');
                                 // Navigator.push(
                                 //   context,
                                 //   PageRouteBuilder(
@@ -763,24 +763,24 @@ class _FifthPageState extends State<FifthPage> {
                             const SizedBox(height: 20),
                             TextButton.icon(
                               onPressed: () {
-                                context.go('/dashboard/return/:return');
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) =>
-                                    const Returnpage(),
-                                    transitionDuration:
-                                    const Duration(milliseconds: 200),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                context.go('/PlaceOrder/Add_Product/Create_Order/Orders/Return');
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder:
+                                //         (context, animation, secondaryAnimation) =>
+                                //     const Returnpage(),
+                                //     transitionDuration:
+                                //     const Duration(milliseconds: 200),
+                                //     transitionsBuilder: (context, animation,
+                                //         secondaryAnimation, child) {
+                                //       return FadeTransition(
+                                //         opacity: animation,
+                                //         child: child,
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.backspace_sharp,
                                   color: Colors.blue[900]),
@@ -1288,43 +1288,54 @@ class _FifthPageState extends State<FifthPage> {
                                                   };
                                                   data2 = data;
                                                   print(selectedProduct);
-                                                  Navigator.push(
-                                                    context,
-                                                    PageRouteBuilder(
-                                                      pageBuilder: (context,
-                                                          animation,
-                                                          secondaryAnimation) =>
-                                                          NextPage(
-                                                            //product: Product(prodId: '', category: '', productName: '', subCategory: '', unit: '', selectedUOM: '', selectedVariation: '', quantity: 0, total: 0, totalamount: 0, tax: '', discount: '', price: 0, imageId: ''),
-                                                            data: data2,
-                                                            product: selectedProduct,
-                                                            inputText: '',
-                                                            products: products,
-                                                            subText: 'hii',
-                                                            selectedProducts: widget.selectedProducts, notselect: 'selectedproduct',),
-                                                      // NextPage(
-                                                      //   // selectedProducts: widget.selectedProducts,
-                                                      //   selectedProducts: widget.selectedProducts,                                                         data: widget.data,
-                                                      //   inputText: '',
-                                                      //   subText: '',
-                                                      //    data: null,
-                                                      //    products: products,
-                                                      //   product: selectedProduct),
-                                                      transitionDuration:
-                                                      const Duration(
-                                                          milliseconds: 200),
-                                                      transitionsBuilder: (
-                                                          context,
-                                                          animation,
-                                                          secondaryAnimation,
-                                                          child) {
-                                                        return FadeTransition(
-                                                          opacity: animation,
-                                                          child: child,
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
+                                                  context.go('/Add_Product/PlaceOrder/Placed_Order_List', extra: {
+                                                    'products': products,
+                                                    'selectedProducts': selectedProducts,
+                                                    'selectedProduct': selectedProduct,
+                                                    'data2': data2,
+                                                    'subText': 'hii',
+                                                    'inputText': '',
+                                                    'notselect': 'selectedproduct',
+                                                  });
+
+                                                  // Navigator.push(
+                                                  //   context,
+                                                  //   PageRouteBuilder(
+                                                  //     pageBuilder: (context,
+                                                  //         animation,
+                                                  //         secondaryAnimation) =>
+                                                  //         NextPage(
+                                                  //           //product: Product(prodId: '', category: '', productName: '', subCategory: '', unit: '', selectedUOM: '', selectedVariation: '', quantity: 0, total: 0, totalamount: 0, tax: '', discount: '', price: 0, imageId: ''),
+                                                  //           data: data2,
+                                                  //           product: selectedProduct,
+                                                  //           inputText: '',
+                                                  //           products: products,
+                                                  //           subText: 'hii',
+                                                  //           selectedProducts: widget.selectedProducts,
+                                                  //           notselect: 'selectedproduct',),
+                                                  //     // NextPage(
+                                                  //     //   // selectedProducts: widget.selectedProducts,
+                                                  //     //   selectedProducts: widget.selectedProducts,                                                         data: widget.data,
+                                                  //     //   inputText: '',
+                                                  //     //   subText: '',
+                                                  //     //    data: null,
+                                                  //     //    products: products,
+                                                  //     //   product: selectedProduct),
+                                                  //     transitionDuration:
+                                                  //     const Duration(
+                                                  //         milliseconds: 200),
+                                                  //     transitionsBuilder: (
+                                                  //         context,
+                                                  //         animation,
+                                                  //         secondaryAnimation,
+                                                  //         child) {
+                                                  //       return FadeTransition(
+                                                  //         opacity: animation,
+                                                  //         child: child,
+                                                  //       );
+                                                  //     },
+                                                  //   ),
+                                                  // );
                                                 }
                                               } else {
                                                 selectedProduct = null;

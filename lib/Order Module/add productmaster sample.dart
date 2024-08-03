@@ -525,23 +525,20 @@ class _SelectedProductPageState extends State<SelectedProductPage> {
         print('Error parsing orderId: $e');
         orderId = ''; // or some default value
       }
-
       print('from the api response');
       print(orderId);
 
-      context.go('/Order_List/Documents',extra: {
-        'selectedProducts': updatedOrder,
-        'orderId': orderId,
-        'orderDetails':  filteredData.map((detail) => OrderDetail(
-          orderId: detail.orderId,
-          orderDate: detail.orderDate,
-          items: [],
-          // Add other fields as needed
-        )).toList(),
-
-      });
-
-
+      // context.go('/Order_List/Documents',extra: {
+      //   'selectedProducts': updatedOrder,
+      //   'orderId': orderId,
+      //   'orderDetails':  filteredData.map((detail) => OrderDetail(
+      //     orderId: detail.orderId,
+      //     orderDate: detail.orderDate,
+      //     items: [],
+      //     // Add other fields as needed
+      //   )).toList(),
+      //
+      // });
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SeventhPage(
